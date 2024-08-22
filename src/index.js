@@ -33,3 +33,5 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+export { database };
