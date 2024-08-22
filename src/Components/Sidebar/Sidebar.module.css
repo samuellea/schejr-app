@@ -1,0 +1,19 @@
+.container {
+  /* border: 3px solid yellow; */
+  height: 100%;
+  width: 25%;
+  box-sizing: border-box;
+  background-color: #202020;
+  position: absolute; /* Allow overlaying */
+  top: 0; /* Adjust as needed */
+  left: 0; /* Adjust as needed */
+  z-index: 10; /* Ensure this sibling is on top */
+}
+
+.listsHeader {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid lightblue;
+}
