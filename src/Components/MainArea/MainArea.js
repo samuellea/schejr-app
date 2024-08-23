@@ -1,20 +1,18 @@
 import React from 'react';
 import styles from './MainArea.module.css';
+import List from '../List/List';
 
-function MainArea({ selectedList, updateList }) {
-  const handleTitleChange = (e) => {
-    const text = e.target.value;
-    updateList(selectedList.listID, 'title', text);
-  };
-
+function MainArea({ selectedList, updateList, userUID }) {
+  // will show either the selected List, or if a list item is selected, a List Item expanded view
   return (
     <div className={styles.container}>
-      <input
-        className={styles.listTitleInput}
-        type="text"
-        id="listTitle"
-        onChange={(event) => handleTitleChange(event)}
-      ></input>
+      {selectedList ? (
+        <List
+          selectedList={selectedList}
+          updateList={updateList}
+          userUID={userUID}
+        />
+      ) : null}
     </div>
   );
 }

@@ -10,8 +10,10 @@ function Sidebar({
   selectedListID,
   setSelectedListID,
   setListsModified,
+  toggleSidebar,
+  showSidebar,
 }) {
-  const createListButton = async () => {
+  const createList = async () => {
     const listData = {
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
       createdAt: Date.now(),
@@ -31,11 +33,16 @@ function Sidebar({
     setSelectedListID(listID);
   };
 
+  const combined = `${styles.container} ${
+    showSidebar ? styles.sidebarOpen : styles.sidebarClosed
+  }`;
+
   return (
-    <div className={styles.container}>
+    <div className={combined}>
       <div className={styles.listsHeader}>
+        <button onClick={toggleSidebar}>《</button>
         <p>Lists</p>
-        <button onClick={createListButton}>Add</button>
+        <button onClick={createList}>Add</button>
       </div>
       {sortedLists.map((list, i) => (
         <ListButton

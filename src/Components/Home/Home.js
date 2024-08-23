@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MainArea from '../MainArea/MainArea';
 import styles from './Home.module.css';
 import Sidebar from '../Sidebar/Sidebar';
-import TopBar from '../TopBar.js/TopBar';
+import TopBar from '../TopBar/TopBar';
 import * as u from '../../utils';
 import * as h from '../../helpers';
 
@@ -13,6 +13,7 @@ function Home() {
   const [selectedListID, setSelectedListID] = useState(null);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
   const [sidebarListAscending, setSidebarListAscending] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(true);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -64,7 +65,9 @@ function Home() {
     autoSave();
   }, [lists]);
 
-  useEffect(() => {}, [selectedListID]);
+  useEffect(() => {
+    console.log(selectedListID);
+  }, [selectedListID]);
 
   const autoSave = () => {
     if (timeoutIdRef.current) {
@@ -122,12 +125,21 @@ function Home() {
     setLists(listsPlusUpdated);
   };
 
+  const toggleSidebar = () => {
+    if (showSidebar) {
+      setShowSidebar(false);
+    } else {
+      setShowSidebar(true);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <TopBar />
+      <TopBar toggleSidebar={toggleSidebar} />
       <MainArea
         selectedList={lists.filter((e) => e.listID === selectedListID)[0]}
         updateList={updateList}
+        userUID={userUID}
       />
       <Sidebar
         userUID={userUID}
@@ -139,6 +151,8 @@ function Home() {
         selectedListID={selectedListID}
         setSelectedListID={setSelectedListID}
         setListsModified={setListsModified}
+        toggleSidebar={toggleSidebar}
+        showSidebar={showSidebar}
       />
     </div>
   );

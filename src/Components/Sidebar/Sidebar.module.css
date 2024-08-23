@@ -17,3 +17,10 @@
   justify-content: space-between;
   border: 1px solid lightblue;
 }
+
+.sidebarOpen {
+  visibility: visible;
+}
+.sidebarClosed {
+  visibility: hidden;
+}

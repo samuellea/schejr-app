@@ -1,0 +1,35 @@
+.container {
+  border: 2px solid cyan;
+  height: 100%;
+  padding: 5px 100px 5px 210px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.listTitleInput {
+  font-size: 24px;
+  color: white;
+  background-color: #191919;
+  border: none;
+  margin: 10px;
+  width: 100%;
+}
+
+.newListItemButton {
+  height: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 5px;
+  padding-left: 18px;
+  color: rgb(164, 164, 164);
+  border: none;
+}
+
+.newListItemButton:hover {
+  background-color: #2a2a2a;
+}

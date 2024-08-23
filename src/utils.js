@@ -74,3 +74,56 @@ export const deleteListByID = async (listID) => {
     throw error;
   }
 };
+
+export const createNewListItem = async (listItemData) => {
+  try {
+    // Create a reference to the 'lists' endpoint
+    const listItemsRef = ref(database, 'listItems');
+    // Generate a new key under the 'lists' endpoint
+    const newListItemRef = push(listItemsRef);
+    // Set the data at the new reference
+    await set(newListItemRef, listItemData);
+    console.log('New list item created with ID:', newListItemRef.key);
+    return newListItemRef.key; // Return the unique ID of the newly created list
+  } catch (error) {
+    console.error('Error creating new list item:', error);
+    throw error;
+  }
+};
+
+export const fetchListItemsByListID = async (parentListID) => {
+  try {
+    // Reference to the 'lists' endpoint
+    const listItemsRef = ref(database, 'listItems');
+    // Create a query to filter lists where 'createdBy' equals the given userUID
+    const listItemsQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(parentListID)
+    );
+    // Get the data from the query
+    const snapshot = await get(listItemsQuery);
+    if (snapshot.exists()) {
+      // Data exists; convert snapshot to an object
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log('No list itmes found for this list.');
+      return {};
+    }
+  } catch (error) {
+    console.error('Error retrieving user list items:', error);
+    throw error;
+  }
+};
+
+export const deleteListItemByID = async (listItemID) => {
+  try {
+    const objectRef = ref(database, `listItems/${listItemID}`);
+    await remove(objectRef);
+    console.log('List item deleted successfully');
+  } catch (error) {
+    console.error('Error deleting list item:', error);
+    throw error;
+  }
+};
