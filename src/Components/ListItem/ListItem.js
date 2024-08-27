@@ -2,7 +2,12 @@ import React from 'react';
 import styles from './ListItem.module.css';
 import * as u from '../../utils';
 
-function ListItem({ listItem, setListItemsModified }) {
+function ListItem({ listItem, setListItemsModified, handleEditListItem }) {
+  // const handleItemTitleChange = (e) => {
+  //   const text = e.target.value;
+  //   updateListItem(selectedList.listID, 'title', text);
+  // };
+
   const deleteListItem = async () => {
     try {
       await u.deleteListItemByID(listItem.listItemID);
@@ -19,6 +24,12 @@ function ListItem({ listItem, setListItemsModified }) {
         🗑
       </button>
       <p>{listItem.title}</p>
+      <button
+        className={styles.editListItemButton}
+        onClick={() => handleEditListItem(listItem)}
+      >
+        ✏️
+      </button>
       {/* <button onClick={toggleSidebar}>》</button> */}
     </div>
   );

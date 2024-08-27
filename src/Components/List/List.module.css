@@ -1,7 +1,7 @@
 .container {
-  border: 2px solid cyan;
+  border: 2px solid red;
   height: 100%;
-  padding: 5px 100px 5px 210px;
+  padding: 5px 100px 5px 30%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

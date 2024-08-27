@@ -4,7 +4,7 @@ import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
 
-function List({ selectedList, updateList, userUID }) {
+function List({ selectedList, updateList, userUID, handleEditListItem }) {
   const [listItems, setListItems] = useState([]);
   const [listItemsModified, setListItemsModified] = useState(false);
 
@@ -41,6 +41,10 @@ function List({ selectedList, updateList, userUID }) {
       createdAt: Date.now(),
       createdBy: userUID,
       parentID: selectedList.listID,
+      comment: '',
+      startTime: null,
+      endTime: null,
+      tags: [],
     };
     try {
       const listId = await u.createNewListItem(listData);
@@ -65,6 +69,7 @@ function List({ selectedList, updateList, userUID }) {
         <ListItem
           listItem={listItem}
           setListItemsModified={setListItemsModified}
+          handleEditListItem={handleEditListItem}
         />
       ))}
       <div className={styles.newListItemButton} onClick={createListItem}>

@@ -1,0 +1,11 @@
+.container {
+  border: 2px solid lime;
+  background-color: #202020;
+  color: white;
+  height: 100%;
+  width: 75%;
+  position: absolute; /* Allow overlaying */
+  top: 0; /* Adjust as needed */
+  left: 25%; /* Adjust as needed */
+  z-index: 20; /* Ensure this sibling is on top */
+}

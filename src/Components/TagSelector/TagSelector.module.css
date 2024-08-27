@@ -1,0 +1,43 @@
+.container {
+  width: 200px;
+  /* border: 2px solid yellow; */
+}
+
+.inputContainer {
+  /* border: 1px solid red; */
+  width: 100%;
+  max-width: 100%;
+  padding: 7px 6px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background-color: #202020;
+  box-sizing: border-box;
+}
+
+.inputContainer:hover {
+  background-color: #2d2d2d;
+}
+
+.isInFocus {
+  background-color: #2d2d2d;
+}
+
+.inputContainer input {
+  /* background-color: #202020; */
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  width: 100%;
+}
+
+/* .inputContainer input:hover {
+  background-color: #2d2d2d;
+} */
+
+.inputContainer:hover input {
+  background-color: #c0c0c0;
+  background-color: #2d2d2d;
+}
