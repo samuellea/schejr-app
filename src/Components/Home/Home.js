@@ -107,9 +107,6 @@ function Home() {
 
   // func which updates the list object (by id) in lists state - a seperate, timed function will then update this list object on firebase
   const updateList = (listID, field, value) => {
-    console.log(`1: ${lists[0].listID}`);
-    console.log(`2: ${lists[1].listID}`);
-    console.log(`3: ${lists[2].listID}`);
     let newValue = value;
     if (field === 'title' && value === '') newValue = 'Untitled';
 

@@ -4,32 +4,15 @@ import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
 
-function List({ selectedList, updateList, userUID, handleEditListItem }) {
-  const [listItems, setListItems] = useState([]);
-  const [listItemsModified, setListItemsModified] = useState(false);
-
-  const fetchListItems = async () => {
-    try {
-      const allListItems = await u.fetchListItemsByListID(selectedList.listID);
-      const allListItemsWithIDs = Object.entries(allListItems).map((e) => ({
-        listItemID: e[0],
-        ...e[1],
-      }));
-      console.log(allListItemsWithIDs);
-      setListItems(allListItemsWithIDs);
-    } catch {
-      // handle error fetching list items
-    }
-
-    if (listItemsModified) {
-      setListItemsModified(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchListItems();
-  }, [selectedList, listItemsModified]);
-
+function List({
+  selectedList,
+  updateList,
+  userUID,
+  handleEditListItem,
+  setListItemsModified,
+  listItems,
+  existingTags,
+}) {
   const handleTitleChange = (e) => {
     const text = e.target.value;
     updateList(selectedList.listID, 'title', text);
@@ -70,6 +53,7 @@ function List({ selectedList, updateList, userUID, handleEditListItem }) {
           listItem={listItem}
           setListItemsModified={setListItemsModified}
           handleEditListItem={handleEditListItem}
+          existingTags={existingTags}
         />
       ))}
       <div className={styles.newListItemButton} onClick={createListItem}>

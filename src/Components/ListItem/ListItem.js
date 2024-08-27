@@ -2,7 +2,12 @@ import React from 'react';
 import styles from './ListItem.module.css';
 import * as u from '../../utils';
 
-function ListItem({ listItem, setListItemsModified, handleEditListItem }) {
+function ListItem({
+  listItem,
+  setListItemsModified,
+  handleEditListItem,
+  existingTags,
+}) {
   // const handleItemTitleChange = (e) => {
   //   const text = e.target.value;
   //   updateListItem(selectedList.listID, 'title', text);
@@ -23,7 +28,7 @@ function ListItem({ listItem, setListItemsModified, handleEditListItem }) {
       <button className={styles.deleteListItemButton} onClick={deleteListItem}>
         🗑
       </button>
-      <p>{listItem.title}</p>
+      <p className={styles.listItemTitle}>{listItem.title}</p>
       <button
         className={styles.editListItemButton}
         onClick={() => handleEditListItem(listItem)}
@@ -31,6 +36,21 @@ function ListItem({ listItem, setListItemsModified, handleEditListItem }) {
         ✏️
       </button>
       {/* <button onClick={toggleSidebar}>》</button> */}
+      <div className={styles.tagsContainer}>
+        {listItem?.tags?.map((tag) => {
+          const matchingTag = existingTags?.find(
+            (existingTag) => existingTag.tagID === tag
+          );
+          return (
+            <div
+              className={styles.tag}
+              style={{ backgroundColor: matchingTag?.color }}
+            >
+              {matchingTag.name}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

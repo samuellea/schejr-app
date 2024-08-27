@@ -8,18 +8,69 @@
   border-radius: 5px;
   padding-left: 18px;
   color: white;
-  border: none;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
+    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .container:hover {
   background-color: #2a2a2a;
 }
 
+.listItemTitle {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
 .deleteListItemButton {
-  background: none;
+  background-color: #2a2a2a;
   border: none;
+  margin-left: 6px;
+  border-radius: 4px;
+  padding: 2px 8px;
 }
 
 .deleteListItemButton:hover {
   background-color: #4c4c4c;
+}
+
+.editListItemButton {
+  background-color: #2a2a2a;
+  border: none;
+  margin-left: 6px;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.editListItemButton:hover {
+  background-color: #4c4c4c;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  padding: 0px 6px 0px 0px;
+  margin-left: auto;
+}
+
+.tag {
+  color: white;
+  /* background-color: remediumslateblue; */
+  padding: 0px 6px;
+  margin: 0px 0px 0px 6px;
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.tag p {
+  /* border: 1px solid white; */
+  padding: 6px 0px;
 }

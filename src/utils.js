@@ -38,6 +38,19 @@ export const patchList = async (listID, newData) => {
   }
 };
 
+export const patchListItem = async (listItemID, newData) => {
+  console.log(listItemID);
+  console.log(newData);
+  try {
+    const listItemRef = ref(database, `listItems/${listItemID}`);
+    await update(listItemRef, newData);
+    console.log('Object updated successfully');
+  } catch (error) {
+    console.error('Error updating list item:', error);
+    throw error;
+  }
+};
+
 export const fetchAllUserLists = async (userUID) => {
   try {
     // Reference to the 'lists' endpoint
@@ -124,6 +137,41 @@ export const deleteListItemByID = async (listItemID) => {
     console.log('List item deleted successfully');
   } catch (error) {
     console.error('Error deleting list item:', error);
+    throw error;
+  }
+};
+
+export const fetchAllUserTags = async (userUID) => {
+  try {
+    // Reference to the 'lists' endpoint
+    const tagsRef = ref(database, 'tags');
+    // Create a query to filter lists where 'createdBy' equals the given userUID
+    const tagsQuery = query(tagsRef, orderByChild('userUID'), equalTo(userUID));
+    // Get the data from the query
+    const snapshot = await get(tagsQuery);
+    if (snapshot.exists()) {
+      // Data exists; convert snapshot to an object
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log('No tags found for this user.');
+      return {};
+    }
+  } catch (error) {
+    console.error('Error retrieving tags:', error);
+    throw error;
+  }
+};
+
+export const createNewTag = async (tagData) => {
+  try {
+    const tagsRef = ref(database, 'tags');
+    const newTagRef = push(tagsRef);
+    await set(newTagRef, tagData);
+    console.log('New tag created with ID:', newTagRef.key);
+    return newTagRef.key;
+  } catch (error) {
+    console.error('Error creating new tag:', error);
     throw error;
   }
 };
