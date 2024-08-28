@@ -6,6 +6,9 @@ function TagOptions({
   tagColorOptions,
   handleUpdateExistingTag,
   onChildClickOutside,
+  handleDeleteTag,
+  showDeleteModal,
+  setShowDeleteModal,
 }) {
   const [tagRenameText, setTagRenameText] = useState(tag.name);
 
@@ -21,8 +24,6 @@ function TagOptions({
     const text = e.target.value;
     setTagRenameText(text);
   };
-
-  const handleDeleteTag = () => {};
 
   const colorNameLookup = {
     '#373737': 'Light Gray',
@@ -75,6 +76,10 @@ function TagOptions({
     };
   }, [onChildClickOutside]); // Depend on onChildClickOutside
 
+  const confirmDeleteCombined = `${styles.confirmDeleteTagButton} ${styles.deleteTagModalButton}`;
+
+  const cancelDeleteCombined = `${styles.cancelDeleteTagButton} ${styles.deleteTagModalButton}`;
+
   return (
     <div
       className={styles.container}
@@ -94,7 +99,7 @@ function TagOptions({
 
       <div
         className={`${styles.tagOptionsButton} ${styles.deleteTagButton}`}
-        onClick={handleDeleteTag}
+        onClick={() => setShowDeleteModal(true)}
       >
         <div className={styles.deleteIconContainer}>🗑️</div>
         <div className={styles.deleteLabel}>Delete</div>
@@ -112,6 +117,27 @@ function TagOptions({
           <div className={styles.colourLabel}>{colorNameLookup[color]}</div>
         </div>
       ))}
+      {showDeleteModal ? (
+        <div className={styles.deleteTagModalBackground}>
+          <div className={styles.deleteTagModal}>
+            <p styles={styles.deleteTagModalP}>
+              Are you sure you want to delete this option?
+            </p>
+            <button
+              className={confirmDeleteCombined}
+              onClick={() => handleDeleteTag(tag.tagID)}
+            >
+              Delete
+            </button>
+            <button
+              className={cancelDeleteCombined}
+              onClick={() => setShowDeleteModal(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

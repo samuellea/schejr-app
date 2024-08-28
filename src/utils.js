@@ -99,6 +99,17 @@ export const deleteListByID = async (listID) => {
   }
 };
 
+export const deleteTagByID = async (tagID) => {
+  try {
+    const objectRef = ref(database, `tags/${tagID}`);
+    await remove(objectRef);
+    console.log('Tag deleted successfully');
+  } catch (error) {
+    console.error('Error deleting tag:', error);
+    throw error;
+  }
+};
+
 export const createNewListItem = async (listItemData) => {
   try {
     // Create a reference to the 'lists' endpoint
@@ -184,5 +195,47 @@ export const createNewTag = async (tagData) => {
   } catch (error) {
     console.error('Error creating new tag:', error);
     throw error;
+  }
+};
+
+export const findAndRemoveTagIDFromMatchingListItems = async (
+  tagIDToRemove
+) => {
+  // Reference to the listItems node
+  const listItemsRef = ref(database, 'listItems');
+
+  try {
+    // Fetch all listItems
+    const snapshot = await get(listItemsRef);
+
+    if (snapshot.exists()) {
+      const listItems = snapshot.val();
+      const updates = {}; // To hold updates for batch writing
+
+      // Iterate over all items
+      for (const [key, item] of Object.entries(listItems)) {
+        // Check if the item has a .tags key and if it contains the tag
+        if (Array.isArray(item.tags) && item.tags.includes(tagIDToRemove)) {
+          // Filter out the tag to be removed
+          const updatedTags = item.tags.filter((tag) => tag !== tagIDToRemove);
+          // Prepare the update
+          updates[`listItems/${key}`] = { ...item, tags: updatedTags };
+        }
+      }
+
+      // console.log(updates);
+      // only sending tags! ensure all other information for each listItem object is included!
+      // Perform batch update
+      if (Object.keys(updates).length > 0) {
+        await update(ref(database), updates);
+        console.log('Removed tag from all matching list items');
+      } else {
+        console.log('No items needed updating.');
+      }
+    } else {
+      console.log('No items found.');
+    }
+  } catch (error) {
+    console.error('Error updating items:', error);
   }
 };

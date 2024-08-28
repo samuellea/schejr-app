@@ -18,6 +18,7 @@ function TagSelector({
   const [selectedTags, setSelectedTags] = useState([]);
   const [newTagColor, setNewTagColor] = useState(null);
   const [tagOptions, setTagOptions] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [childClickedOutside, setChildClickedOutside] = useState(false);
 
@@ -47,11 +48,8 @@ function TagSelector({
   const handleUpdateExistingTag = async (tag, field, value) => {
     // only run if field value has actually changed
     if (tagOptions[field] !== value) {
-      console.log('something changed! patching FB...');
       const { tagID: unneededTagID, ...rest } = tag;
       const updatedTag = { ...rest, [field]: value };
-      console.log(updatedTag);
-      console.log(tagOptions);
       try {
         const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
         setTagsModified(true);
@@ -61,6 +59,23 @@ function TagSelector({
         console.error('Failed to update tag:', error);
         if (tagOptions) setTagOptions(null); // close the Options menu if it's open
       }
+    }
+  };
+
+  const handleDeleteTag = async (tagID) => {
+    try {
+      // const tagDeleted = await u.deleteTagByID(tagID);
+      try {
+        const listItemsThatContainedTagID =
+          await u.findAndRemoveTagIDFromMatchingListItems(tagID);
+        setTagsModified(true);
+        setListItemsModified(true);
+        setShowDeleteModal(false);
+      } catch (error) {
+        console.error('Failed to remove tag from matching list items:', error);
+      }
+    } catch (error) {
+      console.error('Failed to delete tag:', error);
     }
   };
 
@@ -102,6 +117,7 @@ function TagSelector({
   }, [existingTags]);
 
   useEffect(() => {
+    console.log('tagsModified! Fetching tags...');
     fetchTags();
     setTagsModified(false);
   }, [tagsModified]);
@@ -267,6 +283,9 @@ function TagSelector({
                         tagColorOptions={tagColorOptions}
                         handleUpdateExistingTag={handleUpdateExistingTag}
                         onChildClickOutside={() => setChildClickedOutside(true)}
+                        handleDeleteTag={handleDeleteTag}
+                        showDeleteModal={showDeleteModal}
+                        setShowDeleteModal={setShowDeleteModal}
                       />
                     ) : null}
                   </div>
