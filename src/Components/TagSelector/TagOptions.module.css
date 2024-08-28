@@ -1,0 +1,114 @@
+/* Ensure no height constraints are applied */
+.container {
+  position: absolute;
+  top: 24px;
+  left: -188px;
+  /* height: 200px; */
+  width: 212px;
+  background-color: #252525;
+  z-index: 30;
+  padding: 4px;
+  border-radius: 10px;
+  font-family: ui-sans-serif, -apple-system, 'system-ui',
+    'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
+    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tagOptionsButton {
+  width: 100%;
+  height: 28px;
+  /* border: 1px solid lightgray; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 95%;
+  border-radius: 6px;
+  padding: 0px 6px;
+  box-sizing: border-box;
+}
+
+.tagOptionsButton:hover {
+  background-color: #333333;
+}
+
+.tagNameInputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 95%;
+  font-size: 14px;
+  line-height: 20px;
+  position: relative;
+  border-radius: 6px;
+  box-shadow: rgba(255, 255, 255, 0.075) 0px 0px 0px 1px inset;
+  background: rgba(255, 255, 255, 0.055);
+  cursor: text;
+  /* padding: 3px 6px; */
+  height: 28px;
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+  margin: 8px;
+}
+
+.tagNameInput {
+  font-size: inherit;
+  border: none;
+  background: none;
+  width: 92%;
+  color: #d5d5d5;
+}
+
+.deleteTagButton {
+  margin: 3px 0px 6px 0px;
+}
+
+.deleteIconContainer {
+  margin-top: 4px;
+}
+
+.deleteLabel {
+  margin-left: 6px;
+  margin-top: 2px;
+}
+
+.coloursSectionDivider {
+  width: 100%;
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+  color: rgba(255, 255, 255, 0.443);
+  /* margin: 6px 0px 8px; */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 12px;
+  font-weight: 500;
+  height: 14.3906px;
+  line-height: 14.4px;
+  border-top: 1px solid #3e3e3e;
+  height: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  padding: 14px 14px;
+  /* border: 1px solid white; */
+}
+
+.colourOptionButton {
+}
+
+.colourBox {
+  height: 18px;
+  width: 18px;
+  border-radius: 4px;
+}
+
+.colourLabel {
+  margin-left: 6px;
+  margin-top: 2px;
+}

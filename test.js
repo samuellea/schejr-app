@@ -1,17 +1,30 @@
-export const sortByProperty = (arr, property, ascending = true) => {
-  return arr.slice().sort((a, b) => {
-    if (a[property] < b[property]) {
-      return ascending ? -1 : 1;
-    }
-    if (a[property] > b[property]) {
-      return ascending ? 1 : -1;
-    }
-    return 0;
-  });
-};
+const existingTags = [
+  { color: '', name: 'Man' },
+  { color: '', name: 'Woman' },
+  { color: '', name: 'Fish' },
+];
 
-export const leastUsedColours = (colorOptions, existingTags) => {
+const inputText = 'man';
+
+const res = existingTags
+  .map((e) => e.name.toLowerCase())
+  .includes(inputText.toLowerCase());
+console.log(res);
+
+const colors = ['red', 'blue', 'green', 'yellow'];
+
+const thing = (colorOptions, existingTags) => {
   const initialTally = colorOptions.map((e) => ({ [e]: 0 }));
+
+  const tags = [
+    { id: 1, color: 'blue' },
+    { id: 2, color: 'green' },
+    { id: 3, color: 'red' },
+    { id: 4, color: 'yellow' },
+    { id: 5, color: 'red' },
+    { id: 6, color: 'red' },
+    { id: 7, color: 'yellow' },
+  ];
 
   const tally = initialTally.map((obj) => {
     const key = Object.keys(obj)[0];
