@@ -63,7 +63,7 @@ function TagSelector({
     try {
       const newTagID = await u.createNewTag(tagData);
       try {
-        const updatedListItemTags = [...listItem.tags, newTagID];
+        const updatedListItemTags = [...(listItem.tags || []), newTagID];
         const listItemTagsUpdated = await updateListItem(
           listItem.listItemID,
           'tags',
@@ -74,6 +74,7 @@ function TagSelector({
         console.error('Failed to write tag to list item:', error);
       }
       setTagsModified(true);
+      setInputText('');
     } catch (error) {
       console.error('Failed to create tag:', error);
     }
@@ -158,6 +159,7 @@ function TagSelector({
             setIsInFocus(true);
           }}
           onChange={handleInputChange}
+          value={inputText}
         />
         {isInFocus ? (
           <div className={styles.dropdown}>

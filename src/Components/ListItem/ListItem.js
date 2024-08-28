@@ -46,7 +46,7 @@ function ListItem({
               className={styles.tag}
               style={{ backgroundColor: matchingTag?.color }}
             >
-              {matchingTag.name}
+              {matchingTag?.name}
             </div>
           );
         })}
