@@ -51,6 +51,17 @@ export const patchListItem = async (listItemID, newData) => {
   }
 };
 
+export const patchTag = async (tagID, newData) => {
+  try {
+    const tagRef = ref(database, `tags/${tagID}`);
+    await update(tagRef, newData);
+    console.log('Tag updated successfully');
+  } catch (error) {
+    console.error('Error updating tag:', error);
+    throw error;
+  }
+};
+
 export const fetchAllUserLists = async (userUID) => {
   try {
     // Reference to the 'lists' endpoint

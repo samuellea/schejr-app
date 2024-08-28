@@ -131,6 +131,14 @@
   background-color: #333333;
 }
 
+.existingTagLabelWrapper {
+  /* border: 1px solid white; */
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
 .existingTagLabel,
 .selectedTag {
   color: white;
@@ -138,7 +146,7 @@
   padding: 0px 6px;
   border-radius: 3px;
   height: 20px;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -171,14 +179,15 @@
 }
 
 .existingTagOptionsButton {
-  /* border: 1px solid white; */
+  /* border: 1px solid red; */
   position: relative;
   height: 24px;
-  width: 24px;
+  width: 32px;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin: 0px 0px 0px 8px;
 }
 
 .existingTagOptionsButton:hover {

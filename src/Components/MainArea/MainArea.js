@@ -18,7 +18,7 @@ function MainArea({ selectedList, updateList, userUID }) {
         listItemID: e[0],
         ...e[1],
       }));
-      console.log(allListItemsWithIDs);
+      // console.log(allListItemsWithIDs);
       setListItems(allListItemsWithIDs);
       if (listItemToEdit) {
         // if we're currently Editing a list item, also reload that to reflect any changes
@@ -43,7 +43,7 @@ function MainArea({ selectedList, updateList, userUID }) {
         tagID: e[0],
         ...e[1],
       }));
-      console.log(allUserTagsWithIDs);
+      // console.log(allUserTagsWithIDs);
       setExistingTags(allUserTagsWithIDs);
     } catch {
       // handle error fetching tags
@@ -69,7 +69,7 @@ function MainArea({ selectedList, updateList, userUID }) {
       ...rest,
       [field]: value,
     };
-    console.log(updatedListItem);
+    // console.log(updatedListItem);
     try {
       const listItemUpdated = await u.patchListItem(
         listItemToEdit.listItemID,

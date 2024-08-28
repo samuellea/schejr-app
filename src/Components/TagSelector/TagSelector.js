@@ -17,7 +17,9 @@ function TagSelector({
   const [inputText, setInputText] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [newTagColor, setNewTagColor] = useState(null);
-  const [viewTagOptions, setViewTagOptions] = useState(null);
+  const [tagOptions, setTagOptions] = useState(null);
+
+  const [childClickedOutside, setChildClickedOutside] = useState(false);
 
   const tagSelectorRef = useRef(null);
 
@@ -42,17 +44,46 @@ function TagSelector({
     '#6E3630', // red
   ];
 
-  useEffect(() => {
-    console.log('TagSelector useEffect!');
-    fetchTags();
+  const handleUpdateExistingTag = async (tag, field, value) => {
+    // only run if field value has actually changed
+    if (tagOptions[field] !== value) {
+      console.log('something changed! patching FB...');
+      const { tagID: unneededTagID, ...rest } = tag;
+      const updatedTag = { ...rest, [field]: value };
+      console.log(updatedTag);
+      console.log(tagOptions);
+      try {
+        const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
+        setTagsModified(true);
+        setListItemsModified(true);
+        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
+      } catch (error) {
+        console.error('Failed to update tag:', error);
+        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
+      }
+    }
+  };
 
+  const handleClickOutsideParent = () => {
+    if (!childClickedOutside) {
+      // Prevent the parent logic from firing until the child's logic has executed
+      console.log('Parent component click outside logic triggered');
+      setIsInFocus(false);
+    } else {
+      // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
+      setTagOptions(null); // close the Options menu if it's open
+    }
+    // Reset the state for future clicks
+    setChildClickedOutside(false);
+  };
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         tagSelectorRef.current &&
         !tagSelectorRef.current.contains(event.target)
       ) {
-        setIsInFocus(false);
-        // printSelectedTags(selectedTagsRef.current); // Use the ref to get the latest value
+        handleClickOutsideParent();
       }
     };
 
@@ -61,7 +92,7 @@ function TagSelector({
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [childClickedOutside]); // Depend on childClickedOutside
 
   useEffect(() => {
     const leastUsedColours = h.leastUsedColours(tagColorOptions, existingTags);
@@ -153,10 +184,10 @@ function TagSelector({
   };
 
   const handleOptionsClick = (tag) => {
-    if (!viewTagOptions) {
-      setViewTagOptions(tag);
+    if (!tagOptions) {
+      setTagOptions(tag);
     } else {
-      setViewTagOptions(null);
+      setTagOptions(null);
     }
   };
 
@@ -209,15 +240,17 @@ function TagSelector({
                 e.name.toLowerCase().includes(inputText.toLowerCase())
               )
               .map((tag) => (
-                <div
-                  className={styles.existingTagButton}
-                  onClick={() => handleSelectExistingTag(tag)}
-                >
+                <div className={styles.existingTagButton}>
                   <div
-                    className={styles.existingTagLabel}
-                    style={{ backgroundColor: tag.color }}
+                    className={styles.existingTagLabelWrapper}
+                    onClick={() => handleSelectExistingTag(tag)}
                   >
-                    {tag.name}
+                    <div
+                      className={styles.existingTagLabel}
+                      style={{ backgroundColor: tag.color }}
+                    >
+                      {tag.name}
+                    </div>
                   </div>
                   <div
                     role="button"
@@ -228,10 +261,12 @@ function TagSelector({
                     }}
                   >
                     💬
-                    {viewTagOptions && tag.tagID === viewTagOptions.tagID ? (
+                    {tagOptions && tag.tagID === tagOptions.tagID ? (
                       <TagOptions
-                        tag={viewTagOptions}
+                        tag={tagOptions}
                         tagColorOptions={tagColorOptions}
+                        handleUpdateExistingTag={handleUpdateExistingTag}
+                        onChildClickOutside={() => setChildClickedOutside(true)}
                       />
                     ) : null}
                   </div>
