@@ -37,6 +37,7 @@ function MainArea({ selectedList, updateList, userUID }) {
   };
 
   const fetchTags = async () => {
+    console.log('fetchTags in MainArea called');
     try {
       const allUserTags = await u.fetchAllUserTags(userUID);
       const allUserTagsWithIDs = Object.entries(allUserTags).map((e) => ({
@@ -52,6 +53,7 @@ function MainArea({ selectedList, updateList, userUID }) {
 
   useEffect(() => {
     fetchListItems();
+    fetchTags();
   }, [selectedList, listItemsModified]);
 
   const handleEditListItem = (listItem) => {

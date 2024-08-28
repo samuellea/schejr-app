@@ -64,7 +64,7 @@ function TagSelector({
 
   const handleDeleteTag = async (tagID) => {
     try {
-      // const tagDeleted = await u.deleteTagByID(tagID);
+      const tagDeleted = await u.deleteTagByID(tagID);
       try {
         const listItemsThatContainedTagID =
           await u.findAndRemoveTagIDFromMatchingListItems(tagID);
