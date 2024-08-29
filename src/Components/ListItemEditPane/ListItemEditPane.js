@@ -19,6 +19,10 @@ function ListItemEditPane({
     // updateListItem(listItem.listItemID, 'title', text);
   };
 
+  const handleTitleOnBlur = () => {
+    updateListItem(listItem.listItemID, 'title', listItemRenameText);
+  };
+
   return (
     <div className={styles.container}>
       <button onClick={handleCloseEditPane}>《</button>
@@ -28,6 +32,7 @@ function ListItemEditPane({
         id="listTitle"
         onChange={(event) => handleTitleChange(event)}
         value={listItemRenameText}
+        onBlur={handleTitleOnBlur}
       ></input>
       <TagSelector
         userUID={userUID}

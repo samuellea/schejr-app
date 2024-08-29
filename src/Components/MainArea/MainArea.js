@@ -71,7 +71,6 @@ function MainArea({ selectedList, updateList, userUID }) {
       ...rest,
       [field]: value,
     };
-    // console.log(updatedListItem);
     try {
       const listItemUpdated = await u.patchListItem(
         listItemToEdit.listItemID,
@@ -80,7 +79,6 @@ function MainArea({ selectedList, updateList, userUID }) {
       setListItemsModified(true);
     } catch (error) {
       console.error('Failed to update list item:', error);
-      // You can show an error message to the user, log the error, etc.
     }
   };
 
