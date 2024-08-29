@@ -3,6 +3,7 @@ import * as u from '../../utils';
 import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 function List({
   selectedList,
@@ -39,26 +40,52 @@ function List({
   };
 
   return (
-    <div className={styles.container}>
-      <input
-        className={styles.listTitleInput}
-        type="text"
-        id="listTitle"
-        onChange={(event) => handleTitleChange(event)}
-        value={selectedList.title}
-      ></input>
-      {listItems?.map((listItem) => (
-        <ListItem
-          listItem={listItem}
-          setListItemsModified={setListItemsModified}
-          handleEditListItem={handleEditListItem}
-          existingTags={existingTags}
-        />
-      ))}
-      <div className={styles.newListItemButton} onClick={createListItem}>
-        + New
-      </div>
-    </div>
+    <Droppable droppableId="list">
+      {(provided) => (
+        <div
+          className={styles.container}
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          <div className={styles.container}>
+            <input
+              className={styles.listTitleInput}
+              type="text"
+              id="listTitle"
+              onChange={(event) => handleTitleChange(event)}
+              value={selectedList.title}
+            ></input>
+            {listItems?.map((listItem, index) => (
+              <Draggable
+                key={listItem.listItemID}
+                draggableId={listItem.listItemID}
+                index={index}
+              >
+                {(provided) => (
+                  <div
+                    className={styles.listItem}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <ListItem
+                      listItem={listItem}
+                      setListItemsModified={setListItemsModified}
+                      handleEditListItem={handleEditListItem}
+                      existingTags={existingTags}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            <div className={styles.newListItemButton} onClick={createListItem}>
+              + New
+            </div>
+          </div>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 }
 

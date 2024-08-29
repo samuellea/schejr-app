@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './Sidebar.module.css';
 import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
 import randomEmoji from 'random-emoji';
+import { Droppable } from 'react-beautiful-dnd';
 
 function Sidebar({
   userUID,
@@ -25,7 +26,7 @@ function Sidebar({
       setListsModified(true);
     } catch (error) {
       console.error('Failed to create list:', error);
-      // You can show an error message to the user, log the error, etc.
+      // Handle error
     }
   };
 
@@ -45,15 +46,29 @@ function Sidebar({
         <button onClick={createList}>Add</button>
       </div>
       {sortedLists.map((list, i) => (
-        <ListButton
-          listName={list.title}
-          createdAt={list.createdAt}
-          listID={list.listID}
-          setListsModified={setListsModified}
-          handleSelect={handleSelect}
-          selected={list.listID === selectedListID}
-          key={`${list.listID}-${i}`}
-        />
+        <Droppable
+          key={list.listID}
+          droppableId={`listButton-${list.listID}`}
+          direction="horizontal"
+        >
+          {(provided) => (
+            <div
+              className={styles.listButton}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <ListButton
+                listName={list.title}
+                createdAt={list.createdAt}
+                listID={list.listID}
+                setListsModified={setListsModified}
+                handleSelect={handleSelect}
+                selected={list.listID === selectedListID}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       ))}
     </div>
   );

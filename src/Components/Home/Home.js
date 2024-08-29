@@ -6,8 +6,24 @@ import Sidebar from '../Sidebar/Sidebar';
 import TopBar from '../TopBar/TopBar';
 import * as u from '../../utils';
 import * as h from '../../helpers';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 function Home() {
+  const onDragEnd = (result) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      // Item was dropped outside a droppable area
+      console.log('Item was dropped outside any droppable area.');
+      return;
+    }
+
+    console.log('Drag result:', result);
+    console.log('Destination:', destination);
+    console.log('Source:', source);
+    console.log('Draggable ID:', draggableId);
+  };
+
   const [listsModified, setListsModified] = useState(false);
   const [lists, setLists] = useState([]);
   const [selectedListID, setSelectedListID] = useState(null);
@@ -131,27 +147,29 @@ function Home() {
   };
 
   return (
-    <div className={styles.container}>
-      <TopBar toggleSidebar={toggleSidebar} />
-      <MainArea
-        selectedList={lists.filter((e) => e.listID === selectedListID)[0]}
-        updateList={updateList}
-        userUID={userUID}
-      />
-      <Sidebar
-        userUID={userUID}
-        sortedLists={h.sortByProperty(
-          lists,
-          sidebarListSortOn,
-          sidebarListAscending
-        )}
-        selectedListID={selectedListID}
-        setSelectedListID={setSelectedListID}
-        setListsModified={setListsModified}
-        toggleSidebar={toggleSidebar}
-        showSidebar={showSidebar}
-      />
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className={styles.container}>
+        <TopBar toggleSidebar={toggleSidebar} />
+        <MainArea
+          selectedList={lists.filter((e) => e.listID === selectedListID)[0]}
+          updateList={updateList}
+          userUID={userUID}
+        />
+        <Sidebar
+          userUID={userUID}
+          sortedLists={h.sortByProperty(
+            lists,
+            sidebarListSortOn,
+            sidebarListAscending
+          )}
+          selectedListID={selectedListID}
+          setSelectedListID={setSelectedListID}
+          setListsModified={setListsModified}
+          toggleSidebar={toggleSidebar}
+          showSidebar={showSidebar}
+        />
+      </div>
+    </DragDropContext>
   );
 }
 

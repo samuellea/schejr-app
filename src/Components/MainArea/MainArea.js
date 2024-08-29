@@ -3,6 +3,7 @@ import styles from './MainArea.module.css';
 import List from '../List/List';
 import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
 import * as u from '../../utils';
+import { Droppable } from 'react-beautiful-dnd';
 
 function MainArea({ selectedList, updateList, userUID }) {
   // will show either the selected List, or if a list item is selected, a List Item expanded view
@@ -86,16 +87,27 @@ function MainArea({ selectedList, updateList, userUID }) {
   return (
     <div className={styles.container}>
       {selectedList ? (
-        <List
-          selectedList={selectedList}
-          updateList={updateList}
-          userUID={userUID}
-          handleEditListItem={handleEditListItem}
-          listItems={listItems}
-          listItemsModified={listItemsModified}
-          setListItemsModified={setListItemsModified}
-          existingTags={existingTags}
-        />
+        <Droppable droppableId="main-area">
+          {(provided) => (
+            <div
+              className="MainArea"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <List
+                selectedList={selectedList}
+                updateList={updateList}
+                userUID={userUID}
+                handleEditListItem={handleEditListItem}
+                listItems={listItems}
+                listItemsModified={listItemsModified}
+                setListItemsModified={setListItemsModified}
+                existingTags={existingTags}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       ) : null}
       {listItemToEdit ? (
         <ListItemEditPane
