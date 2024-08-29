@@ -4,11 +4,25 @@ import styles from './DateSelector.module.css'; // Your component styles
 import * as h from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function DateSelector() {
+function DateSelector({ updateListItem, listItemID }) {
   const [dates, setDates] = useState([null, null]);
   const [isInFocus, setIsInFocus] = useState(false);
   const containerRef = useRef(null);
   const datePickerRef = useRef(null);
+  const datesRef = useRef(dates);
+
+  const handleClickOff = (event) => {
+    const dateObj = {
+      startDate: datesRef.current[0]?.toISOString() || null,
+      endDate: datesRef.current[1]?.toISOString() || null,
+    };
+    updateListItem(listItemID, 'date', dateObj);
+    setIsInFocus(false);
+  };
+
+  useEffect(() => {
+    datesRef.current = dates;
+  }, [dates]);
 
   const handleChange = (update) => {
     setDates(update);
@@ -22,7 +36,7 @@ function DateSelector() {
       datePickerRef.current &&
       !datePickerRef.current.contains(event.target)
     ) {
-      setIsInFocus(false);
+      handleClickOff();
     }
   };
 

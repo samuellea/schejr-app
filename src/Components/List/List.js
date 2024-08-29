@@ -25,8 +25,7 @@ function List({
       createdBy: userUID,
       parentID: selectedList.listID,
       comment: '',
-      startTime: null,
-      endTime: null,
+      date: { startDate: null, endDate: null },
       tags: [],
     };
     try {

@@ -49,7 +49,10 @@ function ListItemEditPane({
 
       <div className={styles.fieldWrapper}>
         <div className={styles.wrapperLabel}>Date</div>
-        <DateSelector />
+        <DateSelector
+          updateListItem={updateListItem}
+          listItemID={listItem.listItemID}
+        />
       </div>
     </div>
   );

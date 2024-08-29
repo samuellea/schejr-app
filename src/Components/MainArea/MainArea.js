@@ -71,6 +71,7 @@ function MainArea({ selectedList, updateList, userUID }) {
       ...rest,
       [field]: value,
     };
+    // console.log(updatedListItem);
     try {
       const listItemUpdated = await u.patchListItem(
         listItemToEdit.listItemID,
