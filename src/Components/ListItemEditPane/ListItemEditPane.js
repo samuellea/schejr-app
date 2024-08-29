@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
+import DateSelector from '../DateSelector/DateSelector';
 
 function ListItemEditPane({
   listItem,
@@ -48,6 +49,7 @@ function ListItemEditPane({
 
       <div className={styles.fieldWrapper}>
         <div className={styles.wrapperLabel}>Date</div>
+        <DateSelector />
       </div>
     </div>
   );
