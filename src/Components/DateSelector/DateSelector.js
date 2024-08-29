@@ -4,18 +4,36 @@ import styles from './DateSelector.module.css'; // Your component styles
 import * as h from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function DateSelector({ updateListItem, listItemID }) {
-  const [dates, setDates] = useState([null, null]);
+function DateSelector({ listItem, updateListItem, listItemID }) {
+  const [dates, setDates] = useState([
+    listItem?.date?.startDate || null,
+    listItem?.date?.endDate || null,
+  ]);
   const [isInFocus, setIsInFocus] = useState(false);
   const containerRef = useRef(null);
   const datePickerRef = useRef(null);
   const datesRef = useRef(dates);
 
   const handleClickOff = (event) => {
-    const dateObj = {
-      startDate: datesRef.current[0]?.toISOString() || null,
-      endDate: datesRef.current[1]?.toISOString() || null,
+    const convertToISOString = (value) => {
+      if (value instanceof Date) {
+        // If it's already a Date object, use toISOString
+        return value.toISOString();
+      } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+        // If it's a string and can be parsed as a Date, convert to Date object
+        return new Date(value).toISOString();
+      }
+      return null; // Return null if value is not a valid Date
     };
+
+    const startDate = convertToISOString(datesRef.current?.[0]);
+    const endDate = convertToISOString(datesRef.current?.[1]);
+
+    const dateObj = {
+      startDate,
+      endDate,
+    };
+
     updateListItem(listItemID, 'date', dateObj);
     setIsInFocus(false);
   };
