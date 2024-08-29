@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
     if (a[property] < b[property]) {
@@ -30,4 +32,9 @@ export const leastUsedColours = (colorOptions, existingTags) => {
 
   const leastUsedColours = getObjectsWithLowestValue(tally);
   return leastUsedColours;
+};
+
+export const formatDate = (date) => {
+  if (!date) return null;
+  return format(date, 'MMMM dd, yyyy');
 };
