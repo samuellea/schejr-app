@@ -216,28 +216,32 @@ function TagSelector({
       }}
     >
       <div className={inputContainerCombined}>
-        {listItem?.tags?.map((tagID) => {
-          const matchingTag = existingTags?.find(
-            (existingTag) => existingTag.tagID === tagID
-          );
-          return (
-            <div
-              className={styles.selectedTag}
-              style={{ backgroundColor: matchingTag?.color }}
-            >
-              <p>{matchingTag?.name}</p>
-              {isInFocus ? (
-                <div
-                  role="button"
-                  className={styles.selectedTagRemoveButton}
-                  onClick={() => handleRemoveSelectedTag(matchingTag?.tagID)}
-                >
-                  X
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
+        {listItem?.tags?.length ? (
+          listItem?.tags?.map((tagID) => {
+            const matchingTag = existingTags?.find(
+              (existingTag) => existingTag.tagID === tagID
+            );
+            return (
+              <div
+                className={styles.selectedTag}
+                style={{ backgroundColor: matchingTag?.color }}
+              >
+                <p>{matchingTag?.name}</p>
+                {isInFocus ? (
+                  <div
+                    role="button"
+                    className={styles.selectedTagRemoveButton}
+                    onClick={() => handleRemoveSelectedTag(matchingTag?.tagID)}
+                  >
+                    X
+                  </div>
+                ) : null}
+              </div>
+            );
+          })
+        ) : (
+          <p className={styles.emptyLabel}>Empty</p>
+        )}
         <input
           className={inputCombined}
           onClick={(e) => {

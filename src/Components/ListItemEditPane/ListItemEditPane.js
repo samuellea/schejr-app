@@ -27,21 +27,28 @@ function ListItemEditPane({
     <div className={styles.container}>
       <button onClick={handleCloseEditPane}>《</button>
       <input
-        className={styles.listTitleInput}
+        className={styles.listItemTitleInput}
         type="text"
-        id="listTitle"
+        id="listItemTitle"
         onChange={(event) => handleTitleChange(event)}
         value={listItemRenameText}
         onBlur={handleTitleOnBlur}
       ></input>
-      <TagSelector
-        userUID={userUID}
-        listItem={listItem}
-        updateListItem={updateListItem}
-        setListItemsModified={setListItemsModified}
-        fetchTags={fetchTags}
-        existingTags={existingTags}
-      />
+      <div className={styles.fieldWrapper}>
+        <div className={styles.wrapperLabel}>Tags</div>
+        <TagSelector
+          userUID={userUID}
+          listItem={listItem}
+          updateListItem={updateListItem}
+          setListItemsModified={setListItemsModified}
+          fetchTags={fetchTags}
+          existingTags={existingTags}
+        />
+      </div>
+
+      <div className={styles.fieldWrapper}>
+        <div className={styles.wrapperLabel}>Date</div>
+      </div>
     </div>
   );
 }
