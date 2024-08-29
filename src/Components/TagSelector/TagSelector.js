@@ -50,11 +50,12 @@ function TagSelector({
     if (tagOptions[field] !== value) {
       const { tagID: unneededTagID, ...rest } = tag;
       const updatedTag = { ...rest, [field]: value };
+      console.log(updatedTag);
       try {
         const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
         setTagsModified(true);
         setListItemsModified(true);
-        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
+        // if (tagOptions) setTagOptions(null); // close the Options menu if it's open
       } catch (error) {
         console.error('Failed to update tag:', error);
         if (tagOptions) setTagOptions(null); // close the Options menu if it's open

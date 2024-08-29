@@ -11,6 +11,7 @@ function TagOptions({
   setShowDeleteModal,
 }) {
   const [tagRenameText, setTagRenameText] = useState(tag.name);
+  const [selectedColor, setSelectedColor] = useState(tag.color);
 
   const tagOptionsRef = useRef(null);
   const hasMounted = useRef(false);
@@ -19,6 +20,11 @@ function TagOptions({
   useEffect(() => {
     tagRenameTextRef.current = tagRenameText;
   }, [tagRenameText]);
+
+  useEffect(() => {
+    console.log('⭐');
+    console.log(tag);
+  }, [tag]);
 
   const handleInputChange = (e) => {
     const text = e.target.value;
@@ -80,6 +86,12 @@ function TagOptions({
 
   const cancelDeleteCombined = `${styles.cancelDeleteTagButton} ${styles.deleteTagModalButton}`;
 
+  const handleChangeTagColor = (color) => {
+    setSelectedColor(color);
+    console.log(color);
+    handleUpdateExistingTag(tag, 'color', color); // tag, field, value
+  };
+
   return (
     <div
       className={styles.container}
@@ -109,12 +121,16 @@ function TagOptions({
       {tagColorOptions.map((color) => (
         <div
           className={`${styles.tagOptionsButton} ${styles.colourOptionButton}`}
+          onClick={() => handleChangeTagColor(color)}
         >
           <div
             className={styles.colourBox}
             style={{ backgroundColor: color }}
           ></div>
           <div className={styles.colourLabel}>{colorNameLookup[color]}</div>
+          {color === selectedColor ? (
+            <div className={styles.selectedColourTick}>✅</div>
+          ) : null}
         </div>
       ))}
       {showDeleteModal ? (

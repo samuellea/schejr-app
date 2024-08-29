@@ -173,3 +173,7 @@
   color: #ffffffcf;
   background: rgba(255, 255, 255, 0.055);
 }
+
+.selectedColourTick {
+  margin-left: auto;
+}
