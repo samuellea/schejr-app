@@ -3,7 +3,7 @@ import styles from './Sidebar.module.css';
 import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
 import randomEmoji from 'random-emoji';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable } from '@hello-pangea/dnd'; // Updated import
 
 function Sidebar({
   userUID,
@@ -45,31 +45,33 @@ function Sidebar({
         <p>Lists</p>
         <button onClick={createList}>Add</button>
       </div>
-      {sortedLists.map((list, i) => (
-        <Droppable
-          key={list.listID}
-          droppableId={`listButton-${list.listID}`}
-          direction="horizontal"
-        >
-          {(provided) => (
-            <div
-              className={styles.listButton}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <ListButton
-                listName={list.title}
-                createdAt={list.createdAt}
-                listID={list.listID}
-                setListsModified={setListsModified}
-                handleSelect={handleSelect}
-                selected={list.listID === selectedListID}
-              />
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      ))}
+      <div className={styles.listContainer}>
+        {sortedLists.map((list) => (
+          <Droppable
+            key={list.listID}
+            droppableId={list.listID}
+            direction="horizontal"
+          >
+            {(provided) => (
+              <div
+                className={styles.listButton}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <ListButton
+                  listName={list.title}
+                  createdAt={list.createdAt}
+                  listID={list.listID}
+                  setListsModified={setListsModified}
+                  handleSelect={handleSelect}
+                  selected={list.listID === selectedListID}
+                />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        ))}
+      </div>
     </div>
   );
 }

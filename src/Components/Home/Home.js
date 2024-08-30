@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import TopBar from '../TopBar/TopBar';
 import * as u from '../../utils';
 import * as h from '../../helpers';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
 
 function Home() {
   const onDragEnd = (result) => {
@@ -61,11 +61,11 @@ function Home() {
         }));
         setLists(allUserListsWithIDs);
       } catch {
-        // handle error fetching lists
+        // Handle error fetching lists
       }
 
       if (listsModified) {
-        // reset state whenever setListsModified(true) is called
+        // Reset state whenever setListsModified(true) is called
         setListsModified(false);
       }
     };
@@ -75,9 +75,6 @@ function Home() {
   const timeoutIdRef = useRef(null);
 
   useEffect(() => {
-    // if (lists.length) {
-    //   setSelectedListID(lists[0].listID);
-    // }
     autoSave();
   }, [lists]);
 
@@ -95,9 +92,6 @@ function Home() {
         const selectedListObj = lists.filter(
           (e) => e.listID === selectedListID
         )[0];
-        // console.log(lists);
-        // console.log(selectedListID);
-        // console.log(selectedListObj);
         const { createdAt, createdBy, title } = selectedListObj;
         const updatedListData = {
           createdAt,
@@ -121,7 +115,7 @@ function Home() {
     navigate('/login');
   };
 
-  // func which updates the list object (by id) in lists state - a seperate, timed function will then update this list object on firebase
+  // Function which updates the list object (by id) in lists state - a separate, timed function will then update this list object on firebase
   const updateList = (listID, field, value) => {
     let newValue = value;
     if (field === 'title' && value === '') newValue = 'Untitled';
@@ -139,11 +133,7 @@ function Home() {
   };
 
   const toggleSidebar = () => {
-    if (showSidebar) {
-      setShowSidebar(false);
-    } else {
-      setShowSidebar(true);
-    }
+    setShowSidebar(!showSidebar);
   };
 
   return (
@@ -151,7 +141,7 @@ function Home() {
       <div className={styles.container}>
         <TopBar toggleSidebar={toggleSidebar} />
         <MainArea
-          selectedList={lists.filter((e) => e.listID === selectedListID)[0]}
+          selectedList={lists.find((e) => e.listID === selectedListID)}
           updateList={updateList}
           userUID={userUID}
         />

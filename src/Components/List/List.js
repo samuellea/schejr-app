@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import * as u from '../../utils';
 import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 
 function List({
   selectedList,
@@ -31,11 +31,9 @@ function List({
     };
     try {
       const listId = await u.createNewListItem(listData);
-      // setSelectedListID(listId);
       setListItemsModified(true);
     } catch (error) {
       console.error('Failed to create list item:', error);
-      // You can show an error message to the user, log the error, etc.
     }
   };
 
@@ -52,9 +50,9 @@ function List({
               className={styles.listTitleInput}
               type="text"
               id="listTitle"
-              onChange={(event) => handleTitleChange(event)}
+              onChange={handleTitleChange}
               value={selectedList.title}
-            ></input>
+            />
             {listItems?.map((listItem, index) => (
               <Draggable
                 key={listItem.listItemID}

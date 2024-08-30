@@ -3,10 +3,10 @@ import styles from './MainArea.module.css';
 import List from '../List/List';
 import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
 import * as u from '../../utils';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable } from '@hello-pangea/dnd'; // Updated import
 
 function MainArea({ selectedList, updateList, userUID }) {
-  // will show either the selected List, or if a list item is selected, a List Item expanded view
+  // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [listItems, setListItems] = useState([]);
   const [listItemToEdit, setListItemToEdit] = useState(null);
   const [listItemsModified, setListItemsModified] = useState(false);
@@ -19,17 +19,16 @@ function MainArea({ selectedList, updateList, userUID }) {
         listItemID: e[0],
         ...e[1],
       }));
-      // console.log(allListItemsWithIDs);
       setListItems(allListItemsWithIDs);
       if (listItemToEdit) {
-        // if we're currently Editing a list item, also reload that to reflect any changes
+        // If we're currently editing a list item, also reload that to reflect any changes
         const listItemToEditUpdated = allListItemsWithIDs.filter(
           (e) => e.listItemID === listItemToEdit.listItemID
         )[0];
         setListItemToEdit(listItemToEditUpdated);
       }
     } catch {
-      // handle error fetching list items
+      // Handle error fetching list items
     }
 
     if (listItemsModified) {
@@ -45,10 +44,9 @@ function MainArea({ selectedList, updateList, userUID }) {
         tagID: e[0],
         ...e[1],
       }));
-      // console.log(allUserTagsWithIDs);
       setExistingTags(allUserTagsWithIDs);
     } catch {
-      // handle error fetching tags
+      // Handle error fetching tags
     }
   };
 
@@ -66,13 +64,12 @@ function MainArea({ selectedList, updateList, userUID }) {
   };
 
   const updateListItem = async (listItemID, field, value) => {
-    // function that can update name, tags, startTime and endTime for a list item object on FB
+    // Function that can update name, tags, startTime and endTime for a list item object on FB
     const { listItemID: unneededListItemID, ...rest } = listItemToEdit;
     const updatedListItem = {
       ...rest,
       [field]: value,
     };
-    // console.log(updatedListItem);
     try {
       const listItemUpdated = await u.patchListItem(
         listItemToEdit.listItemID,
