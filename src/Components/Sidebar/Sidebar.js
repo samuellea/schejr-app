@@ -66,7 +66,7 @@ function Sidebar({
                   handleSelect={handleSelect}
                   selected={list.listID === selectedListID}
                 />
-                {provided.placeholder}
+                {/* {provided.placeholder} */}
               </div>
             )}
           </Droppable>

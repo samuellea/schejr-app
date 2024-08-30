@@ -5,11 +5,18 @@ import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
 import * as u from '../../utils';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
 
-function MainArea({ selectedList, updateList, userUID }) {
+function MainArea({
+  selectedList,
+  updateList,
+  updateListItem,
+  userUID,
+  listItemToEdit,
+  setListItemToEdit,
+  listItemsModified,
+  setListItemsModified,
+}) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [listItems, setListItems] = useState([]);
-  const [listItemToEdit, setListItemToEdit] = useState(null);
-  const [listItemsModified, setListItemsModified] = useState(false);
   const [existingTags, setExistingTags] = useState([]);
 
   const fetchListItems = async () => {
@@ -63,48 +70,19 @@ function MainArea({ selectedList, updateList, userUID }) {
     setListItemToEdit(null);
   };
 
-  const updateListItem = async (listItemID, field, value) => {
-    // Function that can update name, tags, startTime and endTime for a list item object on FB
-    const { listItemID: unneededListItemID, ...rest } = listItemToEdit;
-    const updatedListItem = {
-      ...rest,
-      [field]: value,
-    };
-    try {
-      const listItemUpdated = await u.patchListItem(
-        listItemToEdit.listItemID,
-        updatedListItem
-      );
-      setListItemsModified(true);
-    } catch (error) {
-      console.error('Failed to update list item:', error);
-    }
-  };
-
   return (
     <div className={styles.container}>
       {selectedList ? (
-        <Droppable droppableId="main-area">
-          {(provided) => (
-            <div
-              className="MainArea"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <List
-                selectedList={selectedList}
-                updateList={updateList}
-                userUID={userUID}
-                handleEditListItem={handleEditListItem}
-                listItems={listItems}
-                listItemsModified={listItemsModified}
-                setListItemsModified={setListItemsModified}
-                existingTags={existingTags}
-              />
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
+        <List
+          selectedList={selectedList}
+          updateList={updateList}
+          userUID={userUID}
+          handleEditListItem={handleEditListItem}
+          listItems={listItems}
+          listItemsModified={listItemsModified}
+          setListItemsModified={setListItemsModified}
+          existingTags={existingTags}
+        />
       ) : null}
       {listItemToEdit ? (
         <ListItemEditPane

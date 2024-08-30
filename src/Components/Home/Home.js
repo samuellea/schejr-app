@@ -9,7 +9,19 @@ import * as h from '../../helpers';
 import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
 
 function Home() {
-  const onDragEnd = (result) => {
+  const [listsModified, setListsModified] = useState(false);
+  const [lists, setLists] = useState([]);
+  const [selectedListID, setSelectedListID] = useState(null);
+  const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
+  const [sidebarListAscending, setSidebarListAscending] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [listItemToEdit, setListItemToEdit] = useState(null);
+  const [listItemsModified, setListItemsModified] = useState(false);
+
+  const navigate = useNavigate();
+  const userUID = localStorage.getItem('firebaseID');
+
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -22,17 +34,42 @@ function Home() {
     console.log('Destination:', destination);
     console.log('Source:', source);
     console.log('Draggable ID:', draggableId);
+
+    // handle dragging a ListItem to a different ListButton
+    if (
+      destination.droppableId !== 'list' &&
+      destination.droppableId !== 'main-area'
+    ) {
+      const listItemID = draggableId;
+      const destinationListID = destination.droppableId; // id of the List you're moving it to
+      // update parentID and manualOrder
+
+      // fetch the highest manual order value present on this List
+      try {
+        const maxManualOrderOnDestinationList =
+          await u.getMaxManualOrderByParentID(destinationListID);
+        const updates = {
+          parentID: destinationListID,
+          manualOrder: maxManualOrderOnDestinationList + 1,
+        };
+        console.log('listItemID: ', listItemID);
+        console.log('updates: ', updates);
+        try {
+          const updatedListItem = await u.patchListItem(listItemID, updates);
+          setListItemsModified(true);
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {}
+    }
+
+    // handle draggin a ListItem to a different order within a List
+    if (destination.droppableId === 'list') {
+      console.log('LIST!');
+      const newManualOrderValue = destination.index + 1;
+      const listItemID = draggableId;
+    }
   };
-
-  const [listsModified, setListsModified] = useState(false);
-  const [lists, setLists] = useState([]);
-  const [selectedListID, setSelectedListID] = useState(null);
-  const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
-  const [sidebarListAscending, setSidebarListAscending] = useState(true);
-  const [showSidebar, setShowSidebar] = useState(true);
-
-  const navigate = useNavigate();
-  const userUID = localStorage.getItem('firebaseID');
 
   useEffect(() => {
     const expires = localStorage.getItem('expires');
@@ -132,6 +169,24 @@ function Home() {
     setLists(listsPlusUpdated);
   };
 
+  const updateListItem = async (listItemID, field, value) => {
+    // Function that can update name, tags, startTime and endTime for a list item object on FB
+    const { listItemID: unneededListItemID, ...rest } = listItemToEdit;
+    const updatedListItem = {
+      ...rest,
+      [field]: value,
+    };
+    try {
+      const listItemUpdated = await u.patchListItem(
+        listItemToEdit.listItemID,
+        updatedListItem
+      );
+      setListItemsModified(true);
+    } catch (error) {
+      console.error('Failed to update list item:', error);
+    }
+  };
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -143,7 +198,12 @@ function Home() {
         <MainArea
           selectedList={lists.find((e) => e.listID === selectedListID)}
           updateList={updateList}
+          updateListItem={updateListItem}
           userUID={userUID}
+          listItemToEdit={listItemToEdit}
+          setListItemToEdit={setListItemToEdit}
+          listItemsModified={listItemsModified}
+          setListItemsModified={setListItemsModified}
         />
         <Sidebar
           userUID={userUID}

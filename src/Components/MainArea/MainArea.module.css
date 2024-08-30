@@ -1,11 +1,14 @@
 .container {
   /* border: 2px solid blue; */
-  position: absolute; /* Allows positioning relative to the parent */
+  /* position: absolute; */
   bottom: 0; /* Sticks to the bottom of the parent */
   height: 93%; /* 93% of the parent's height */
-  width: 100%;
+  width: 75%;
   box-sizing: border-box;
   background-color: #191919;
+  border: 5px solid yellow;
+  margin-left: auto;
+  margin-top: auto;
   /* position: absolute; */
   /* bottom: 0; */
 }

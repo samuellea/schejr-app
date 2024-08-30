@@ -7,6 +7,7 @@ function ListItem({
   setListItemsModified,
   handleEditListItem,
   existingTags,
+  tidyListItemsManualOrders,
 }) {
   // const handleItemTitleChange = (e) => {
   //   const text = e.target.value;
@@ -16,7 +17,9 @@ function ListItem({
   const deleteListItem = async () => {
     try {
       await u.deleteListItemByID(listItem.listItemID);
-      setListItemsModified(true);
+      try {
+        tidyListItemsManualOrders(listItem.listItemID, listItem.parentID);
+      } catch (error) {}
     } catch (error) {
       console.error('Failed to delete list item:', error);
       // You can show an error message to the user, log the error, etc.
@@ -44,6 +47,7 @@ function ListItem({
           return (
             <div
               className={styles.tag}
+              key={`list-item-inner-${tag}`}
               style={{ backgroundColor: matchingTag?.color }}
             >
               {matchingTag?.name}

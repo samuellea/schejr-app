@@ -239,3 +239,45 @@ export const findAndRemoveTagIDFromMatchingListItems = async (
     console.error('Error updating items:', error);
   }
 };
+
+export const getMaxManualOrderByParentID = async (parentID) => {
+  const listItemsRef = ref(database, '/listItems');
+  try {
+    // Step 1: Query to filter items by parentID
+    const parentIDQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(parentID)
+    );
+    // Fetch the data
+    const snapshot = await get(parentIDQuery);
+    if (snapshot.exists()) {
+      // Step 2: Extract the data from the snapshot and find the item with the highest manualOrder
+      const items = snapshot.val();
+      let highestItem = null;
+      // Iterate over the filtered items to find the highest manualOrder
+      Object.values(items).forEach((item) => {
+        if (!highestItem || item.manualOrder > highestItem.manualOrder) {
+          highestItem = item;
+        }
+      });
+
+      if (highestItem) {
+        console.log(
+          'Object with the highest manualOrder and matching parentID:',
+          highestItem
+        );
+        const maxManualOrderForList = highestItem.manualOrder;
+        return maxManualOrderForList;
+      } else {
+        console.log('No items found with the matching parentID');
+        return 0;
+      }
+    } else {
+      console.log('No data available for the provided parentID');
+      return 0;
+    }
+  } catch (error) {
+    console.error('Error getting highest manual order by parentID:', error);
+  }
+};

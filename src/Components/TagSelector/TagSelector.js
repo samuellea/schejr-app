@@ -240,9 +240,9 @@ function TagSelector({
               </div>
             );
           })
-        ) : (
+        ) : !isInFocus ? (
           <p className={styles.emptyLabel}>Empty</p>
-        )}
+        ) : null}
         <input
           className={inputCombined}
           onClick={(e) => {

@@ -4,4 +4,6 @@
   box-sizing: border-box;
   background-color: #191919;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
