@@ -21,7 +21,7 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
       .catch((error) => {
         // Handle Errors here.
         setLoading(false);
-        console.log(error);
+
         const errorCode = error.code;
         const errorMessage = error.message;
         // The email of the user's account used.

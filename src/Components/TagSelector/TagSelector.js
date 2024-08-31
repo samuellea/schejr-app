@@ -50,7 +50,7 @@ function TagSelector({
     if (tagOptions[field] !== value) {
       const { tagID: unneededTagID, ...rest } = tag;
       const updatedTag = { ...rest, [field]: value };
-      console.log(updatedTag);
+
       try {
         const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
         setTagsModified(true);
@@ -83,7 +83,7 @@ function TagSelector({
   const handleClickOutsideParent = () => {
     if (!childClickedOutside) {
       // Prevent the parent logic from firing until the child's logic has executed
-      console.log('Parent component click outside logic triggered');
+
       setIsInFocus(false);
     } else {
       // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
@@ -118,7 +118,6 @@ function TagSelector({
   }, [existingTags]);
 
   useEffect(() => {
-    console.log('tagsModified! Fetching tags...');
     fetchTags();
     setTagsModified(false);
   }, [tagsModified]);
@@ -155,8 +154,6 @@ function TagSelector({
   };
 
   const handleSelectExistingTag = async (tag) => {
-    console.log(tag);
-    console.log(listItem.tags);
     if (listItem?.tags?.find((e) => e === tag.tagID)) return;
     // add this tag to this List's tags
     try {
@@ -182,7 +179,7 @@ function TagSelector({
     // const updatedSelectedTags = [
     //   ...selectedTags.filter((e) => e.tagID !== tagID),
     // ];
-    // console.log(updatedSelectedTags.map((e) => e.name));
+    //  => e.name));
     // setSelectedTags(updatedSelectedTags);
     try {
       const updatedListItemTags = [

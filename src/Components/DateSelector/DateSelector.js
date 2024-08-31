@@ -44,7 +44,6 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
 
   const handleChange = (update) => {
     setDates(update);
-    console.log(update);
   };
 
   const handleClickOutside = (event) => {

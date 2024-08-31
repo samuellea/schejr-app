@@ -21,10 +21,7 @@ function TagOptions({
     tagRenameTextRef.current = tagRenameText;
   }, [tagRenameText]);
 
-  useEffect(() => {
-    console.log('⭐');
-    console.log(tag);
-  }, [tag]);
+  useEffect(() => {}, [tag]);
 
   const handleInputChange = (e) => {
     const text = e.target.value;
@@ -54,9 +51,9 @@ function TagOptions({
     if (hasMounted.current) {
       // Only handle clicks outside if the component has already mounted
       event.stopPropagation(); // Stop the event from bubbling up to the parent
-      console.log('Child component click outside logic triggered');
-      // console.log('tag.name: ', tag.name);
-      // console.log('tagRenameText: ', tagRenameTextRef.current);
+
+      //
+      //
       handleUpdateExistingTag(tag, 'name', tagRenameTextRef.current);
       onChildClickOutside(); // Notify the parent that the child's logic has been executed
     }
@@ -88,7 +85,7 @@ function TagOptions({
 
   const handleChangeTagColor = (color) => {
     setSelectedColor(color);
-    console.log(color);
+
     handleUpdateExistingTag(tag, 'color', color); // tag, field, value
   };
 

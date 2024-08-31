@@ -45,7 +45,6 @@ function MainArea({
   };
 
   const fetchTags = async () => {
-    console.log('fetchTags in MainArea called');
     try {
       const allUserTags = await u.fetchAllUserTags(userUID);
       const allUserTagsWithIDs = Object.entries(allUserTags).map((e) => ({

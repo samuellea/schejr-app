@@ -1,6 +1,6 @@
 .container {
-  border: 2px solid pink;
-  height: 100%;
+  border: 2px solid red;
+  /* height: 100%; */
   width: 100%;
   /* padding: 0px 10px; */
   box-sizing: border-box;
@@ -24,6 +24,7 @@
 .newListItemButton {
   height: 30px;
   width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,8 +33,14 @@
   padding-left: 18px;
   color: rgb(164, 164, 164);
   border: none;
+  border: 1px solid white; /**/
 }
 
 .newListItemButton:hover {
   background-color: #2a2a2a;
 }
+
+/* .placeholderContainer {
+  border: 3px solid hotpink;
+  height: 30px;
+} */

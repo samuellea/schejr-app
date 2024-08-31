@@ -19,7 +19,6 @@ const newManualOrders = reordered.map((e, i) => ({
   ...e,
   manualOrder: i + 1,
 }));
-console.log(newManualOrders);
 
 // only update objects where .manualOrder has changed
 const onlyChanged = newManualOrders.reduce((acc, f, i) => {
@@ -27,5 +26,3 @@ const onlyChanged = newManualOrders.reduce((acc, f, i) => {
   if (f.manualOrder !== original.manualOrder) acc.push(f);
   return acc;
 }, []);
-
-console.log(onlyChanged);

@@ -70,56 +70,62 @@ function List({
   };
 
   return (
-    <Droppable droppableId="list">
-      {(provided) => (
-        <div
-          className={styles.container}
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-        >
-          <div className={styles.container}>
-            <input
-              className={styles.listTitleInput}
-              type="text"
-              id="listTitle"
-              onChange={handleTitleChange}
-              value={selectedList.title}
-            />
-            {h.sortItems(listItems, sortOn, order)?.map((listItem, index) => (
-              <Draggable
-                key={`draggable-${listItem.listItemID}`}
-                draggableId={listItem.listItemID}
-                index={index}
-                type="list-item" ///////////////////////////////////////
-              >
-                {(provided) => (
-                  <div
-                    className={styles.listItem}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <ListItem
-                      listItem={listItem}
-                      setListItemsModified={setListItemsModified}
-                      handleEditListItem={handleEditListItem}
-                      existingTags={existingTags}
-                      tidyManualOrdersOnDelete={tidyManualOrdersOnDelete}
-                      // key={`list-item-${listItem.listItemID}`}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            )) || null}
-            <div className={styles.newListItemButton} onClick={createListItem}>
-              + New
+    <div className={styles.listContainerWrapper}>
+      <Droppable droppableId="list">
+        {(provided) => (
+          <div
+            className={styles.container}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            <div className={styles.container}>
+              <input
+                className={styles.listTitleInput}
+                type="text"
+                id="listTitle"
+                onChange={handleTitleChange}
+                value={selectedList.title}
+              />
+              {h.sortItems(listItems, sortOn, order)?.map((listItem, index) => (
+                <Draggable
+                  key={`draggable-${listItem.listItemID}`}
+                  draggableId={listItem.listItemID}
+                  index={index}
+                  type="list-item" ///////////////////////////////////////
+                >
+                  {(provided) => (
+                    <div
+                      className={styles.listItem}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <ListItem
+                        listItem={listItem}
+                        setListItemsModified={setListItemsModified}
+                        handleEditListItem={handleEditListItem}
+                        existingTags={existingTags}
+                        tidyManualOrdersOnDelete={tidyManualOrdersOnDelete}
+                        // key={`list-item-${listItem.listItemID}`}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              )) || null}
             </div>
+            {provided.placeholder}
           </div>
-          {/* {provided.placeholder} */}
-        </div>
-      )}
-    </Droppable>
+        )}
+      </Droppable>
+      <div className={styles.newListItemButton} onClick={createListItem}>
+        + New
+      </div>
+    </div>
   );
 }
 
 export default List;
+
+/*
+
+*/

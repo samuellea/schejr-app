@@ -27,16 +27,11 @@ function Home() {
 
     if (!destination) {
       // Item was dropped outside a droppable area
-      console.log('Item was dropped outside any droppable area.');
+
       return;
     }
 
-    console.log('Drag result:', result);
-    console.log('Destination:', destination);
-    console.log('Source:', source);
-    console.log('Draggable ID:', draggableId);
-
-    // handle dragging a ListItem to a different ListButton
+    // ⭐ MOVE TO DIFFERENT LIST
     if (
       destination.droppableId !== 'list' &&
       destination.droppableId !== 'main-area'
@@ -44,6 +39,17 @@ function Home() {
       const listItemID = draggableId;
       const destinationListID = destination.droppableId; // id of the List you're moving it to
       // update parentID and manualOrder
+
+      // const listItemBeingMoved = listItems.find(e => e.listItemID === draggableId);
+
+      // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
+      const newMOrders = h.updatedManualOrdersOnSourceList(
+        listItems,
+        listItemID
+      );
+
+      // update listItems in state
+      setListItems(newMOrders);
 
       // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
       // fetch the highest manual order value present on this List
@@ -54,19 +60,14 @@ function Home() {
           parentID: destinationListID,
           manualOrder: maxManualOrderOnDestinationList + 1,
         };
-        console.log('listItemID: ', listItemID);
-        console.log('updates: ', updates);
+
         try {
-          // and update that item being moved accordingly
+          // 🌐 update that item being moved accordingly
           const updatedListItem = await u.patchListItem(listItemID, updates);
-          // setListItemsModified(true);
-          // THEN - reset the .manualOrders of all list items on the list the item has been moved FROM
-          const newMOrders = h.updatedManualOrdersOnSourceList(
-            listItems,
-            listItemID
-          );
-          //and update THEM
+
+          // now update remaining list items on db
           try {
+            // 🌐
             const multipleListItemsPatched = await u.patchMultipleListItems(
               newMOrders
             );
@@ -75,34 +76,35 @@ function Home() {
             console.error(error);
             setListItemsModified(true);
           }
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       } catch (error) {}
     }
 
-    // handle draggin a ListItem to a different order within a List
+    // ⭐ MOVE WITHIN A LIST
     if (destination.droppableId === 'list') {
-      console.log('LIST!');
       const listItemID = draggableId;
       const startIndex = source.index;
       const destinationIndex = destination.index;
-      console.log('startIndex: ', startIndex);
-      console.log('destinationIndex: ', destinationIndex);
-      const { onlyChanged } = h.updatedManualOrders(
+
+      const { newMOrders, onlyChanged } = h.updatedManualOrders(
         listItems,
         startIndex,
         destinationIndex
       );
-      // console.log(onlyChanged);
+      console.log(newMOrders);
+
+      // update listItems in state
+      setListItems(newMOrders);
+
       try {
+        // 🌐 then update database
         const multipleListItemsPatched = await u.patchMultipleListItems(
           onlyChanged
         );
         setListItemsModified(true);
       } catch (error) {
         console.error(error);
-        setListItemsModified(true);
+        // setListItemsModified(true);
       }
     }
   };
@@ -151,9 +153,7 @@ function Home() {
     autoSave();
   }, [lists]);
 
-  useEffect(() => {
-    console.log(selectedListID);
-  }, [selectedListID]);
+  useEffect(() => {}, [selectedListID]);
 
   const autoSave = () => {
     if (timeoutIdRef.current) {
@@ -171,14 +171,13 @@ function Home() {
           createdBy,
           title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
         };
-        console.log(selectedListID, ' <-- selectedListID');
+
         u.patchList(selectedListID, updatedListData);
       }
     }, 1000); // Set a new timeout for 2 seconds
   };
 
   const handleLogout = () => {
-    console.log('Logging out user due to token expiration...');
     // Perform your logout logic here
     // Clear any user-related state or storage
     // Redirect to the login page
@@ -201,7 +200,7 @@ function Home() {
     const listsMinusUpdated = lists.filter((e) => e.listID !== listID);
 
     const listsPlusUpdated = [...listsMinusUpdated, updatedListObj];
-    console.log(listsPlusUpdated);
+
     setLists(listsPlusUpdated);
   };
 

@@ -15,11 +15,11 @@ function App({ auth, database }) {
   const provider = new GoogleAuthProvider();
 
   // useEffect(() => {
-  //   console.log('App.js useEffect');
+  //
   // }, []);
 
   const handleSignInSuccess = (userObj) => {
-    // console.log(userObj);
+    //
   };
 
   return (
