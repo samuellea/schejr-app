@@ -13,6 +13,7 @@ function List({
   handleEditListItem,
   setListItemsModified,
   listItems,
+  setListItems,
   existingTags,
 }) {
   const [sortOn, setSortOn] = useState('manualOrder');
@@ -38,34 +39,75 @@ function List({
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
     };
     try {
-      const listId = await u.createNewListItem(listData);
-      setListItemsModified(true);
+      const newItemWithExplicitID = await u.createNewListItem(listData);
+      setListItems([...listItems, newItemWithExplicitID]);
+      // setListItemsModified(true);
     } catch (error) {
       console.error('Failed to create list item:', error);
     }
   };
 
-  const tidyManualOrdersOnDelete = async (deletedListItemID, parentID) => {
-    const listItemsMinusOneJustDeleted = listItems
-      .filter((e) => e.listItemID !== deletedListItemID)
-      .sort((a, b) => a.manualOrder - b.manualOrder);
+  // const tidyManualOrdersOnDelete = async (deletedListItemID, parentID) => {
+  //   // listItems has been set anew in deleteListItem already!! :(
+  //   const listItemsMinusOneJustDeleted = listItems
+  //     .filter((e) => e.listItemID !== deletedListItemID)
+  //     .sort((a, b) => a.manualOrder - b.manualOrder);
 
-    const updatedManualOrders = listItemsMinusOneJustDeleted.map((e, i) => ({
-      ...e,
-      manualOrder: i + 1,
-    }));
+  //   const updatedManualOrders = listItemsMinusOneJustDeleted.map((e, i) => ({
+  //     ...e,
+  //     manualOrder: i + 1,
+  //   }));
 
-    const updates = updatedManualOrders.map((e) => {
-      const { listItemID, ...newObj } = e;
-      return { id: e.listItemID, data: { ...newObj } };
-    });
+  //   const updates = updatedManualOrders.map((e) => {
+  //     const { listItemID, ...newObj } = e;
+  //     return { id: e.listItemID, data: { ...newObj } };
+  //   });
 
+  //   setListItems(updatedManualOrders);
+
+  //   try {
+  //     const multipleListItemsPatched = await u.patchMultipleListItems(updates);
+  //     // setListItemsModified(true);
+  //   } catch (error) {
+  //     console.error(error);
+  //     // setListItemsModified(true);
+  //   }
+  // };
+
+  const deleteListItem = async (listItem) => {
+    console.log(listItems);
+    // handle UI update using state
+    const listItemToDelete = { ...listItem };
+    const listItemsMinusDeleted = listItems.filter(
+      (e) => e.listItemID !== listItem.listItemID
+    );
+    setListItems(listItemsMinusDeleted); // <<<<< these won't have tidied .manualOrders, but removes deleted item from state/UI...
     try {
-      const multipleListItemsPatched = await u.patchMultipleListItems(updates);
-      setListItemsModified(true);
+      console.log(listItemToDelete);
+      console.log(listItemToDelete.listItemID);
+      //   // then actually delete the listItem on db
+      await u.deleteListItemByID(listItemToDelete.listItemID);
+      //   // then create a tidied copy of new listItems in state (which now don't have the deleted one)
+      const updatedManualOrders = listItemsMinusDeleted.map((e, i) => ({
+        ...e,
+        manualOrder: i + 1,
+      }));
+      console.log(updatedManualOrders);
+      //   // update the list items in state to have tidied .manualOrders
+      setListItems(updatedManualOrders);
+      // // then patch these tidied objects to their corresponding objs on db
+      try {
+        const multipleListItemsPatched = await u.patchMultipleListItems(
+          updatedManualOrders
+        );
+        // setListItemsModified(true);
+      } catch (error) {
+        console.error(error);
+        // setListItemsModified(true);
+      }
     } catch (error) {
-      console.error(error);
-      setListItemsModified(true);
+      console.error('Failed to delete list item:', error);
+      // You can show an error message to the user, log the error, etc.
     }
   };
 
@@ -105,7 +147,7 @@ function List({
                         setListItemsModified={setListItemsModified}
                         handleEditListItem={handleEditListItem}
                         existingTags={existingTags}
-                        tidyManualOrdersOnDelete={tidyManualOrdersOnDelete}
+                        deleteListItem={deleteListItem}
                         // key={`list-item-${listItem.listItemID}`}
                       />
                     </div>

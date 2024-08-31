@@ -118,8 +118,12 @@ export const createNewListItem = async (listItemData) => {
     const newListItemRef = push(listItemsRef);
     // Set the data at the new reference
     await set(newListItemRef, listItemData);
+    const newItemWithExplicitID = {
+      ...listItemData,
+      listItemID: newListItemRef.key,
+    };
     console.log('New list item created with ID:', newListItemRef.key);
-    return newListItemRef.key; // Return the unique ID of the newly created list
+    return newItemWithExplicitID; // Return the unique ID of the newly created list
   } catch (error) {
     console.error('Error creating new list item:', error);
     throw error;
@@ -284,7 +288,7 @@ export const getMaxManualOrderByParentID = async (parentID) => {
 };
 
 export const patchMultipleListItems = async (updates) => {
-  // console.log(updates);
+  console.log(updates); // {data: {} }, {data: {} }, // {}, {}
   try {
     const updatePromises = updates.map((update) => {
       const { listItemID: unneededListItemID, ...rest } = update;

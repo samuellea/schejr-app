@@ -95,9 +95,9 @@ function Home() {
         startIndex,
         destinationIndex
       );
-      console.log(newMOrders);
+      console.log(onlyChanged);
 
-      // update listItems in state
+      // update listItems in state with new .manualOrder values
       setListItems(newMOrders);
 
       try {
@@ -105,7 +105,7 @@ function Home() {
         const multipleListItemsPatched = await u.patchMultipleListItems(
           onlyChanged
         );
-        setListItemsModified(true);
+        // setListItemsModified(true);
       } catch (error) {
         console.error(error);
         // setListItemsModified(true);

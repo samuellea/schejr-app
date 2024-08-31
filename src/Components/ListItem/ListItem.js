@@ -7,28 +7,19 @@ function ListItem({
   setListItemsModified,
   handleEditListItem,
   existingTags,
-  tidyManualOrdersOnDelete,
+  deleteListItem,
 }) {
   // const handleItemTitleChange = (e) => {
   //   const text = e.target.value;
   //   updateListItem(selectedList.listID, 'title', text);
   // };
 
-  const deleteListItem = async () => {
-    try {
-      await u.deleteListItemByID(listItem.listItemID);
-      try {
-        tidyManualOrdersOnDelete(listItem.listItemID, listItem.parentID);
-      } catch (error) {}
-    } catch (error) {
-      console.error('Failed to delete list item:', error);
-      // You can show an error message to the user, log the error, etc.
-    }
-  };
-
   return (
     <div className={styles.container}>
-      <button className={styles.deleteListItemButton} onClick={deleteListItem}>
+      <button
+        className={styles.deleteListItemButton}
+        onClick={() => deleteListItem(listItem)}
+      >
         🗑
       </button>
       <p className={styles.listItemTitle}>{listItem.title}</p>

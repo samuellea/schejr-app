@@ -83,6 +83,7 @@ function MainArea({
           userUID={userUID}
           handleEditListItem={handleEditListItem}
           listItems={listItems}
+          setListItems={setListItems}
           listItemsModified={listItemsModified}
           setListItemsModified={setListItemsModified}
           existingTags={existingTags}
