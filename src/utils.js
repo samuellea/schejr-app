@@ -92,7 +92,7 @@ export const deleteListByID = async (listID) => {
   try {
     const objectRef = ref(database, `lists/${listID}`);
     await remove(objectRef);
-    console.log('Object deleted successfully');
+    console.log('List deleted successfully');
   } catch (error) {
     console.error('Error deleting list:', error);
     throw error;

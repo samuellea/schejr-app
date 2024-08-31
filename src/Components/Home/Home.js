@@ -75,10 +75,10 @@ function Home() {
             toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
               duration: 2000,
             });
-            setListItemsModified(true);
+            // setListItemsModified(true);
           } catch (error) {
             console.error(error);
-            setListItemsModified(true);
+            // setListItemsModified(true);
           }
         } catch (error) {}
       } catch (error) {}
@@ -153,33 +153,31 @@ function Home() {
 
   const timeoutIdRef = useRef(null);
 
-  useEffect(() => {
-    autoSave();
-  }, [lists]);
+  // useEffect(() => {
+  //   autoSave();
+  // }, [lists]);
 
-  useEffect(() => {}, [selectedListID]);
+  // const autoSave = () => {
+  //   if (timeoutIdRef.current) {
+  //     clearTimeout(timeoutIdRef.current); // Step 3: Clear any existing timeout
+  //   }
 
-  const autoSave = () => {
-    if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current); // Step 3: Clear any existing timeout
-    }
+  //   timeoutIdRef.current = setTimeout(() => {
+  //     if (selectedListID) {
+  //       const selectedListObj = lists.filter(
+  //         (e) => e.listID === selectedListID
+  //       )[0];
+  //       const { createdAt, createdBy, title } = selectedListObj;
+  //       const updatedListData = {
+  //         createdAt,
+  //         createdBy,
+  //         title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
+  //       };
 
-    timeoutIdRef.current = setTimeout(() => {
-      if (selectedListID) {
-        const selectedListObj = lists.filter(
-          (e) => e.listID === selectedListID
-        )[0];
-        const { createdAt, createdBy, title } = selectedListObj;
-        const updatedListData = {
-          createdAt,
-          createdBy,
-          title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
-        };
-
-        u.patchList(selectedListID, updatedListData);
-      }
-    }, 1000); // Set a new timeout for 2 seconds
-  };
+  //       u.patchList(selectedListID, updatedListData);
+  //     }
+  //   }, 1000); // Set a new timeout for 2 seconds
+  // };
 
   const handleLogout = () => {
     // Perform your logout logic here
@@ -235,6 +233,16 @@ function Home() {
     setSelectedListID(listID);
   };
 
+  const handleDeleteList = async (listID) => {
+    const listsMinusDeleted = lists.filter((e) => e.listID !== listID);
+    setLists(listsMinusDeleted);
+    try {
+      await u.deleteListByID(listID);
+    } catch (error) {
+      console.error('Failed to delete list:', error);
+    }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.container}>
@@ -266,6 +274,7 @@ function Home() {
           toggleSidebar={toggleSidebar}
           showSidebar={showSidebar}
           handleSelectListButton={handleSelectListButton}
+          handleDeleteList={handleDeleteList}
         />
       </div>
       <Toaster />

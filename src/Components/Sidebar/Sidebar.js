@@ -14,6 +14,7 @@ function Sidebar({
   toggleSidebar,
   showSidebar,
   handleSelectListButton,
+  handleDeleteList,
 }) {
   const createList = async () => {
     const listData = {
@@ -62,6 +63,7 @@ function Sidebar({
                   setListsModified={setListsModified}
                   handleSelectListButton={handleSelectListButton}
                   selected={list.listID === selectedListID}
+                  handleDeleteList={handleDeleteList}
                 />
                 {/* {provided.placeholder} */}
               </div>
