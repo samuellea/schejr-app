@@ -7,7 +7,7 @@ function ListItem({
   setListItemsModified,
   handleEditListItem,
   existingTags,
-  tidyListItemsManualOrders,
+  tidyManualOrdersOnDelete,
 }) {
   // const handleItemTitleChange = (e) => {
   //   const text = e.target.value;
@@ -18,7 +18,7 @@ function ListItem({
     try {
       await u.deleteListItemByID(listItem.listItemID);
       try {
-        tidyListItemsManualOrders(listItem.listItemID, listItem.parentID);
+        tidyManualOrdersOnDelete(listItem.listItemID, listItem.parentID);
       } catch (error) {}
     } catch (error) {
       console.error('Failed to delete list item:', error);

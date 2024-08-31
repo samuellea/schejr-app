@@ -11,6 +11,7 @@ import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
 function Home() {
   const [listsModified, setListsModified] = useState(false);
   const [lists, setLists] = useState([]);
+  const [listItems, setListItems] = useState([]);
   const [selectedListID, setSelectedListID] = useState(null);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
   const [sidebarListAscending, setSidebarListAscending] = useState(true);
@@ -44,6 +45,7 @@ function Home() {
       const destinationListID = destination.droppableId; // id of the List you're moving it to
       // update parentID and manualOrder
 
+      // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
       // fetch the highest manual order value present on this List
       try {
         const maxManualOrderOnDestinationList =
@@ -55,8 +57,24 @@ function Home() {
         console.log('listItemID: ', listItemID);
         console.log('updates: ', updates);
         try {
+          // and update that item being moved accordingly
           const updatedListItem = await u.patchListItem(listItemID, updates);
-          setListItemsModified(true);
+          // setListItemsModified(true);
+          // THEN - reset the .manualOrders of all list items on the list the item has been moved FROM
+          const newMOrders = h.updatedManualOrdersOnSourceList(
+            listItems,
+            listItemID
+          );
+          //and update THEM
+          try {
+            const multipleListItemsPatched = await u.patchMultipleListItems(
+              newMOrders
+            );
+            setListItemsModified(true);
+          } catch (error) {
+            console.error(error);
+            setListItemsModified(true);
+          }
         } catch (error) {
           console.log(error);
         }
@@ -66,8 +84,26 @@ function Home() {
     // handle draggin a ListItem to a different order within a List
     if (destination.droppableId === 'list') {
       console.log('LIST!');
-      const newManualOrderValue = destination.index + 1;
       const listItemID = draggableId;
+      const startIndex = source.index;
+      const destinationIndex = destination.index;
+      console.log('startIndex: ', startIndex);
+      console.log('destinationIndex: ', destinationIndex);
+      const { onlyChanged } = h.updatedManualOrders(
+        listItems,
+        startIndex,
+        destinationIndex
+      );
+      // console.log(onlyChanged);
+      try {
+        const multipleListItemsPatched = await u.patchMultipleListItems(
+          onlyChanged
+        );
+        setListItemsModified(true);
+      } catch (error) {
+        console.error(error);
+        setListItemsModified(true);
+      }
     }
   };
 
@@ -178,7 +214,7 @@ function Home() {
     };
     try {
       const listItemUpdated = await u.patchListItem(
-        listItemToEdit.listItemID,
+        unneededListItemID,
         updatedListItem
       );
       setListItemsModified(true);
@@ -202,6 +238,8 @@ function Home() {
           userUID={userUID}
           listItemToEdit={listItemToEdit}
           setListItemToEdit={setListItemToEdit}
+          listItems={listItems}
+          setListItems={setListItems}
           listItemsModified={listItemsModified}
           setListItemsModified={setListItemsModified}
         />

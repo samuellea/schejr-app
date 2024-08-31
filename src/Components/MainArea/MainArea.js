@@ -12,11 +12,12 @@ function MainArea({
   userUID,
   listItemToEdit,
   setListItemToEdit,
+  listItems,
+  setListItems,
   listItemsModified,
   setListItemsModified,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
-  const [listItems, setListItems] = useState([]);
   const [existingTags, setExistingTags] = useState([]);
 
   const fetchListItems = async () => {

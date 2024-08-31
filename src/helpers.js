@@ -72,13 +72,35 @@ export const sortItems = (items, sortKey, order) => {
 
 // // if the item's starting index is lower than the destination index: all objects with .mO <= destination index have their .m0s - 1'd
 // // if the item's starting index is higher than the destination index: all objects with .m0 >= destination index have their .m0s + 1'd
-export const reorderListItemsOnManualOrder = (
+export const updatedManualOrders = (
   listItems,
-  listItemStartIndex,
+  startIndex,
   destinationIndex
 ) => {
-  const updatedList = [...listItems];
-  const [movedItem] = updatedList.splice(listItemStartIndex, 1);
-  updatedList.splice(destinationIndex, 0, movedItem);
-  return updatedList;
+  const arrCopy = [...listItems];
+  const itemToMove = arrCopy[startIndex];
+  arrCopy.splice(startIndex, 1);
+  arrCopy.splice(destinationIndex, 0, itemToMove);
+  // then map to change ALL manualOrders to index + 1
+  const newMOrders = arrCopy.map((e, i) => ({
+    ...e,
+    manualOrder: i + 1,
+  }));
+  // only update objects where .manualOrder has changed
+  const onlyChanged = newMOrders.reduce((acc, f, i) => {
+    if (newMOrders[i].listItemID !== listItems[i].listItemID) acc.push(f);
+    return acc;
+  }, []);
+  return { newMOrders, onlyChanged };
+};
+
+export const updatedManualOrdersOnSourceList = (listItems, removedID) => {
+  const sourceListItemsMinusRemoved = listItems.filter(
+    (e) => e.listItemID !== removedID
+  );
+  const newMOrders = sourceListItemsMinusRemoved.map((e, i) => ({
+    ...e,
+    manualOrder: i + 1,
+  }));
+  return newMOrders;
 };

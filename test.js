@@ -1,28 +1,31 @@
-// const justDeletedListItemID = 222;
-// const listItems = [
-//   { listItemID: 111, name: 'a', manualOrder: 1 },
-//   { listItemID: 222, name: 'b', manualOrder: 2 },
-//   { listItemID: 333, name: 'c', manualOrder: 3 },
-//   { listItemID: 444, name: 'd', manualOrder: 4 },
-// ];
+const listItems = [
+  { listItemID: 111, manualOrder: 1 }, // 0
+  { listItemID: 222, manualOrder: 2 }, // 1 DDD
+  { listItemID: 333, manualOrder: 3 }, // 2
+  { listItemID: 444, manualOrder: 4 }, // 3 SSS
+  { listItemID: 555, manualOrder: 5 }, // 4
+];
+const startIndex = 3;
+const destinationIndex = 1;
+// ----
+const reordered = [...listItems];
+const itemToMove = reordered[startIndex];
+const itemAtDestination = reordered[destinationIndex];
 
-// const listItemsMinusOneJustDeleted = listItems
-//   .filter((e) => e.listItemID !== justDeletedListItemID)
-//   .sort((a, b) => a.manualOrder - b.manualOrder);
+reordered.splice(startIndex, 1);
+reordered.splice(destinationIndex, 0, itemToMove);
+// then map to change ALL manualOrders to index + 1
+const newManualOrders = reordered.map((e, i) => ({
+  ...e,
+  manualOrder: i + 1,
+}));
+console.log(newManualOrders);
 
-// const updatedManualOrders = listItemsMinusOneJustDeleted.map((e, i) => ({
-//   ...e,
-//   manualOrder: i + 1,
-// }));
+// only update objects where .manualOrder has changed
+const onlyChanged = newManualOrders.reduce((acc, f, i) => {
+  const original = listItems.find((e) => e.listItemID === f.listItemID);
+  if (f.manualOrder !== original.manualOrder) acc.push(f);
+  return acc;
+}, []);
 
-// console.log(updatedManualOrders);
-
-// const updates = updatedManualOrders.map((e) => {
-//   const { listItemID, ...newObj } = e;
-//   return { id: e.listItemID, data: { ...newObj } };
-// });
-
-// console.log(updates);
-
-// // if the item's starting index is lower than the destination index: all objects with .mO <= destination index have their .m0s - 1'd
-// // if the item's starting index is higher than the destination index: all objects with .m0 >= destination index have their .m0s + 1'd
+console.log(onlyChanged);

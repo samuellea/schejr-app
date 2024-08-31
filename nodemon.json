@@ -1,0 +1,5 @@
+{
+  "watch": ["src", "test"],
+  "ext": "js,jsx",
+  "exec": "npx mocha --config ./test/mocha.opts"
+}

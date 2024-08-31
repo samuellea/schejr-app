@@ -268,6 +268,7 @@ export const getMaxManualOrderByParentID = async (parentID) => {
           highestItem
         );
         const maxManualOrderForList = highestItem.manualOrder;
+        console.log('so, new maxManualOrderForList: ', maxManualOrderForList);
         return maxManualOrderForList;
       } else {
         console.log('No items found with the matching parentID');
@@ -279,5 +280,20 @@ export const getMaxManualOrderByParentID = async (parentID) => {
     }
   } catch (error) {
     console.error('Error getting highest manual order by parentID:', error);
+  }
+};
+
+export const patchMultipleListItems = async (updates) => {
+  // console.log(updates);
+  try {
+    const updatePromises = updates.map((update) => {
+      const { listItemID: unneededListItemID, ...rest } = update;
+      const updatedListItem = { ...rest };
+      return patchListItem(unneededListItemID, updatedListItem);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.error('Error updating one or more listItems db objects:', error);
+    return error;
   }
 };

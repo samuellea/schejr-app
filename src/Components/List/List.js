@@ -45,7 +45,7 @@ function List({
     }
   };
 
-  const tidyListItemsManualOrders = async (deletedListItemID, parentID) => {
+  const tidyManualOrdersOnDelete = async (deletedListItemID, parentID) => {
     const listItemsMinusOneJustDeleted = listItems
       .filter((e) => e.listItemID !== deletedListItemID)
       .sort((a, b) => a.manualOrder - b.manualOrder);
@@ -61,17 +61,10 @@ function List({
     });
 
     try {
-      const updatePromises = updates.map((update) =>
-        u.patchListItem(update.id, update.data)
-      );
-      await Promise.all(updatePromises);
-      console.log('All list items .manualOrder keys updated successfully');
+      const multipleListItemsPatched = await u.patchMultipleListItems(updates);
       setListItemsModified(true);
     } catch (error) {
-      console.error(
-        'Error updating the .manualOrder key of one or more list items:',
-        error
-      );
+      console.error(error);
       setListItemsModified(true);
     }
   };
@@ -111,7 +104,7 @@ function List({
                       setListItemsModified={setListItemsModified}
                       handleEditListItem={handleEditListItem}
                       existingTags={existingTags}
-                      tidyListItemsManualOrders={tidyListItemsManualOrders}
+                      tidyManualOrdersOnDelete={tidyManualOrdersOnDelete}
                       // key={`list-item-${listItem.listItemID}`}
                     />
                   </div>
