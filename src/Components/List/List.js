@@ -5,6 +5,7 @@ import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
 import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
+import Sort from '../Sort/Sort';
 
 function List({
   selectedList,
@@ -18,10 +19,26 @@ function List({
 }) {
   const [sortOn, setSortOn] = useState('manualOrder');
   const [order, setOrder] = useState('ascending');
+  const [listTitle, setListTitle] = useState(selectedList.title);
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
-    updateList(selectedList.listID, 'title', text);
+    console.log(text);
+    setListTitle(text);
+  };
+
+  const handleTitleOnBlur = () => {
+    let newTitle = listTitle;
+    if (!listTitle.length) newTitle = selectedList.title;
+    updateList(selectedList.listID, 'title', newTitle);
+  };
+
+  const handleToggleOrder = () => {
+    if (order === 'ascending') {
+      setOrder('descending');
+    } else {
+      setOrder('ascending');
+    }
   };
 
   const createListItem = async () => {
@@ -46,33 +63,6 @@ function List({
       console.error('Failed to create list item:', error);
     }
   };
-
-  // const tidyManualOrdersOnDelete = async (deletedListItemID, parentID) => {
-  //   // listItems has been set anew in deleteListItem already!! :(
-  //   const listItemsMinusOneJustDeleted = listItems
-  //     .filter((e) => e.listItemID !== deletedListItemID)
-  //     .sort((a, b) => a.manualOrder - b.manualOrder);
-
-  //   const updatedManualOrders = listItemsMinusOneJustDeleted.map((e, i) => ({
-  //     ...e,
-  //     manualOrder: i + 1,
-  //   }));
-
-  //   const updates = updatedManualOrders.map((e) => {
-  //     const { listItemID, ...newObj } = e;
-  //     return { id: e.listItemID, data: { ...newObj } };
-  //   });
-
-  //   setListItems(updatedManualOrders);
-
-  //   try {
-  //     const multipleListItemsPatched = await u.patchMultipleListItems(updates);
-  //     // setListItemsModified(true);
-  //   } catch (error) {
-  //     console.error(error);
-  //     // setListItemsModified(true);
-  //   }
-  // };
 
   const deleteListItem = async (listItem) => {
     console.log(listItems);
@@ -125,8 +115,15 @@ function List({
                 className={styles.listTitleInput}
                 type="text"
                 id="listTitle"
-                onChange={handleTitleChange}
-                value={selectedList.title}
+                onChange={handleTitleChange} // Directly pass the handler
+                onBlur={handleTitleOnBlur}
+                value={listTitle}
+              />
+              <Sort
+                sortOn={sortOn}
+                setSortOn={setSortOn}
+                order={order}
+                handleToggleOrder={handleToggleOrder}
               />
               {h.sortItems(listItems, sortOn, order)?.map((listItem, index) => (
                 <Draggable

@@ -44,8 +44,13 @@ export const sortItems = (items, sortKey, order) => {
   if (!items || !Array.isArray(items)) {
     throw new Error('First argument must be an array of objects.');
   }
-  if (typeof sortKey !== 'string' || !['id', 'manualOrder'].includes(sortKey)) {
-    throw new Error('Invalid sort key. Valid keys are: id, manualOrder.');
+  if (
+    typeof sortKey !== 'string' ||
+    !['title', 'startDate', 'tags', 'manualOrder'].includes(sortKey)
+  ) {
+    throw new Error(
+      'Invalid sort key. Valid keys are: title, startDate, tags, manualOrder.'
+    );
   }
   if (
     typeof order !== 'string' ||

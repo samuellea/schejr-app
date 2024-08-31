@@ -8,9 +8,6 @@
   top: 0; /* Adjust as needed */
   left: 25%; /* Adjust as needed */
   z-index: 20; /* Ensure this sibling is on top */
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
-    'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
-    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   display: flex;
   flex-direction: column;
   align-items: flex-start;

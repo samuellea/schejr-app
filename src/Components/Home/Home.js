@@ -190,20 +190,31 @@ function Home() {
   };
 
   // Function which updates the list object (by id) in lists state - a separate, timed function will then update this list object on firebase
-  const updateList = (listID, field, value) => {
+  const updateList = async (listID, field, value) => {
+    console.log(value);
     let newValue = value;
     if (field === 'title' && value === '') newValue = 'Untitled';
-
     const updatedListObj = {
       ...lists.filter((e) => e.listID === listID)[0],
       [field]: newValue,
     };
-
     const listsMinusUpdated = lists.filter((e) => e.listID !== listID);
-
     const listsPlusUpdated = [...listsMinusUpdated, updatedListObj];
-
+    // set updated List in state
     setLists(listsPlusUpdated);
+    const { createdAt, createdBy, title } = updatedListObj;
+    // now update the List obj on db
+    const updatedListData = {
+      createdAt,
+      createdBy,
+      title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
+    };
+
+    try {
+      await u.patchList(selectedListID, updatedListData);
+    } catch (error) {
+      console.log('Error updating List');
+    }
   };
 
   const updateListItem = async (listItemID, field, value) => {
