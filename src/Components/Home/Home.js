@@ -7,6 +7,7 @@ import TopBar from '../TopBar/TopBar';
 import * as u from '../../utils';
 import * as h from '../../helpers';
 import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
+import toast, { Toaster } from 'react-hot-toast';
 
 function Home() {
   const [listsModified, setListsModified] = useState(false);
@@ -39,9 +40,8 @@ function Home() {
     ) {
       const listItemID = draggableId;
       const destinationListID = destination.droppableId; // id of the List you're moving it to
-      // update parentID and manualOrder
-
-      // const listItemBeingMoved = listItems.find(e => e.listItemID === draggableId);
+      const listItemMoved = listItems.find((e) => e.listItemID === draggableId);
+      const destinationList = lists.find((e) => e.listID === destinationListID);
 
       // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
       const newMOrders = h.updatedManualOrdersOnSourceList(
@@ -72,6 +72,9 @@ function Home() {
             const multipleListItemsPatched = await u.patchMultipleListItems(
               newMOrders
             );
+            toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
+              duration: 2000,
+            });
             setListItemsModified(true);
           } catch (error) {
             console.error(error);
@@ -265,6 +268,7 @@ function Home() {
           handleSelectListButton={handleSelectListButton}
         />
       </div>
+      <Toaster />
     </DragDropContext>
   );
 }
