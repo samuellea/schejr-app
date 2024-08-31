@@ -13,6 +13,7 @@ function Sidebar({
   setListsModified,
   toggleSidebar,
   showSidebar,
+  handleSelectListButton,
 }) {
   const createList = async () => {
     const listData = {
@@ -28,10 +29,6 @@ function Sidebar({
       console.error('Failed to create list:', error);
       // Handle error
     }
-  };
-
-  const handleSelect = (listID) => {
-    setSelectedListID(listID);
   };
 
   const combined = `${styles.container} ${
@@ -63,7 +60,7 @@ function Sidebar({
                   createdAt={list.createdAt}
                   listID={list.listID}
                   setListsModified={setListsModified}
-                  handleSelect={handleSelect}
+                  handleSelectListButton={handleSelectListButton}
                   selected={list.listID === selectedListID}
                 />
                 {/* {provided.placeholder} */}

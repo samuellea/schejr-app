@@ -18,6 +18,7 @@ function Home() {
   const [showSidebar, setShowSidebar] = useState(true);
   const [listItemToEdit, setListItemToEdit] = useState(null);
   const [listItemsModified, setListItemsModified] = useState(false);
+  const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -226,6 +227,11 @@ function Home() {
     setShowSidebar(!showSidebar);
   };
 
+  const handleSelectListButton = (listID) => {
+    setListAndItemsLoaded(false);
+    setSelectedListID(listID);
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.container}>
@@ -241,6 +247,8 @@ function Home() {
           setListItems={setListItems}
           listItemsModified={listItemsModified}
           setListItemsModified={setListItemsModified}
+          listAndItemsLoaded={listAndItemsLoaded}
+          setListAndItemsLoaded={setListAndItemsLoaded}
         />
         <Sidebar
           userUID={userUID}
@@ -254,6 +262,7 @@ function Home() {
           setListsModified={setListsModified}
           toggleSidebar={toggleSidebar}
           showSidebar={showSidebar}
+          handleSelectListButton={handleSelectListButton}
         />
       </div>
     </DragDropContext>

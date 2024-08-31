@@ -16,11 +16,14 @@ function MainArea({
   setListItems,
   listItemsModified,
   setListItemsModified,
+  listAndItemsLoaded,
+  setListAndItemsLoaded,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
 
   const fetchListItems = async () => {
+    setListAndItemsLoaded(false);
     try {
       const allListItems = await u.fetchListItemsByListID(selectedList.listID);
       const allListItemsWithIDs = Object.entries(allListItems).map((e) => ({
@@ -28,6 +31,7 @@ function MainArea({
         ...e[1],
       }));
       setListItems(allListItemsWithIDs);
+      setListAndItemsLoaded(true);
       if (listItemToEdit) {
         // If we're currently editing a list item, also reload that to reflect any changes
         const listItemToEditUpdated = allListItemsWithIDs.filter(
@@ -72,7 +76,7 @@ function MainArea({
 
   return (
     <div className={styles.container}>
-      {selectedList ? (
+      {selectedList && listAndItemsLoaded ? (
         <List
           selectedList={selectedList}
           updateList={updateList}

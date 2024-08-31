@@ -7,7 +7,7 @@ function ListButton({
   createdAt,
   listID,
   setListsModified,
-  handleSelect,
+  handleSelectListButton,
   selected,
 }) {
   const combined = `${styles.container} ${selected ? styles.selected : null}`;
@@ -22,7 +22,7 @@ function ListButton({
     }
   };
   return (
-    <div className={combined} onClick={() => handleSelect(listID)}>
+    <div className={combined} onClick={() => handleSelectListButton(listID)}>
       <p>{listName}</p>
       <button onClick={deleteList}>Delete</button>
     </div>
