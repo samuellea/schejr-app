@@ -3,6 +3,7 @@ import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
 import CloseIcon from '../Icons/CloseIcon';
+import ChevronIcon from '../Icons/ChevronIcon';
 
 function ListItemEditPane({
   listItem,
@@ -22,12 +23,22 @@ function ListItemEditPane({
   };
 
   const handleTitleOnBlur = () => {
-    updateListItem(listItem.listItemID, 'title', listItemRenameText);
+    updateListItem(listItem, 'title', listItemRenameText);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.titleAndCloseWrapper}>
+        <div className={styles.closeWrapper}>
+          <div
+            role="button"
+            className={styles.closePaneButton}
+            onClick={handleCloseEditPane}
+          >
+            {/* <CloseIcon fill="white" width="24px" /> */}
+            <ChevronIcon fill="white" width="24px" />
+          </div>
+        </div>
         <input
           className={styles.listItemTitleInput}
           type="text"
@@ -36,15 +47,9 @@ function ListItemEditPane({
           value={listItemRenameText}
           onBlur={handleTitleOnBlur}
         ></input>
-        <div
-          role="button"
-          className={styles.closePaneButton}
-          onClick={handleCloseEditPane}
-        >
-          <CloseIcon fill="white" width="24px" />
-        </div>
       </div>
       <div className={styles.fieldWrapper}>
+        <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>Tags</div>
         <TagSelector
           userUID={userUID}
@@ -57,6 +62,7 @@ function ListItemEditPane({
       </div>
 
       <div className={styles.fieldWrapper}>
+        <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>Date</div>
         <DateSelector
           listItem={listItem}

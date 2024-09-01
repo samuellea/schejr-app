@@ -85,6 +85,7 @@ function MainArea({
         <List
           selectedList={selectedList}
           updateList={updateList}
+          updateListItem={updateListItem}
           userUID={userUID}
           handleEditListItem={handleEditListItem}
           listItems={listItems}

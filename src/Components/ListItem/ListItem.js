@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ListItem.module.css';
 import * as u from '../../utils';
 import * as h from '../../helpers';
@@ -11,11 +11,25 @@ function ListItem({
   handleEditListItem,
   existingTags,
   deleteListItem,
+  updateListItem,
 }) {
   // const handleItemTitleChange = (e) => {
   //   const text = e.target.value;
   //   updateListItem(selectedList.listID, 'title', text);
   // };
+
+  const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
+
+  const handleTitleChange = (e) => {
+    const text = e.target.value;
+    setListItemRenameText(text);
+    // updateListItem(listItem.listItemID, 'title', text);
+  };
+
+  const handleTitleOnBlur = () => {
+    console.log(listItem.listItemID);
+    updateListItem(listItem, 'title', listItemRenameText);
+  };
 
   return (
     <div className={styles.container}>
@@ -32,8 +46,13 @@ function ListItem({
         <EditIcon fill="white" width="16px" />
       </button>
       <div className={styles.titleTagsDatesWrapper}>
-        <p className={styles.listItemTitle}>{listItem.title}</p>
-        {/* <button onClick={toggleSidebar}>》</button> */}
+        {/* <p className={styles.listItemTitle}>{listItem.title}</p> */}
+        <input
+          className={styles.listItemTitle}
+          onChange={handleTitleChange}
+          onBlur={handleTitleOnBlur}
+          value={listItemRenameText}
+        />
         <div className={styles.tagsContainer}>
           {listItem?.tags?.map((tag) => {
             const matchingTag = existingTags?.find(

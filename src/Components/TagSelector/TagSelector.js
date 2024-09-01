@@ -3,6 +3,8 @@ import TagOptions from './TagOptions';
 import styles from './TagSelector.module.css';
 import * as u from '../../utils';
 import * as h from '../../helpers';
+import CloseIcon from '../Icons/CloseIcon';
+import EllipsisIcon from '../Icons/EllipsisIcon';
 
 function TagSelector({
   userUID,
@@ -139,7 +141,7 @@ function TagSelector({
       try {
         const updatedListItemTags = [...(listItem.tags || []), newTagID];
         const listItemTagsUpdated = await updateListItem(
-          listItem.listItemID,
+          listItem,
           'tags',
           updatedListItemTags
         );
@@ -162,7 +164,7 @@ function TagSelector({
         ? [...listItem.tags, tag.tagID]
         : [tag.tagID];
       const listItemTagsUpdated = await updateListItem(
-        listItem.listItemID,
+        listItem,
         'tags',
         updatedListItemTags
       );
@@ -187,7 +189,7 @@ function TagSelector({
         ...listItem?.tags.filter((e) => e !== tagID),
       ];
       const listItemTagsUpdated = await updateListItem(
-        listItem.listItemID,
+        listItem,
         'tags',
         updatedListItemTags
       );
@@ -225,14 +227,14 @@ function TagSelector({
                 className={styles.selectedTag}
                 style={{ backgroundColor: matchingTag?.color }}
               >
-                <p>{matchingTag?.name}</p>
+                <p className={styles.selectedTagLabel}>{matchingTag?.name}</p>
                 {isInFocus ? (
                   <div
                     role="button"
                     className={styles.selectedTagRemoveButton}
                     onClick={() => handleRemoveSelectedTag(matchingTag?.tagID)}
                   >
-                    X
+                    <CloseIcon fill="white" width="12px" />
                   </div>
                 ) : null}
               </div>
@@ -279,7 +281,7 @@ function TagSelector({
                       handleOptionsClick(tag);
                     }}
                   >
-                    💬
+                    <EllipsisIcon fill="#d5d5d5" width="12px" />
                     {tagOptions && tag.tagID === tagOptions.tagID ? (
                       <TagOptions
                         tag={tagOptions}

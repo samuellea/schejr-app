@@ -11,6 +11,7 @@ import PlusIcon from '../Icons/PlusIcon';
 function List({
   selectedList,
   updateList,
+  updateListItem,
   userUID,
   handleEditListItem,
   setListItemsModified,
@@ -150,6 +151,7 @@ function List({
                           handleEditListItem={handleEditListItem}
                           existingTags={existingTags}
                           deleteListItem={deleteListItem}
+                          updateListItem={updateListItem}
                           // key={`list-item-${listItem.listItemID}`}
                         />
                       </div>

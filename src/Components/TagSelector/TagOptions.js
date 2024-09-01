@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './TagOptions.module.css';
+import TrashIcon from '../Icons/TrashIcon';
+import TickIcon from '../Icons/TickIcon';
 
 function TagOptions({
   tag,
@@ -110,7 +112,9 @@ function TagOptions({
         className={`${styles.tagOptionsButton} ${styles.deleteTagButton}`}
         onClick={() => setShowDeleteModal(true)}
       >
-        <div className={styles.deleteIconContainer}>🗑️</div>
+        <div className={styles.deleteIconContainer}>
+          <TrashIcon fill="#d5d5d5" width="16px" />
+        </div>
         <div className={styles.deleteLabel}>Delete</div>
       </div>
       <div className={styles.coloursSectionDivider}>Colours</div>
@@ -126,7 +130,9 @@ function TagOptions({
           ></div>
           <div className={styles.colourLabel}>{colorNameLookup[color]}</div>
           {color === selectedColor ? (
-            <div className={styles.selectedColourTick}>✅</div>
+            <div className={styles.selectedColourTick}>
+              <TickIcon fill="white" width="16px" />
+            </div>
           ) : null}
         </div>
       ))}

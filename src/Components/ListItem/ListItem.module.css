@@ -36,15 +36,20 @@
 }
 
 .listItemTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
-  margin-left: 8px;
+  margin-left: 0px;
+  min-width: 38%;
   max-width: 38%;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
+  background: none;
+  border: none;
+  color: white;
   /* border: 1px solid yellow; */
   /* margin: 0; */
+  outline: none;
 }
 
 .deleteListItemButton,

@@ -218,12 +218,12 @@ function Home() {
     }
   };
 
-  const updateListItem = async (listItemID, field, value) => {
+  const updateListItem = async (listItem, field, value) => {
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
-      (item) => item.listItemID === listItemID
+      (item) => item.listItemID === listItem.listItemID
     );
-    const updatedListItem = { ...listItemToEdit, [field]: value };
+    const updatedListItem = { ...listItem, [field]: value };
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
     setListItems(updatedListItems);
