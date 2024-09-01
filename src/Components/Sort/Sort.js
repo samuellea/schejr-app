@@ -5,6 +5,7 @@ import TagsIcon from '../Icons/TagsIcon';
 import DateIcon from '../Icons/DateIcon';
 import TickIcon from '../Icons/TickIcon';
 import ArrowIcon from '../Icons/ArrowIcon';
+import CloseIcon from '../Icons/CloseIcon';
 
 function Sort({
   sortOn,
@@ -58,37 +59,47 @@ function Sort({
   };
 
   const sortWindowCombined = `${styles.sortWindow} ${
-    sortOn !== 'manualOrder' ? styles.sortActive : null
+    sortOn !== 'manualOrder' ? styles.sortWindowActive : null
   }`;
+
+  const orderWindowCombined = `${styles.sortWindow} ${styles.orderWindowActive}`;
+
+  const handleSortSelect = (sortOn) => {
+    setSortOn(sortOn);
+    setShowDropdown(false);
+  };
 
   return (
     <div className={styles.container}>
       <div className={sortWindowCombined} onClick={toggleDropdown}>
         {sortOn !== 'manualOrder' ? capitalizedSortLabel : 'Sort'}
-        {sortOn !== 'manualOrder' ? (
-          <ArrowIcon
-            width="14px"
-            fill="rgb(109, 182, 255)"
-            flip={order !== 'ascending' ? true : false}
-          />
-        ) : null}
       </div>
-      <div className={sortDropdownCombined} ref={sortDropdownRef}>
-        <div className={styles.ascDescWindow} onClick={handleToggleOrder}>
+
+      {sortOn !== 'manualOrder' ? (
+        <div className={orderWindowCombined} onClick={handleToggleOrder}>
           {capitalizedOrderLabel}
-          <svg
-            role="graphics-symbol"
-            viewBox="0 0 30 30"
-            className={styles.chevronDown}
-          >
-            <polygon points="15,17.4 4.8,7 2,9.8 15,23 28,9.8 25.2,7 "></polygon>
-          </svg>
+          {sortOn !== 'manualOrder' ? (
+            <ArrowIcon
+              width="14px"
+              fill="rgb(109, 182, 255)"
+              flip={order !== 'ascending' ? true : false}
+            />
+          ) : null}
         </div>
+      ) : null}
+      {sortOn !== 'manualOrder' ? (
+        <div className={styles.clearSortButton} onClick={handleClearSort}>
+          <CloseIcon fill="#8b9898" width="14px" />
+          <span className={styles.clearSortButtonLabel}>Clear Sort</span>
+        </div>
+      ) : null}
+
+      <div className={sortDropdownCombined} ref={sortDropdownRef}>
         <div
           className={`${styles.sortButtons} ${
             sortOn === 'title' ? styles.selected : null
           }`}
-          onClick={() => setSortOn('title')}
+          onClick={() => handleSortSelect('title')}
         >
           <TitleIcon />
           <span className={styles.sortLabel}>Title</span>
@@ -102,7 +113,7 @@ function Sort({
           className={`${styles.sortButtons} ${
             sortOn === 'tags' ? styles.selected : null
           }`}
-          onClick={() => setSortOn('tags')}
+          onClick={() => handleSortSelect('tags')}
         >
           <TagsIcon />
           <span className={styles.sortLabel}>Tags</span>
@@ -116,7 +127,7 @@ function Sort({
           className={`${styles.sortButtons} ${
             sortOn === 'startDate' ? styles.selected : null
           }`}
-          onClick={() => setSortOn('startDate')}
+          onClick={() => handleSortSelect('startDate')}
         >
           <DateIcon />
           <span className={styles.sortLabel}>Date</span>
@@ -125,9 +136,6 @@ function Sort({
               <TickIcon width="14px" />
             </span>
           ) : null}
-        </div>
-        <div className={styles.clearSortButton} onClick={handleClearSort}>
-          <p className={styles.clearSortButtonLabel}>Clear Sort</p>
         </div>
       </div>
     </div>
