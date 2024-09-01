@@ -1,5 +1,5 @@
 .container {
-  border: 2px solid purple;
+  /* border: 2px solid purple; */
   height: 30px;
   width: 100%;
   color: white;
@@ -50,6 +50,9 @@
   padding: 8px;
   /* border: 1px solid white; */
   visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .dropdownOpen {
@@ -65,7 +68,7 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  border-radius: 6px;
+  border-radius: 24px;
   height: 32px;
   padding: 0px 18px;
   font-size: 14px;
@@ -75,8 +78,8 @@
   background: rgb(32, 32, 32);
   margin-right: 8px;
   /* max-width: 180px; */
-  margin-bottom: 6px;
-  width: 55%;
+  margin-bottom: 12px;
+  width: 65%;
 }
 
 .chevronDown {
@@ -121,4 +124,26 @@
   /* border: 1px solid white; */
   margin-left: auto;
   margin-right: 20px;
+}
+
+.clearSortButton {
+  border: 1px solid #8b989896;
+  cursor: pointer;
+  /* margin-left: 4px; */
+  /* margin-right: 4px; */
+  /* margin-bottom: 6px; */
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  line-height: 120%;
+  width: 95%;
+  height: 28px;
+  font-size: 14px;
+  margin: 12px 0px 0px 0px;
+}
+
+.clearSortButton:hover {
+  background-color: #2d2d2d;
 }

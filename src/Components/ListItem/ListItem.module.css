@@ -1,5 +1,5 @@
 .container {
-  border: 1px solid green;
+  /* border: 1px solid green; */
   height: 30px;
   width: 100%;
   min-width: 100%;
@@ -8,42 +8,58 @@
   align-items: center;
   justify-content: flex-start;
   border-radius: 5px;
-  padding-left: 18px;
+  padding-right: 6px;
   color: white;
   box-sizing: border-box;
   margin: 0;
+  overflow: hidden; /* Prevent overflow from the container */
 }
 
 .container:hover {
   background-color: #2a2a2a;
 }
 
+.titleTagsDatesWrapper {
+  /* border: 1px solid white; */
+  height: 30px;
+  flex: 1; /* Allows the element to expand and fill remaining space */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 5px;
+  color: white;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: hidden; /* Ensure content does not overflow */
+  padding-left: 1%;
+}
+
 .listItemTitle {
   font-size: 16px;
   font-weight: 500;
-  margin-left: 6px;
+  margin-left: 8px;
+  max-width: 38%;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
+  /* border: 1px solid yellow; */
+  /* margin: 0; */
 }
 
-.deleteListItemButton {
-  background-color: #2a2a2a;
-  border: none;
-  margin-left: 6px;
-  border-radius: 4px;
-  padding: 2px 8px;
-}
-
-.deleteListItemButton:hover {
-  background-color: #4c4c4c;
-}
-
+.deleteListItemButton,
 .editListItemButton {
-  background-color: #2a2a2a;
-  border: none;
-  margin-left: 6px;
+  /* background-color: #2a2a2a; */
+  background: none;
+  border: 1px solid #2a2a2a;
+  margin-left: 4px;
   border-radius: 4px;
-  padding: 2px 8px;
+  width: 31px;
+  height: 26px;
+  /* padding: 2px 8px; */
 }
 
+.deleteListItemButton:hover,
 .editListItemButton:hover {
   background-color: #4c4c4c;
 }
@@ -53,13 +69,18 @@
   flex-direction: row;
   align-items: center;
   height: 100%;
-  padding: 0px 6px 0px 0px;
+  padding: 0px 6px;
   margin-left: auto;
+  /* border: 1px solid cyan; */
+  margin-right: 8px;
+  max-width: 38%;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
 }
 
 .tag {
   color: white;
-  /* background-color: remediumslateblue; */
   padding: 0px 6px;
   margin: 0px 0px 0px 6px;
   border-radius: 3px;
@@ -71,7 +92,10 @@
   font-size: 12px;
 }
 
-.tag p {
-  /* border: 1px solid white; */
-  padding: 6px 0px;
+.dateContainer {
+  font-size: 12px;
+  /* border: 1px solid red; */
+  max-width: 22%;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
 }

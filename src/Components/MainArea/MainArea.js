@@ -6,6 +6,7 @@ import * as u from '../../utils';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
 
 function MainArea({
+  showSidebar,
   selectedList,
   updateList,
   updateListItem,
@@ -75,7 +76,10 @@ function MainArea({
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{ width: showSidebar ? '80%' : '100%' }}
+    >
       {selectedList && listAndItemsLoaded ? (
         <List
           selectedList={selectedList}

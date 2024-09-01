@@ -1,10 +1,17 @@
 import React from 'react';
 import styles from './TopBar.module.css';
+import ChevronIcon from '../Icons/ChevronIcon';
 
 function TopBar({ toggleSidebar }) {
   return (
     <div className={styles.container}>
-      <button onClick={toggleSidebar}>》</button>
+      <div
+        role="button"
+        className={styles.listsHeaderButton}
+        onClick={toggleSidebar}
+      >
+        <ChevronIcon fill="white" width="16px" flip />
+      </div>
     </div>
   );
 }

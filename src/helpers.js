@@ -109,3 +109,50 @@ export const updatedManualOrdersOnSourceList = (listItems, removedID) => {
   }));
   return newMOrders;
 };
+
+export const dateLabel = (dates) => {
+  if (!dates) return '';
+  const { startDate, endDate } = dates;
+  console.log(startDate);
+  console.log(endDate);
+
+  const formatDate = (isoDate) => {
+    if (!isoDate) return null;
+    const date = new Date(isoDate);
+    const currentYear = new Date().getFullYear();
+    const dateYear = date.getFullYear();
+
+    // Define abbreviated month names
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    // Extract the day, month, and year
+    const day = date.getDate();
+    const month = monthNames[date.getMonth()];
+    const year = dateYear !== currentYear ? ` ${dateYear}` : '';
+
+    // Format the date string
+    const formattedDate = `${day} ${month}${year}`;
+
+    return formattedDate;
+  };
+
+  const startFormatted = formatDate(startDate);
+  const endFormatted = formatDate(endDate);
+  const label = `${startFormatted ? startFormatted : ''} ${
+    endFormatted ? '- ' : ''
+  } ${endFormatted ? endFormatted : ''}`;
+  return label;
+};

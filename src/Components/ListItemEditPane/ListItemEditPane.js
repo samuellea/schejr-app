@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
+import CloseIcon from '../Icons/CloseIcon';
 
 function ListItemEditPane({
   listItem,
@@ -26,15 +27,23 @@ function ListItemEditPane({
 
   return (
     <div className={styles.container}>
-      <button onClick={handleCloseEditPane}>《</button>
-      <input
-        className={styles.listItemTitleInput}
-        type="text"
-        id="listItemTitle"
-        onChange={(event) => handleTitleChange(event)}
-        value={listItemRenameText}
-        onBlur={handleTitleOnBlur}
-      ></input>
+      <div className={styles.titleAndCloseWrapper}>
+        <input
+          className={styles.listItemTitleInput}
+          type="text"
+          id="listItemTitle"
+          onChange={(event) => handleTitleChange(event)}
+          value={listItemRenameText}
+          onBlur={handleTitleOnBlur}
+        ></input>
+        <div
+          role="button"
+          className={styles.closePaneButton}
+          onClick={handleCloseEditPane}
+        >
+          <CloseIcon fill="white" width="24px" />
+        </div>
+      </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.wrapperLabel}>Tags</div>
         <TagSelector

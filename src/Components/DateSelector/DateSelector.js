@@ -6,34 +6,28 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 function DateSelector({ listItem, updateListItem, listItemID }) {
   const [dates, setDates] = useState([
-    listItem?.date?.startDate || null,
-    listItem?.date?.endDate || null,
+    listItem?.date?.startDate ? new Date(listItem.date.startDate) : null,
+    listItem?.date?.endDate ? new Date(listItem.date.endDate) : null,
   ]);
   const [isInFocus, setIsInFocus] = useState(false);
   const containerRef = useRef(null);
   const datePickerRef = useRef(null);
   const datesRef = useRef(dates);
 
-  const handleClickOff = (event) => {
+  const handleClickOff = () => {
     const convertToISOString = (value) => {
-      if (value instanceof Date) {
-        // If it's already a Date object, use toISOString
+      if (value instanceof Date && !isNaN(value.getTime())) {
         return value.toISOString();
       } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-        // If it's a string and can be parsed as a Date, convert to Date object
         return new Date(value).toISOString();
       }
-      return null; // Return null if value is not a valid Date
+      return null;
     };
 
-    const startDate = convertToISOString(datesRef.current?.[0]);
-    const endDate = convertToISOString(datesRef.current?.[1]);
+    const startDate = convertToISOString(datesRef.current[0]);
+    const endDate = convertToISOString(datesRef.current[1]);
 
-    const dateObj = {
-      startDate,
-      endDate,
-    };
-
+    const dateObj = { startDate, endDate };
     updateListItem(listItemID, 'date', dateObj);
     setIsInFocus(false);
   };
@@ -43,6 +37,14 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   }, [dates]);
 
   const handleChange = (update) => {
+    const [startDate, endDate] = update;
+    if (
+      (startDate && !(startDate instanceof Date)) ||
+      (endDate && !(endDate instanceof Date))
+    ) {
+      console.error('Received invalid date');
+      return;
+    }
     setDates(update);
   };
 
@@ -64,10 +66,9 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     };
   }, []);
 
-  // Helper function to determine if a date is in the past
   const isPastDate = (date) => {
     const today = new Date();
-    return date < today.setHours(0, 0, 0, 0); // Compare to today's date without time
+    return date < today.setHours(0, 0, 0, 0);
   };
 
   return (
@@ -81,22 +82,24 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
         {dates[0] ? (
           <div className={styles.dateLabels}>
             <p className={styles.startLabel}>{h.formatDate(dates[0])}</p>
-            {dates[1] ? <p className={styles.arrowIcon}>></p> : null}
-            {dates[1] ? (
-              <p className={styles.arrowIcon}>{h.formatDate(dates[1])}</p>
-            ) : null}
+            {dates[1] && (
+              <>
+                <p className={styles.arrowIcon}>></p>
+                <p className={styles.arrowIcon}>{h.formatDate(dates[1])}</p>
+              </>
+            )}
           </div>
         ) : (
           <p className={styles.emptyLabel}>Empty</p>
         )}
       </div>
       {isInFocus && (
-        <div className={`${styles.dropdown}`} ref={datePickerRef}>
+        <div className={styles.dropdown} ref={datePickerRef}>
           <DatePicker
-            selected={dates[0]}
+            selected={dates[0] || null}
             onChange={(update) => handleChange(update)}
-            startDate={dates[0]}
-            endDate={dates[1]}
+            startDate={dates[0] || null}
+            endDate={dates[1] || null}
             selectsRange
             inline
             calendarClassName={styles.rastaStripes}

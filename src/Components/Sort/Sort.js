@@ -38,6 +38,11 @@ function Sort({ sortOn, setSortOn, order, handleToggleOrder }) {
     showDropdown ? styles.dropdownOpen : null
   }`;
 
+  const handleClearSort = () => {
+    setSortOn('manualOrder');
+    setShowDropdown(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.sortWindow} onClick={toggleDropdown}>
@@ -96,9 +101,17 @@ function Sort({ sortOn, setSortOn, order, handleToggleOrder }) {
             </span>
           ) : null}
         </div>
+        <div className={styles.clearSortButton} onClick={handleClearSort}>
+          <p className={styles.clearSortButtonLabel}>Clear Sort</p>
+        </div>
       </div>
     </div>
   );
 }
 
 export default Sort;
+
+/*
+
+
+*/

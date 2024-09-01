@@ -11,6 +11,8 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
+        console.log(user);
+        localStorage.setItem('displayName', user.displayName);
         localStorage.setItem('email', user.email);
         localStorage.setItem('firebaseID', user.uid);
         localStorage.setItem('expires', user.stsTokenManager.expirationTime);

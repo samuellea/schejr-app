@@ -3,12 +3,14 @@
   /* position: absolute; */
   bottom: 0; /* Sticks to the bottom of the parent */
   height: 93%; /* 93% of the parent's height */
-  width: 75%;
   box-sizing: border-box;
   background-color: #191919;
-  border: 5px solid yellow;
+  /* border: 5px solid yellow; */
   margin-left: auto;
   margin-top: auto;
   /* position: absolute; */
   /* bottom: 0; */
+  padding: 4% 4%;
+  box-sizing: border-box;
+  position: relative;
 }

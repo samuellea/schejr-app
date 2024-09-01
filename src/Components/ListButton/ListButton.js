@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './ListButton.module.css';
 import * as u from '../../utils';
+import TagsIcon from '../Icons/TagsIcon';
+import TrashIcon from '../Icons/TrashIcon';
 
 function ListButton({
   listName,
@@ -15,8 +17,15 @@ function ListButton({
 
   return (
     <div className={combined} onClick={() => handleSelectListButton(listID)}>
-      <p>{listName}</p>
-      <button onClick={() => handleDeleteList(listID)}>Delete</button>
+      <TagsIcon />
+      <p className={styles.listTitle}>{listName}</p>
+      <div
+        role="button"
+        className={styles.deleteListButton}
+        onClick={() => handleDeleteList(listID)}
+      >
+        <TrashIcon fill="#9b9b9b" width="16px" />
+      </div>
     </div>
   );
 }

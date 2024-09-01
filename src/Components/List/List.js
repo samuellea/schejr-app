@@ -6,6 +6,7 @@ import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
 import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 import Sort from '../Sort/Sort';
+import PlusIcon from '../Icons/PlusIcon';
 
 function List({
   selectedList,
@@ -156,8 +157,10 @@ function List({
           </div>
         )}
       </Droppable>
+      <div className={styles.newListItemButtonDivier} />
       <div className={styles.newListItemButton} onClick={createListItem}>
-        + New
+        <PlusIcon />
+        <span>New</span>
       </div>
     </div>
   );

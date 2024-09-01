@@ -4,9 +4,12 @@ import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
 import randomEmoji from 'random-emoji';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
+import EditIcon from '../Icons/EditIcon';
+import ChevronIcon from '../Icons/ChevronIcon';
 
 function Sidebar({
   userUID,
+  displayName,
   sortedLists,
   selectedListID,
   setSelectedListID,
@@ -39,9 +42,21 @@ function Sidebar({
   return (
     <div className={combined}>
       <div className={styles.listsHeader}>
-        <button onClick={toggleSidebar}>《</button>
-        <p>Lists</p>
-        <button onClick={createList}>Add</button>
+        <div
+          role="button"
+          className={styles.listsHeaderButton}
+          onClick={toggleSidebar}
+        >
+          <ChevronIcon fill="white" width="16px" />
+        </div>
+        <p className={styles.sidebarTitle}>{displayName}'s lists</p>
+        <div
+          role="button"
+          className={styles.listsHeaderButton}
+          onClick={createList}
+        >
+          <EditIcon fill="white" width="16px" />
+        </div>
       </div>
       <div className={styles.listContainer}>
         {sortedLists.map((list) => (

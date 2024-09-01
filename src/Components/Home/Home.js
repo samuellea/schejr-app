@@ -23,6 +23,7 @@ function Home() {
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
+  const displayName = localStorage.getItem('displayName');
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
@@ -218,18 +219,23 @@ function Home() {
   };
 
   const updateListItem = async (listItemID, field, value) => {
-    // Function that can update name, tags, startTime and endTime for a list item object on FB
-    const { listItemID: unneededListItemID, ...rest } = listItemToEdit;
-    const updatedListItem = {
-      ...rest,
-      [field]: value,
-    };
+    // update the List Item in state first
+    const indexOfListItemInListItems = listItems.findIndex(
+      (item) => item.listItemID === listItemID
+    );
+    const updatedListItem = { ...listItemToEdit, [field]: value };
+    const updatedListItems = [...listItems];
+    updatedListItems[indexOfListItemInListItems] = updatedListItem;
+    setListItems(updatedListItems);
+    // then, remove the listItemID prior to patching the List Item on the db
+    const { listItemID: unneededListItemID, ...rest } = updatedListItem;
+    const updatedListItemMinusExplicitID = { ...rest };
     try {
       const listItemUpdated = await u.patchListItem(
         unneededListItemID,
-        updatedListItem
+        updatedListItemMinusExplicitID
       );
-      setListItemsModified(true);
+      // setListItemsModified(true);
     } catch (error) {
       console.error('Failed to update list item:', error);
     }
@@ -259,6 +265,7 @@ function Home() {
       <div className={styles.container}>
         <TopBar toggleSidebar={toggleSidebar} />
         <MainArea
+          showSidebar={showSidebar}
           selectedList={lists.find((e) => e.listID === selectedListID)}
           updateList={updateList}
           updateListItem={updateListItem}
@@ -274,6 +281,7 @@ function Home() {
         />
         <Sidebar
           userUID={userUID}
+          displayName={displayName}
           sortedLists={h.sortByProperty(
             lists,
             sidebarListSortOn,
