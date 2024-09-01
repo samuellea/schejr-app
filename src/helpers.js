@@ -39,7 +39,7 @@ export const formatDate = (date) => {
   return format(date, 'MMMM dd, yyyy');
 };
 
-export const sortItems = (items, sortKey, order) => {
+export const sortItems = (items, sortKey, order, existingTags) => {
   // Validate sortKey and order
   if (!items || !Array.isArray(items)) {
     throw new Error('First argument must be an array of objects.');
@@ -61,18 +61,100 @@ export const sortItems = (items, sortKey, order) => {
 
   if (!items.length) return null;
 
+  console.log(items);
+
   // Determine sort order
   const isAscending = order === 'ascending';
 
-  return items.sort((a, b) => {
-    if (a[sortKey] < b[sortKey]) {
-      return isAscending ? -1 : 1;
-    }
-    if (a[sortKey] > b[sortKey]) {
-      return isAscending ? 1 : -1;
-    }
-    return 0;
-  });
+  if (sortKey === 'manualOrder' || sortKey === 'title') {
+    return items.sort((a, b) => {
+      if (a[sortKey] < b[sortKey]) {
+        return isAscending ? -1 : 1;
+      }
+      if (a[sortKey] > b[sortKey]) {
+        return isAscending ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+
+  if (sortKey === 'startDate') {
+    return items.sort((a, b) => {
+      // Access .startDate or provide a default date if missing
+      const dateA = a.date?.startDate
+        ? new Date(a.date.startDate)
+        : new Date(-8640000000000000); // Default to very distant past date
+      const dateB = b.date?.startDate
+        ? new Date(b.date.startDate)
+        : new Date(8640000000000000); // Default to very distant future date
+
+      // Determine sort direction
+      const direction = order === 'descending' ? -1 : 1;
+
+      // Compare the dates
+      if (dateA < dateB) {
+        return -1 * direction; // Ascending or descending based on direction
+      }
+      if (dateA > dateB) {
+        return 1 * direction; // Ascending or descending based on direction
+      }
+      return 0; // If dates are equal
+    });
+  }
+
+  if (sortKey === 'tags') {
+    // Convert all tags in all items to their names
+    const withTagNames = items.map((e) => {
+      // Check if the item has a .tags key and it's not empty
+      const tags = e.tags || []; // Default to empty array if .tags is undefined
+      const tagsWithNames = tags.map((id) => {
+        const tag = existingTags.find((tag) => tag.tagID === id);
+        return tag ? tag.name : 'Unknown'; // Use 'Unknown' or any default name for missing tags
+      });
+      return { ...e, tags: tagsWithNames };
+    });
+
+    // Sort items based on their tag names
+    const thoroughlySortedOnTagNames = withTagNames.sort((a, b) => {
+      const tagsA = a.tags || []; // Default to empty array if .tags is undefined
+      const tagsB = b.tags || [];
+
+      // Determine sort direction
+      const direction = order === 'descending' ? -1 : 1;
+
+      // Find the smallest length between the two tag arrays
+      const minLength = Math.min(tagsA.length, tagsB.length);
+
+      for (let i = 0; i < minLength; i++) {
+        const tagA = tagsA[i]?.toLowerCase() || ''; // Convert tags to lowercase for consistent sorting
+        const tagB = tagsB[i]?.toLowerCase() || '';
+
+        if (tagA < tagB) {
+          return -1 * direction; // If tagA comes before tagB alphabetically
+        }
+        if (tagA > tagB) {
+          return 1 * direction; // If tagA comes after tagB alphabetically
+        }
+        // If tags are equal, continue to the next tag
+      }
+
+      // If all compared tags are equal, the array with fewer tags comes first
+      return (tagsA.length - tagsB.length) * direction;
+    });
+
+    // Convert tag names back to IDs
+    const backToTagIDs = thoroughlySortedOnTagNames.map((e) => {
+      const tagsAsIDs = (e.tags || [])
+        .map((name) => {
+          const tag = existingTags.find((tag) => tag.name === name);
+          return tag ? tag.tagID : null; // Use null or any default value for missing tags
+        })
+        .filter((id) => id !== null); // Filter out null values (missing tags)
+      return { ...e, tags: tagsAsIDs };
+    });
+
+    return backToTagIDs;
+  }
 };
 
 // // if the item's starting index is lower than the destination index: all objects with .mO <= destination index have their .m0s - 1'd

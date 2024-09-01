@@ -23,17 +23,27 @@
   white-space: nowrap;
   border-radius: 32px;
   height: 24px;
+  /* width: 50px; */
   line-height: 24px;
   padding: 0px 18px;
   /* border: 1px solid rgba(35, 131, 226, 0.35);
   color: rgb(35, 131, 226); */
   border: 1px solid rgba(98, 173, 249, 0.57);
   color: rgb(72, 156, 240);
-  background: rgba(50, 140, 229, 0.243);
 }
 
 .sortWindow:active {
-  background: rgba(65, 159, 254, 0.434);
+  background: rgba(47, 146, 245, 0.379);
+}
+
+.sortWindow svg {
+  margin-left: 4px;
+}
+
+.sortActive {
+  background: rgba(57, 149, 241, 0.243);
+  border: 1px solid rgb(109, 182, 255);
+  color: rgb(109, 182, 255);
 }
 
 .sortDropdown {

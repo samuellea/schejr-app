@@ -4,8 +4,16 @@ import TitleIcon from '../Icons/TitleIcon';
 import TagsIcon from '../Icons/TagsIcon';
 import DateIcon from '../Icons/DateIcon';
 import TickIcon from '../Icons/TickIcon';
+import ArrowIcon from '../Icons/ArrowIcon';
 
-function Sort({ sortOn, setSortOn, order, handleToggleOrder }) {
+function Sort({
+  sortOn,
+  setSortOn,
+  order,
+  setOrder,
+  handleToggleOrder,
+  existingTags,
+}) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const sortDropdownRef = useRef(null);
@@ -28,6 +36,11 @@ function Sort({ sortOn, setSortOn, order, handleToggleOrder }) {
   }, []); // Depend on childClickedOutside
 
   const capitalizedOrderLabel = order.charAt(0).toUpperCase() + order.slice(1);
+  const capitalizedSortLabel =
+    sortOn === 'startDate'
+      ? 'Date'
+      : sortOn.charAt(0).toUpperCase() + sortOn.slice(1);
+  // const arrowDirection = order !== 'ascending' ? 'rotate(180deg)' : 'rotate(0deg)'
 
   const toggleDropdown = (event) => {
     event.stopPropagation();
@@ -40,13 +53,25 @@ function Sort({ sortOn, setSortOn, order, handleToggleOrder }) {
 
   const handleClearSort = () => {
     setSortOn('manualOrder');
+    setOrder('ascending');
     setShowDropdown(false);
   };
 
+  const sortWindowCombined = `${styles.sortWindow} ${
+    sortOn !== 'manualOrder' ? styles.sortActive : null
+  }`;
+
   return (
     <div className={styles.container}>
-      <div className={styles.sortWindow} onClick={toggleDropdown}>
-        Sort
+      <div className={sortWindowCombined} onClick={toggleDropdown}>
+        {sortOn !== 'manualOrder' ? capitalizedSortLabel : 'Sort'}
+        {sortOn !== 'manualOrder' ? (
+          <ArrowIcon
+            width="14px"
+            fill="rgb(109, 182, 255)"
+            flip={order !== 'ascending' ? true : false}
+          />
+        ) : null}
       </div>
       <div className={sortDropdownCombined} ref={sortDropdownRef}>
         <div className={styles.ascDescWindow} onClick={handleToggleOrder}>

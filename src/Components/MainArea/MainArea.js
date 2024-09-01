@@ -56,6 +56,7 @@ function MainArea({
         tagID: e[0],
         ...e[1],
       }));
+      console.log(allUserTagsWithIDs);
       setExistingTags(allUserTagsWithIDs);
     } catch {
       // Handle error fetching tags

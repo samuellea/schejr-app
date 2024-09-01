@@ -3,10 +3,10 @@
   background-color: #202020;
   color: white;
   height: 100%;
-  width: 50%;
+  width: 100%;
   position: absolute; /* Allow overlaying */
   top: 0; /* Adjust as needed */
-  left: 50%; /* Adjust as needed */
+  left: 0%; /* Adjust as needed */
   z-index: 20; /* Ensure this sibling is on top */
   display: flex;
   flex-direction: column;

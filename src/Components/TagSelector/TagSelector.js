@@ -118,6 +118,7 @@ function TagSelector({
   }, [existingTags]);
 
   useEffect(() => {
+    console.log('tags modified! fetching tags...');
     fetchTags();
     setTagsModified(false);
   }, [tagsModified]);

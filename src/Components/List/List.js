@@ -124,34 +124,38 @@ function List({
                 sortOn={sortOn}
                 setSortOn={setSortOn}
                 order={order}
+                setOrder={setOrder}
                 handleToggleOrder={handleToggleOrder}
+                existingTags={existingTags}
               />
-              {h.sortItems(listItems, sortOn, order)?.map((listItem, index) => (
-                <Draggable
-                  key={`draggable-${listItem.listItemID}`}
-                  draggableId={listItem.listItemID}
-                  index={index}
-                  type="list-item" ///////////////////////////////////////
-                >
-                  {(provided) => (
-                    <div
-                      className={styles.listItem}
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <ListItem
-                        listItem={listItem}
-                        setListItemsModified={setListItemsModified}
-                        handleEditListItem={handleEditListItem}
-                        existingTags={existingTags}
-                        deleteListItem={deleteListItem}
-                        // key={`list-item-${listItem.listItemID}`}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              )) || null}
+              {h
+                .sortItems(listItems, sortOn, order, existingTags)
+                ?.map((listItem, index) => (
+                  <Draggable
+                    key={`draggable-${listItem.listItemID}`}
+                    draggableId={listItem.listItemID}
+                    index={index}
+                    type="list-item" ///////////////////////////////////////
+                  >
+                    {(provided) => (
+                      <div
+                        className={styles.listItem}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ListItem
+                          listItem={listItem}
+                          setListItemsModified={setListItemsModified}
+                          handleEditListItem={handleEditListItem}
+                          existingTags={existingTags}
+                          deleteListItem={deleteListItem}
+                          // key={`list-item-${listItem.listItemID}`}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                )) || null}
             </div>
             {provided.placeholder}
           </div>
