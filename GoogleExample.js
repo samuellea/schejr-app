@@ -58,7 +58,7 @@ function GoogleCalendarIntegration() {
       })
       .then((response) => {
         alert('Event added to Google Calendar!');
-        console.log('Event created:', response);
+        'Event created:', response;
       })
       .catch((error) => {
         console.error('Error adding event:', error);

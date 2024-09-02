@@ -27,7 +27,6 @@ function ListItem({
   };
 
   const handleTitleOnBlur = () => {
-    console.log(listItem.listItemID);
     updateListItem(listItem, 'title', listItemRenameText);
   };
 

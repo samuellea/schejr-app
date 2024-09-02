@@ -4,6 +4,7 @@ import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
 import CloseIcon from '../Icons/CloseIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 
 function ListItemEditPane({
   listItem,
@@ -13,6 +14,8 @@ function ListItemEditPane({
   setListItemsModified,
   fetchTags,
   existingTags,
+  syncWithGCal,
+  handleSetSyncWithGCal,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
 
@@ -36,14 +39,7 @@ function ListItemEditPane({
             onClick={handleCloseEditPane}
           >
             {/* <CloseIcon fill="white" width="24px" /> */}
-            <ChevronIcon fill="white" width="28
-            
-            
-            
-            
-            
-            
-            px" />
+            <ChevronIcon fill="white" width="28px" />
           </div>
         </div>
         <input
@@ -77,9 +73,16 @@ function ListItemEditPane({
           listItemID={listItem.listItemID}
         />
       </div>
+      <div className={styles.fieldWrapper}>
+        <div className={styles.fieldIndent} />
+        <div className={styles.wrapperLabel}>Sync</div>
+        <ToggleSwitch
+          syncWithGCal={syncWithGCal}
+          handleSetSyncWithGCal={handleSetSyncWithGCal}
+        />
+      </div>
     </div>
   );
 }
 
 export default ListItemEditPane;
-

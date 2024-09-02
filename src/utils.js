@@ -10,6 +10,7 @@ import {
   remove,
   update,
 } from 'firebase/database';
+import { gapi } from 'gapi-script';
 
 export const createNewList = async (listData) => {
   try {
@@ -301,3 +302,135 @@ export const patchMultipleListItems = async (updates) => {
     return error;
   }
 };
+
+export const getUserSyncState = async (userUID) => {
+  try {
+    // Reference to the 'lists' endpoint
+    const userSyncStatesRef = ref(database, 'userSyncStates');
+    // Create a query to filter lists where 'createdBy' equals the given userUID
+    const userSyncStatesQuery = query(
+      userSyncStatesRef,
+      orderByChild('userUID'),
+      equalTo(userUID)
+    );
+    const snapshot = await get(userSyncStatesQuery);
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log('No userSyncState found for the user.');
+      return {};
+    }
+  } catch (error) {
+    console.error('Error retrieving userSyncState for this user:', error);
+    throw error;
+  }
+};
+
+export const createSyncStateByUserID = async (userUID, state) => {
+  const initUserSyncState = { userUID: userUID, state: state };
+  const userSyncStatesRef = ref(database, 'userSyncStates');
+  // Generate a new key under the 'lists' endpoint
+  const syncStateRef = push(userSyncStatesRef);
+  // Set the data at the new reference
+  await set(syncStateRef, initUserSyncState);
+  console.log('New list created with ID:', syncStateRef.key);
+  // patch
+  // const listItemRef = ref(database, `listItems/${listItemID}`);
+  // await update(listItemRef, newData);
+  // console.log('Object updated successfully');
+
+  try {
+  } catch (error) {
+    console.error('Error updating one or more listItems db objects:', error);
+    return error;
+  }
+};
+
+export const patchSyncStateByUserID = async (userUID, state) => {
+  try {
+    // Reference to your database node where the objects are stored
+    const userSyncStatesRef = ref(database, 'userSyncStates');
+    // Query to find objects where the userUID key matches the provided userUID
+    const userQuery = query(
+      userSyncStatesRef,
+      orderByChild('userUID'),
+      equalTo(userUID)
+    );
+    const snapshot = await get(userQuery);
+    const patchData = { userUID: userUID, state: state };
+    if (snapshot.exists()) {
+      // Iterate over the matched objects and update them
+      snapshot.forEach((childSnapshot) => {
+        // Get the key of the matched object
+        const key = childSnapshot.key;
+        // Update the matched object using the key
+        const updateRef = ref(database, `userSyncStates/${key}`); // Replace with your actual path
+        update(updateRef, patchData);
+      });
+
+      console.log('userSyncStates obj for this user updated successfully.');
+    } else {
+      console.log('No userSyncStates object found with the provided userUID.');
+    }
+  } catch (error) {
+    console.error('Error updating userSyncState object for this user:', error);
+  }
+};
+
+export const addAListItemToGCal = async (listItem) => {
+  console.log(listItem);
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
+  console.log(userTimeZone);
+  const event = {
+    summary: listItem.title,
+    start: {
+      date: listItem.date.startDate,
+      // timeZone: userTimeZone,
+    },
+    end: {
+      date: !listItem.date.endDate
+        ? listItem.date.startDate
+        : listItem.date.endDate,
+      // timeZone: userTimeZone,
+    },
+    extendedProperties: {
+      private: {
+        createdBy: 'schejr-app', // Unique identifier to mark the event as created by your app
+      },
+    },
+  };
+
+  console.log(event);
+
+  try {
+    const response = await gapi.client.calendar.events.insert({
+      calendarId: 'primary',
+      resource: event,
+    });
+    console.log('Event created:', response);
+  } catch (error) {
+    console.error('Error creating event:', error);
+  }
+};
+
+export const removeAListItemFromGCal = async () => {};
+
+export const addAllListItemsToGCal = async (listItems) => {
+  console.log(listItems);
+  const updatePromises = listItems.map((listItem) => {
+    return addAListItemToGCal(listItem);
+  });
+  return await Promise.all(updatePromises);
+};
+
+export const removeAllListItemsFromGCal = async () => {};
+
+/*
+const event = {
+end: {dateTime: '2024-09-07'},
+start: {dateTime: '2024-09-07'},
+summary: "Event Created by My App"
+}
+
+*/

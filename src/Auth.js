@@ -13,17 +13,13 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        console.log(result);
-        console.log(user);
         localStorage.setItem('displayName', user.displayName);
         localStorage.setItem('email', user.email);
         localStorage.setItem('firebaseID', user.uid);
         localStorage.setItem('expires', user.stsTokenManager.expirationTime);
-
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const accessToken = credential.accessToken;
         localStorage.setItem('googleAccessToken', accessToken);
-
         // localStorage.setItem('accessToken', user.accessToken); // think this is firebase access token
         navigate('/');
         // redirect logic

@@ -19,6 +19,8 @@ function MainArea({
   setListItemsModified,
   listAndItemsLoaded,
   setListAndItemsLoaded,
+  syncWithGCal,
+  handleSetSyncWithGCal,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -56,7 +58,6 @@ function MainArea({
         tagID: e[0],
         ...e[1],
       }));
-      console.log(allUserTagsWithIDs);
       setExistingTags(allUserTagsWithIDs);
     } catch {
       // Handle error fetching tags
@@ -104,6 +105,8 @@ function MainArea({
           setListItemsModified={setListItemsModified}
           fetchTags={fetchTags}
           existingTags={existingTags}
+          syncWithGCal={syncWithGCal}
+          handleSetSyncWithGCal={handleSetSyncWithGCal}
         />
       ) : null}
     </div>

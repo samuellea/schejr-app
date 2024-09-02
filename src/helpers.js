@@ -62,8 +62,6 @@ export const sortItems = (items, sortKey, order, existingTags) => {
 
   if (!items.length) return null;
 
-  console.log(items);
-
   // Determine sort order
   const isAscending = order === 'ascending';
 
@@ -196,9 +194,6 @@ export const updatedManualOrdersOnSourceList = (listItems, removedID) => {
 export const dateLabel = (dates) => {
   if (!dates) return '';
   const { startDate, endDate } = dates;
-  console.log(startDate);
-  console.log(endDate);
-
   const formatDate = (isoDate) => {
     if (!isoDate) return null;
     const date = new Date(isoDate);

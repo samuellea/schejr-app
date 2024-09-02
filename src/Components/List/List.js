@@ -25,7 +25,7 @@ function List({
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
-    console.log(text);
+    text;
     setListTitle(text);
   };
 
@@ -67,7 +67,7 @@ function List({
   };
 
   const deleteListItem = async (listItem) => {
-    console.log(listItems);
+    listItems;
     // handle UI update using state
     const listItemToDelete = { ...listItem };
     const listItemsMinusDeleted = listItems.filter(
@@ -75,8 +75,8 @@ function List({
     );
     setListItems(listItemsMinusDeleted); // <<<<< these won't have tidied .manualOrders, but removes deleted item from state/UI...
     try {
-      console.log(listItemToDelete);
-      console.log(listItemToDelete.listItemID);
+      listItemToDelete;
+      listItemToDelete.listItemID;
       //   // then actually delete the listItem on db
       await u.deleteListItemByID(listItemToDelete.listItemID);
       //   // then create a tidied copy of new listItems in state (which now don't have the deleted one)
@@ -84,7 +84,7 @@ function List({
         ...e,
         manualOrder: i + 1,
       }));
-      console.log(updatedManualOrders);
+      updatedManualOrders;
       //   // update the list items in state to have tidied .manualOrders
       setListItems(updatedManualOrders);
       // // then patch these tidied objects to their corresponding objs on db

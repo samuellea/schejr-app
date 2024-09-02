@@ -21,6 +21,7 @@ function Home() {
   const [listItemToEdit, setListItemToEdit] = useState(null);
   const [listItemsModified, setListItemsModified] = useState(false);
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
+  const [syncWithGCal, setSyncWithGCal] = useState(false);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -97,7 +98,6 @@ function Home() {
         startIndex,
         destinationIndex
       );
-      console.log(onlyChanged);
 
       // update listItems in state with new .manualOrder values
       setListItems(newMOrders);
@@ -117,12 +117,11 @@ function Home() {
 
   // set Google Calendar API key in gapi
   useEffect(() => {
-    console.log('!');
     const accessToken = localStorage.getItem('googleAccessToken');
 
     if (accessToken) {
-      console.log(accessToken);
-      console.log(process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY);
+      // console.log(accessToken);
+      // console.log(process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY);
       // Load the Google API client and set the access token
       gapi.load('client', () => {
         gapi.client
@@ -135,7 +134,7 @@ function Home() {
           .then((res) => {
             // Set the access token for gapi requests
             gapi.client.setToken({ access_token: accessToken });
-            console.log('???????');
+            // console.log('???????');
           })
           .catch((error) => {
             console.log('.......');
@@ -145,44 +144,44 @@ function Home() {
     }
   }, []);
 
-  const addEventToCalendar = () => {
-    const startDate = '2025-03-17T00:00:00.000Z';
-    const endDate = '2025-03-18T00:00:00.000Z';
-    if (!startDate || !endDate) {
-      alert('Please select both start and end dates.');
-      return;
-    }
+  // const addEventToCalendar = () => {
+  //   const startDate = '2025-03-20T00:00:00.000Z';
+  //   const endDate = '2025-03-23T00:00:00.000Z';
+  //   if (!startDate || !endDate) {
+  //     alert('Please select both start and end dates.');
+  //     return;
+  //   }
 
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
-    // create an object for the event
-    const event = {
-      summary: 'New Event from Datepicker',
-      start: {
-        dateTime: startDate,
-        timeZone: 'America/Los_Angeles', // Adjust time zone as needed
-      },
-      end: {
-        dateTime: endDate,
-        timeZone: 'America/Los_Angeles',
-      },
-    };
-    // insert this event into the google calendar
-    gapi.client.calendar.events
-      .insert({
-        calendarId: 'primary',
-        resource: event,
-      })
-      .then((response) => {
-        alert('Event added to Google Calendar!');
-        console.log('Event created:', response);
-      })
-      .catch((error) => {
-        console.error('Error adding event:', error);
-        console.log(error.result.error);
-        console.log(error.headers);
-        alert('Failed to add event to Google Calendar.');
-      });
-  };
+  //   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
+  //   // create an object for the event
+  //   const event = {
+  //     summary: 'New Event from Datepicker',
+  //     start: {
+  //       dateTime: startDate,
+  //       timeZone: userTimeZone, // Adjust time zone as needed
+  //     },
+  //     end: {
+  //       dateTime: endDate,
+  //       timeZone: userTimeZone,
+  //     },
+  //   };
+  //   // insert this event into the google calendar
+  //   gapi.client.calendar.events
+  //     .insert({
+  //       calendarId: 'primary',
+  //       resource: event,
+  //     })
+  //     .then((response) => {
+  //       alert('Event added to Google Calendar!');
+  //       console.log('Event created:', response);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error adding event:', error);
+  //       console.log(error.result.error);
+  //       console.log(error.headers);
+  //       alert('Failed to add event to Google Calendar.');
+  //     });
+  // };
 
   useEffect(() => {
     const expires = localStorage.getItem('expires');
@@ -202,6 +201,31 @@ function Home() {
   }, []);
 
   useEffect(() => {
+    console.log('fetchUserSyncState useEffect');
+
+    const fetchUserSyncState = async () => {
+      try {
+        const userSyncStateObj = await u.getUserSyncState(userUID);
+        console.log(userSyncStateObj);
+        if (Object.keys(userSyncStateObj).length === 0) {
+          // create a /userSyncStates obj for this user for the first time, and init syncWithGCal with false (default)
+          await u.createSyncStateByUserID(userUID, false);
+          setSyncWithGCal(false);
+        } else {
+          // set our home state syncWithGCal value to be the one on that obj
+          const userSyncState = Object.values(userSyncStateObj)[0].state;
+          setSyncWithGCal(userSyncState);
+          return;
+        }
+      } catch (error) {}
+    };
+
+    console.log('fetchUserSyncState...');
+    fetchUserSyncState();
+  }, []);
+
+  useEffect(() => {
+    // console.log('listsModified useEffect');
     const fetchLists = async () => {
       try {
         const allUserLists = await u.fetchAllUserLists(userUID);
@@ -209,6 +233,14 @@ function Home() {
           listID: e[0],
           ...e[1],
         }));
+        if (!allUserListsWithIDs.length) {
+          // first, check if there is an obj on db /userSyncStates endpoint with userID === our userID
+          // if yes, set our home state syncWithGCal value to be the one on that obj
+          // if no, create a /userSyncStates obj for this user for the first time
+          // user has not lists on the db, and therefore no list items, and therefore nth 2 b synced with gcal yet.
+          // so, initialise their 'syncWithGCal' on the db to false.
+          // u.createOrPatchSyncStateByUserID(userUID, false);
+        }
         setLists(allUserListsWithIDs);
       } catch {
         // Handle error fetching lists
@@ -222,33 +254,32 @@ function Home() {
     fetchLists();
   }, [listsModified]);
 
+  const prevSliceRef = useRef();
+
+  useEffect(() => {
+    // Check if the previous slice is different from the current slice
+    if (
+      prevSliceRef.current !== undefined &&
+      prevSliceRef.current !== syncWithGCal
+    ) {
+      // Your logic that should run only when syncWithGCal changes
+      console.log('syncWithGCal slider clicked');
+      console.log(syncWithGCal);
+      if (syncWithGCal && listItems.length) {
+        console.log(listItems);
+        // add all a user's listItems with dates' dates to their Google Calendar
+        u.addAllListItemsToGCal(listItems);
+      } else {
+        // delete all Google Calendar events with privateExtendedProperty: 'createdBy=schejr-app'
+        u.removeAllListItemsFromGCal();
+      }
+      u.patchSyncStateByUserID(userUID, syncWithGCal);
+    }
+    // Update the ref to the current slice value after the logic runs
+    prevSliceRef.current = syncWithGCal;
+  }, [syncWithGCal]);
+
   const timeoutIdRef = useRef(null);
-
-  // useEffect(() => {
-  //   autoSave();
-  // }, [lists]);
-
-  // const autoSave = () => {
-  //   if (timeoutIdRef.current) {
-  //     clearTimeout(timeoutIdRef.current); // Step 3: Clear any existing timeout
-  //   }
-
-  //   timeoutIdRef.current = setTimeout(() => {
-  //     if (selectedListID) {
-  //       const selectedListObj = lists.filter(
-  //         (e) => e.listID === selectedListID
-  //       )[0];
-  //       const { createdAt, createdBy, title } = selectedListObj;
-  //       const updatedListData = {
-  //         createdAt,
-  //         createdBy,
-  //         title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
-  //       };
-
-  //       u.patchList(selectedListID, updatedListData);
-  //     }
-  //   }, 1000); // Set a new timeout for 2 seconds
-  // };
 
   const handleLogout = () => {
     // Perform your logout logic here
@@ -262,7 +293,6 @@ function Home() {
 
   // Function which updates the list object (by id) in lists state - a separate, timed function will then update this list object on firebase
   const updateList = async (listID, field, value) => {
-    console.log(value);
     let newValue = value;
     if (field === 'title' && value === '') newValue = 'Untitled';
     const updatedListObj = {
@@ -293,27 +323,27 @@ function Home() {
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
     );
-    console.log(listItem);
-    console.log(field);
-    console.log(value);
+    // console.log(listItem);
+    // console.log(field);
+    // console.log(value);
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
+    // console.log(updatedListItem);
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-    setListItems(updatedListItem);
+    setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db
-    console.log(updatedListItem);
+    // console.log(updatedListItem);
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
-    console.log(updatedListItemMinusExplicitID);
-    // try {
-    //   const listItemUpdated = await u.patchListItem(
-    //     unneededListItemID,
-    //     updatedListItemMinusExplicitID
-    //   );
-    //   // setListItemsModified(true);
-    // } catch (error) {
-    //   console.error('Failed to update list item:', error);
-    // }
+    try {
+      const listItemUpdated = await u.patchListItem(
+        unneededListItemID,
+        updatedListItemMinusExplicitID
+      );
+      // setListItemsModified(true);
+    } catch (error) {
+      console.error('Failed to update list item:', error);
+    }
   };
 
   const toggleSidebar = () => {
@@ -335,6 +365,16 @@ function Home() {
     }
   };
 
+  const handleSetSyncWithGCal = () => {
+    setSyncWithGCal((prev) => !prev);
+
+    // if (!syncWithGoogleCalendar) {
+    //   setSyncWithGoogleCalendar(true);
+    // } else {
+    //   setSyncWithGoogleCalendar(false);
+    // }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.container}>
@@ -353,6 +393,8 @@ function Home() {
           setListItemsModified={setListItemsModified}
           listAndItemsLoaded={listAndItemsLoaded}
           setListAndItemsLoaded={setListAndItemsLoaded}
+          syncWithGCal={syncWithGCal}
+          handleSetSyncWithGCal={handleSetSyncWithGCal}
         />
         <Sidebar
           userUID={userUID}
@@ -372,7 +414,7 @@ function Home() {
         />
       </div>
       <Toaster />
-      <button onClick={addEventToCalendar}> Hello</button>
+      {/* <button onClick={addEventToCalendar}> Hello</button> */}
     </DragDropContext>
   );
 }

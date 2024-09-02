@@ -17,9 +17,18 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   const handleClickOff = () => {
     const convertToISOString = (value) => {
       if (value instanceof Date && !isNaN(value.getTime())) {
-        return value.toISOString();
+        // Convert local date to YYYY-MM-DD format
+        const year = value.getFullYear();
+        const month = String(value.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(value.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
       } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-        return new Date(value).toISOString();
+        // Convert string to Date object, then to YYYY-MM-DD format
+        const date = new Date(value);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
       }
       return null;
     };
@@ -28,7 +37,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     const endDate = convertToISOString(datesRef.current[1]);
 
     const dateObj = { startDate, endDate };
-    updateListItem(listItem, 'date', dateObj);
+    updateListItem(listItem, 'date', dateObj); // add date to FB /listItems listItem object
     setIsInFocus(false);
   };
 
@@ -37,6 +46,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   }, [dates]);
 
   const handleChange = (update) => {
+    console.log(update);
     const [startDate, endDate] = update;
     if (
       (startDate && !(startDate instanceof Date)) ||
@@ -111,6 +121,11 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
           >
             <p className={styles.clearDatesButtonLabel}>Clear</p>
           </div>
+          {/* <div
+            className={styles.addToGoogleCalendarSection}
+          >
+            <p className={styles.clearDatesButtonLabel}>Clear</p>
+          </div> */}
         </div>
       )}
     </div>
