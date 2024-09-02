@@ -401,8 +401,6 @@ export const addAListItemToGCal = async (listItem) => {
     },
   };
 
-  console.log(event);
-
   try {
     const response = await gapi.client.calendar.events.insert({
       calendarId: 'primary',
@@ -414,7 +412,17 @@ export const addAListItemToGCal = async (listItem) => {
   }
 };
 
-export const removeAListItemFromGCal = async () => {};
+export const removeListItemFromGCal = async (event) => {
+  try {
+    await gapi.client.calendar.events.delete({
+      calendarId: 'primary',
+      eventId: event.id,
+    });
+    console.log(`Deleted event: ${event.summary}`);
+  } catch (error) {
+    console.error(`Failed to delete event ${event.summary}:`, error);
+  }
+};
 
 export const addAllListItemsToGCal = async (listItems) => {
   console.log(listItems);
@@ -424,7 +432,31 @@ export const addAllListItemsToGCal = async (listItems) => {
   return await Promise.all(updatePromises);
 };
 
-export const removeAllListItemsFromGCal = async () => {};
+export const removeAllListItemsFromGCal = async () => {
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      privateExtendedProperty: 'createdBy=schejr-app', // Filtering by your custom identifier
+      showDeleted: false,
+      singleEvents: true,
+      maxResults: 2500, // Adjust if you expect more than 2500 events
+    });
+
+    const allEventsMadeByUser = response.result.items;
+
+    if (!allEventsMadeByUser || allEventsMadeByUser.length === 0) {
+      console.log('No events found with the specified extended property.');
+      return;
+    }
+
+    const updatePromises = allEventsMadeByUser.map((event) => {
+      return removeListItemFromGCal(event);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 /*
 const event = {
