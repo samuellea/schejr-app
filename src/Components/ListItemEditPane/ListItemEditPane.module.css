@@ -38,7 +38,7 @@
 }
 
 .closePaneButton {
-  border: 2px solid #2a2a2a;
+  /* border: 1px solid #2a2a2a; */
   border-radius: 6px;
   padding: 8px;
   box-sizing: border-box;

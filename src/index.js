@@ -10,15 +10,13 @@ import './index.css';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyAwOlePXrC1j89pUbKq5KTvkmaj-jGG99U',
-  authDomain: 'schejr-app.firebaseapp.com',
-  databaseURL:
-    'https://schejr-app-default-rtdb.europe-west1.firebasedatabase.app',
-  projectId: 'schejr-app',
-  storageBucket: 'schejr-app.appspot.com',
-  messagingSenderId: '674555454467',
-  appId: '1:674555454467:web:c5d233390776d7b3b0da36',
-  measurementId: 'G-90WFTJ1F2C',
+  apiKey: process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY,
+  authDomain: 'schejr-app-434314.firebaseapp.com',
+  databaseURL: process.env.REACT_APP_FIREBASE_URL,
+  projectId: 'schejr-app-434314',
+  storageBucket: 'schejr-app-434314.appspot.com',
+  messagingSenderId: '391519884385',
+  appId: '1:391519884385:web:9ebfd228595097a0708620',
 };
 
 // Initialize Firebase

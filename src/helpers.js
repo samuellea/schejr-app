@@ -42,7 +42,8 @@ export const formatDate = (date) => {
 export const sortItems = (items, sortKey, order, existingTags) => {
   // Validate sortKey and order
   if (!items || !Array.isArray(items)) {
-    throw new Error('First argument must be an array of objects.');
+    // throw new Error('First argument must be an array of objects.');
+    return [];
   }
   if (
     typeof sortKey !== 'string' ||

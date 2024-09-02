@@ -37,6 +37,7 @@ function App({ auth, database }) {
               provider={provider}
               handleSignInSuccess={handleSignInSuccess}
               setLoading={setLoading}
+              GoogleAuthProvider={GoogleAuthProvider}
             />
           }
         />

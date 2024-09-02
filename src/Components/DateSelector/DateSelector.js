@@ -28,7 +28,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     const endDate = convertToISOString(datesRef.current[1]);
 
     const dateObj = { startDate, endDate };
-    updateListItem(listItem.listItemID, 'date', dateObj);
+    updateListItem(listItem, 'date', dateObj);
     setIsInFocus(false);
   };
 

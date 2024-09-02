@@ -36,7 +36,14 @@ function ListItemEditPane({
             onClick={handleCloseEditPane}
           >
             {/* <CloseIcon fill="white" width="24px" /> */}
-            <ChevronIcon fill="white" width="24px" />
+            <ChevronIcon fill="white" width="28
+            
+            
+            
+            
+            
+            
+            px" />
           </div>
         </div>
         <input
@@ -75,3 +82,4 @@ function ListItemEditPane({
 }
 
 export default ListItemEditPane;
+

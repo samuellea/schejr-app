@@ -8,6 +8,7 @@ import * as u from '../../utils';
 import * as h from '../../helpers';
 import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
 import toast, { Toaster } from 'react-hot-toast';
+import { gapi } from 'gapi-script';
 
 function Home() {
   const [listsModified, setListsModified] = useState(false);
@@ -112,6 +113,75 @@ function Home() {
         // setListItemsModified(true);
       }
     }
+  };
+
+  // set Google Calendar API key in gapi
+  useEffect(() => {
+    console.log('!');
+    const accessToken = localStorage.getItem('googleAccessToken');
+
+    if (accessToken) {
+      console.log(accessToken);
+      console.log(process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY);
+      // Load the Google API client and set the access token
+      gapi.load('client', () => {
+        gapi.client
+          .init({
+            apiKey: process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY, // my api key, removed for security
+            discoveryDocs: [
+              'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+            ],
+          })
+          .then((res) => {
+            // Set the access token for gapi requests
+            gapi.client.setToken({ access_token: accessToken });
+            console.log('???????');
+          })
+          .catch((error) => {
+            console.log('.......');
+            console.error('Error initializing Google API client:', error);
+          });
+      });
+    }
+  }, []);
+
+  const addEventToCalendar = () => {
+    const startDate = '2025-03-17T00:00:00.000Z';
+    const endDate = '2025-03-18T00:00:00.000Z';
+    if (!startDate || !endDate) {
+      alert('Please select both start and end dates.');
+      return;
+    }
+
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
+    // create an object for the event
+    const event = {
+      summary: 'New Event from Datepicker',
+      start: {
+        dateTime: startDate,
+        timeZone: 'America/Los_Angeles', // Adjust time zone as needed
+      },
+      end: {
+        dateTime: endDate,
+        timeZone: 'America/Los_Angeles',
+      },
+    };
+    // insert this event into the google calendar
+    gapi.client.calendar.events
+      .insert({
+        calendarId: 'primary',
+        resource: event,
+      })
+      .then((response) => {
+        alert('Event added to Google Calendar!');
+        console.log('Event created:', response);
+      })
+      .catch((error) => {
+        console.error('Error adding event:', error);
+        console.log(error.result.error);
+        console.log(error.headers);
+        alert('Failed to add event to Google Calendar.');
+      });
   };
 
   useEffect(() => {
@@ -223,22 +293,27 @@ function Home() {
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
     );
-    const updatedListItem = { ...listItem, [field]: value };
+    console.log(listItem);
+    console.log(field);
+    console.log(value);
+    const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-    setListItems(updatedListItems);
+    setListItems(updatedListItem);
     // then, remove the listItemID prior to patching the List Item on the db
+    console.log(updatedListItem);
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
-    try {
-      const listItemUpdated = await u.patchListItem(
-        unneededListItemID,
-        updatedListItemMinusExplicitID
-      );
-      // setListItemsModified(true);
-    } catch (error) {
-      console.error('Failed to update list item:', error);
-    }
+    console.log(updatedListItemMinusExplicitID);
+    // try {
+    //   const listItemUpdated = await u.patchListItem(
+    //     unneededListItemID,
+    //     updatedListItemMinusExplicitID
+    //   );
+    //   // setListItemsModified(true);
+    // } catch (error) {
+    //   console.error('Failed to update list item:', error);
+    // }
   };
 
   const toggleSidebar = () => {
@@ -297,6 +372,7 @@ function Home() {
         />
       </div>
       <Toaster />
+      <button onClick={addEventToCalendar}> Hello</button>
     </DragDropContext>
   );
 }
