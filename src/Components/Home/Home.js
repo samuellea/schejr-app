@@ -319,6 +319,7 @@ function Home() {
   };
 
   const updateListItem = async (listItem, field, value) => {
+    console.log('updateListItem');
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
@@ -327,19 +328,28 @@ function Home() {
     // console.log(field);
     // console.log(value);
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
-    // console.log(updatedListItem);
+    console.log(updatedListItem);
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
+    console.log(updatedListItems);
     setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db
     // console.log(updatedListItem);
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
     try {
+      console.log('patchListItem on db...');
       const listItemUpdated = await u.patchListItem(
         unneededListItemID,
         updatedListItemMinusExplicitID
       );
+      // extra step - now update any changes made to a list item in the edit pane to its corresponding google calendar event if
+      // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
+      console.log(syncWithGCal);
+      if (syncWithGCal) {
+        console.log('about to changeListItemOnGCalByID...');
+        await u.changeListItemOnGCalByID(updatedListItem, field, value);
+      }
       // setListItemsModified(true);
     } catch (error) {
       console.error('Failed to update list item:', error);

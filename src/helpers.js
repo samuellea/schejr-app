@@ -40,8 +40,10 @@ export const formatDate = (date) => {
 };
 
 export const sortItems = (items, sortKey, order, existingTags) => {
+  console.log(items);
   // Validate sortKey and order
   if (!items || !Array.isArray(items)) {
+    console.log('!');
     // throw new Error('First argument must be an array of objects.');
     return [];
   }
@@ -66,7 +68,7 @@ export const sortItems = (items, sortKey, order, existingTags) => {
   const isAscending = order === 'ascending';
 
   if (sortKey === 'manualOrder' || sortKey === 'title') {
-    return items.sort((a, b) => {
+    const sorted = items.sort((a, b) => {
       if (a[sortKey] < b[sortKey]) {
         return isAscending ? -1 : 1;
       }
@@ -75,6 +77,8 @@ export const sortItems = (items, sortKey, order, existingTags) => {
       }
       return 0;
     });
+    console.log(sorted);
+    return sorted;
   }
 
   if (sortKey === 'startDate') {

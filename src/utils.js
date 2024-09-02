@@ -379,27 +379,25 @@ export const patchSyncStateByUserID = async (userUID, state) => {
 };
 
 export const addAListItemToGCal = async (listItem) => {
-  console.log(listItem);
-  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
-  console.log(userTimeZone);
   const event = {
     summary: listItem.title,
     start: {
       date: listItem.date.startDate,
-      // timeZone: userTimeZone,
     },
     end: {
       date: !listItem.date.endDate
         ? listItem.date.startDate
         : listItem.date.endDate,
-      // timeZone: userTimeZone,
     },
     extendedProperties: {
       private: {
         createdBy: 'schejr-app', // Unique identifier to mark the event as created by your app
+        listItemID: listItem.listItemID,
       },
     },
   };
+
+  console.log(event);
 
   try {
     const response = await gapi.client.calendar.events.insert({
@@ -410,6 +408,17 @@ export const addAListItemToGCal = async (listItem) => {
   } catch (error) {
     console.error('Error creating event:', error);
   }
+};
+
+export const addAllListItemsToGCal = async (listItems) => {
+  const onlyListItemsWithDates = listItems.filter((e) =>
+    e.hasOwnProperty('date')
+  );
+  console.log(onlyListItemsWithDates);
+  const updatePromises = onlyListItemsWithDates.map((listItem) => {
+    return addAListItemToGCal(listItem);
+  });
+  return await Promise.all(updatePromises);
 };
 
 export const removeListItemFromGCal = async (event) => {
@@ -424,12 +433,73 @@ export const removeListItemFromGCal = async (event) => {
   }
 };
 
-export const addAllListItemsToGCal = async (listItems) => {
-  console.log(listItems);
-  const updatePromises = listItems.map((listItem) => {
-    return addAListItemToGCal(listItem);
-  });
-  return await Promise.all(updatePromises);
+export const changeListItemOnGCalByID = async (listItem, field, value) => {
+  console.log(listItem);
+  console.log(field);
+  console.log(value);
+
+  const updatedEventData = {
+    summary: listItem.title,
+    start: {
+      date: listItem.date.startDate,
+    },
+    end: {
+      date: !listItem.date.endDate
+        ? listItem.date.startDate
+        : listItem.date.endDate,
+    },
+    extendedProperties: {
+      private: {
+        createdBy: 'schejr-app', // Unique identifier to mark the event as created by your app
+        listItemID: listItem.listItemID,
+      },
+    },
+  };
+
+  console.log(updatedEventData);
+
+  try {
+    // Fetch events with the specified extended property id
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      privateExtendedProperty: `listItemID=${listItem.listItemID}`, // Filter by extended property 'id'
+    });
+
+    const events = response.result.items;
+
+    // Check if any event matches the specified id
+    if (events.length === 0) {
+      console.log(
+        `No events found with extendedProperty 'listItemID': ${listItem.listItemID}`
+      );
+      return;
+    }
+
+    // Assume only one event matches the id (or handle multiple matches if needed)
+    const eventToUpdate = events[0];
+
+    // Merge the current event properties with the updates
+    const updatedEvent = {
+      ...eventToUpdate,
+      ...updatedEventData,
+    };
+
+    // Update the event on Google Calendar
+    await gapi.client.calendar.events.update({
+      calendarId: 'primary',
+      eventId: eventToUpdate.id,
+      resource: updatedEvent,
+    });
+
+    console.log(
+      `Updated event with extendedProperty 'listItemID': ${listItem.listItemID}`
+    );
+  } catch (error) {
+    console.error(
+      `Failed to update event with extendedProperty 'listItemID':`,
+      error
+    );
+  }
 };
 
 export const removeAllListItemsFromGCal = async () => {

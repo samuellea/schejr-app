@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as u from '../../utils';
 import * as h from '../../helpers';
 import randomEmoji from 'random-emoji';
@@ -25,7 +25,7 @@ function List({
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
-    text;
+    console.log(text);
     setListTitle(text);
   };
 
@@ -67,7 +67,7 @@ function List({
   };
 
   const deleteListItem = async (listItem) => {
-    listItems;
+    console.log(listItems);
     // handle UI update using state
     const listItemToDelete = { ...listItem };
     const listItemsMinusDeleted = listItems.filter(
@@ -75,8 +75,8 @@ function List({
     );
     setListItems(listItemsMinusDeleted); // <<<<< these won't have tidied .manualOrders, but removes deleted item from state/UI...
     try {
-      listItemToDelete;
-      listItemToDelete.listItemID;
+      console.log(listItemToDelete);
+      console.log(listItemToDelete.listItemID);
       //   // then actually delete the listItem on db
       await u.deleteListItemByID(listItemToDelete.listItemID);
       //   // then create a tidied copy of new listItems in state (which now don't have the deleted one)
@@ -84,7 +84,7 @@ function List({
         ...e,
         manualOrder: i + 1,
       }));
-      updatedManualOrders;
+      console.log(updatedManualOrders);
       //   // update the list items in state to have tidied .manualOrders
       setListItems(updatedManualOrders);
       // // then patch these tidied objects to their corresponding objs on db
@@ -102,6 +102,11 @@ function List({
       // You can show an error message to the user, log the error, etc.
     }
   };
+
+  useEffect(() => {
+    console.log(listItems);
+    console.log(selectedList);
+  }, [listItems]);
 
   return (
     <div className={styles.listContainerWrapper}>
@@ -152,7 +157,7 @@ function List({
                           existingTags={existingTags}
                           deleteListItem={deleteListItem}
                           updateListItem={updateListItem}
-                          // key={`list-item-${listItem.listItemID}`}
+                          key={`list-item-${listItem.listItemID}`}
                         />
                       </div>
                     )}

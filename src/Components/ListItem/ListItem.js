@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ListItem.module.css';
 import * as u from '../../utils';
 import * as h from '../../helpers';
@@ -29,6 +29,10 @@ function ListItem({
   const handleTitleOnBlur = () => {
     updateListItem(listItem, 'title', listItemRenameText);
   };
+
+  useEffect(() => {
+    setListItemRenameText(listItem.title);
+  }, [listItem]);
 
   return (
     <div className={styles.container}>
