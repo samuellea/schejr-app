@@ -433,6 +433,36 @@ export const removeListItemFromGCal = async (event) => {
   }
 };
 
+export const removeGCalEventByListItemID = async (listItemID) => {
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      privateExtendedProperty: `listItemID=${listItemID}`,
+    });
+    const events = response.result.items;
+    if (events.length > 0) {
+      try {
+        const eventId = events[0].id;
+        await gapi.client.calendar.events.delete({
+          calendarId: 'primary',
+          eventId: eventId,
+        });
+        console.log(`Event with ID ${eventId} deleted.`);
+      } catch (error) {
+        console.error('Failed to delete event:', error);
+      }
+    } else {
+      console.log(
+        'No event found with the listItemID extended property ',
+        listItemID
+      );
+    }
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
+  }
+};
+
 export const changeListItemOnGCalByIDOrCreate = async (
   listItem,
   field,

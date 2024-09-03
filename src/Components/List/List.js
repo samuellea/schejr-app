@@ -87,6 +87,8 @@ function List({
         const multipleListItemsPatched = await u.patchMultipleListItems(
           updatedManualOrders
         );
+        // then as a final step, delete the gcal event for this listItem if it had one
+        await u.removeGCalEventByListItemID(listItemToDelete.listItemID);
       } catch (error) {
         console.error(error);
       }
