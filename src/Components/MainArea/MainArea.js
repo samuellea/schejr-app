@@ -11,8 +11,6 @@ function MainArea({
   updateList,
   updateListItem,
   userUID,
-  listItemToEdit,
-  setListItemToEdit,
   listItems,
   setListItems,
   listAndItemsLoaded,
@@ -22,6 +20,7 @@ function MainArea({
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
+  const [listItemEditID, setListItemEditID] = useState(null);
 
   const fetchListItems = async () => {
     setListAndItemsLoaded(false);
@@ -33,15 +32,6 @@ function MainArea({
       }));
       setListItems(allListItemsWithIDs);
       setListAndItemsLoaded(true);
-      // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
-      if (listItemToEdit) {
-        // If we're currently editing a list item, also reload that to reflect any changes
-        const listItemToEditUpdated = allListItemsWithIDs.filter(
-          (e) => e.listItemID === listItemToEdit.listItemID
-        )[0];
-        setListItemToEdit(listItemToEditUpdated);
-      }
-      // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
     } catch {
       // Handle error fetching list items
     }
@@ -65,15 +55,13 @@ function MainArea({
     fetchTags();
   }, [selectedList]);
 
-  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
-  const handleEditListItem = (listItem) => {
-    setListItemToEdit(listItem);
+  const handleEditListItem = (listItemID) => {
+    setListItemEditID(listItemID);
   };
 
   const handleCloseEditPane = () => {
-    setListItemToEdit(null);
+    setListItemEditID(null);
   };
-  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
 
   return (
     <div
@@ -92,9 +80,9 @@ function MainArea({
           existingTags={existingTags}
         />
       ) : null}
-      {listItemToEdit ? (
+      {listItemEditID ? (
         <ListItemEditPane
-          listItem={listItemToEdit}
+          listItem={listItems.find((e) => e.listItemID === listItemEditID)}
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
           updateListItem={updateListItem}

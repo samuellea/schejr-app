@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
-import CloseIcon from '../Icons/CloseIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 
@@ -37,7 +36,6 @@ function ListItemEditPane({
             className={styles.closePaneButton}
             onClick={handleCloseEditPane}
           >
-            {/* <CloseIcon fill="white" width="24px" /> */}
             <ChevronIcon fill="white" width="28px" />
           </div>
         </div>

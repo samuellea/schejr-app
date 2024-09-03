@@ -20,8 +20,6 @@ function Home() {
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
   const [syncWithGCal, setSyncWithGCal] = useState(false);
   const [selectedListID, setSelectedListID] = useState(null);
-  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
-  const [listItemToEdit, setListItemToEdit] = useState(null);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -139,45 +137,6 @@ function Home() {
     }
   }, []);
 
-  // const addEventToCalendar = () => {
-  //   const startDate = '2025-03-20T00:00:00.000Z';
-  //   const endDate = '2025-03-23T00:00:00.000Z';
-  //   if (!startDate || !endDate) {
-  //     alert('Please select both start and end dates.');
-  //     return;
-  //   }
-
-  //   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // e.g., "America/Los_Angeles"
-  //   // create an object for the event
-  //   const event = {
-  //     summary: 'New Event from Datepicker',
-  //     start: {
-  //       dateTime: startDate,
-  //       timeZone: userTimeZone, // Adjust time zone as needed
-  //     },
-  //     end: {
-  //       dateTime: endDate,
-  //       timeZone: userTimeZone,
-  //     },
-  //   };
-  //   // insert this event into the google calendar
-  //   gapi.client.calendar.events
-  //     .insert({
-  //       calendarId: 'primary',
-  //       resource: event,
-  //     })
-  //     .then((response) => {
-  //       alert('Event added to Google Calendar!');
-  //
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error adding event:', error);
-  //
-  //
-  //       alert('Failed to add event to Google Calendar.');
-  //     });
-  // };
-
   useEffect(() => {
     const expires = localStorage.getItem('expires');
     const currentTime = Date.now();
@@ -194,11 +153,6 @@ function Home() {
       return () => clearTimeout(logoutTimer);
     }
   }, []);
-
-  useEffect(() => {
-    console.log('listItems changed - how about listItemToEdit? ...');
-    console.log(listItemToEdit);
-  }, [listItems]);
 
   useEffect(() => {
     const fetchUserSyncState = async () => {
@@ -315,13 +269,6 @@ function Home() {
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
 
     setListItems(updatedListItems);
-    // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
-    // and also update the listItemToEdit in state if there is one (will only be one in state if we're editing THAT one)
-    if (listItemToEdit) {
-      console.log(updatedListItem);
-      setListItemToEdit(updatedListItem);
-    }
-    // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
     // then, remove the listItemID prior to patching the List Item on the db
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
@@ -380,9 +327,6 @@ function Home() {
           setListAndItemsLoaded={setListAndItemsLoaded}
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
-          // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
-          listItemToEdit={listItemToEdit}
-          setListItemToEdit={setListItemToEdit}
         />
         <Sidebar
           userUID={userUID}
