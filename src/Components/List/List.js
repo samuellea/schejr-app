@@ -133,7 +133,7 @@ function List({
                     key={`draggable-${listItem.listItemID}`}
                     draggableId={listItem.listItemID}
                     index={index}
-                    type="list-item" ///////////////////////////////////////
+                    type="list-item"
                   >
                     {(provided) => (
                       <div

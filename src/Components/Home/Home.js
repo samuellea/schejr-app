@@ -45,8 +45,16 @@ function Home() {
       const destinationList = lists.find((e) => e.listID === destinationListID);
 
       // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
-      const newMOrders = h.updatedManualOrdersOnSourceList(
+      // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+      // which may be determined by other sort options (title, date, tags etc.)
+      const listItemsSortedByOriginalManualOrders = h.sortItems(
         listItems,
+        'manualOrder',
+        'ascending'
+      );
+      const newMOrders = h.updatedManualOrdersOnSourceList(
+        // listItems,
+        listItemsSortedByOriginalManualOrders,
         listItemID
       );
 
