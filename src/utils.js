@@ -480,6 +480,13 @@ export const changeListItemOnGCalByIDOrCreate = async (
       return;
     }
 
+    // handle updating start date to null values ie. a date has been UNSET on the listItem obj - so, delete the gcal event for this listItem
+    if (!listItem.date.startDate) {
+      const eventToDelete = events[0];
+      await removeListItemFromGCal(eventToDelete);
+      return;
+    }
+
     // Assume only one event matches the id (or handle multiple matches if needed)
     const eventToUpdate = events[0];
 

@@ -55,6 +55,7 @@
   color: rgba(109, 182, 255, 0.696);
   border-radius: 0px 22px 22px 0px;
   border-left: none;
+  width: 70px;
 }
 
 .sortDropdown {
