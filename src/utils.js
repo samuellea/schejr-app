@@ -433,7 +433,11 @@ export const removeListItemFromGCal = async (event) => {
   }
 };
 
-export const changeListItemOnGCalByID = async (listItem, field, value) => {
+export const changeListItemOnGCalByIDOrCreate = async (
+  listItem,
+  field,
+  value
+) => {
   console.log(listItem);
   console.log(field);
   console.log(value);
@@ -472,6 +476,7 @@ export const changeListItemOnGCalByID = async (listItem, field, value) => {
       console.log(
         `No events found with extendedProperty 'listItemID': ${listItem.listItemID}`
       );
+      await addAListItemToGCal(listItem);
       return;
     }
 

@@ -120,8 +120,8 @@ function Home() {
     const accessToken = localStorage.getItem('googleAccessToken');
 
     if (accessToken) {
-      // console.log(accessToken);
-      // console.log(process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY);
+      //
+      //
       // Load the Google API client and set the access token
       gapi.load('client', () => {
         gapi.client
@@ -134,10 +134,9 @@ function Home() {
           .then((res) => {
             // Set the access token for gapi requests
             gapi.client.setToken({ access_token: accessToken });
-            // console.log('???????');
+            //
           })
           .catch((error) => {
-            console.log('.......');
             console.error('Error initializing Google API client:', error);
           });
       });
@@ -173,12 +172,12 @@ function Home() {
   //     })
   //     .then((response) => {
   //       alert('Event added to Google Calendar!');
-  //       console.log('Event created:', response);
+  //
   //     })
   //     .catch((error) => {
   //       console.error('Error adding event:', error);
-  //       console.log(error.result.error);
-  //       console.log(error.headers);
+  //
+  //
   //       alert('Failed to add event to Google Calendar.');
   //     });
   // };
@@ -201,12 +200,15 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('fetchUserSyncState useEffect');
+    console.log('listItems changed - how about listItemToEdit? ...');
+    console.log(listItemToEdit);
+  }, [listItems]);
 
+  useEffect(() => {
     const fetchUserSyncState = async () => {
       try {
         const userSyncStateObj = await u.getUserSyncState(userUID);
-        console.log(userSyncStateObj);
+
         if (Object.keys(userSyncStateObj).length === 0) {
           // create a /userSyncStates obj for this user for the first time, and init syncWithGCal with false (default)
           await u.createSyncStateByUserID(userUID, false);
@@ -220,12 +222,11 @@ function Home() {
       } catch (error) {}
     };
 
-    console.log('fetchUserSyncState...');
     fetchUserSyncState();
   }, []);
 
   useEffect(() => {
-    // console.log('listsModified useEffect');
+    //
     const fetchLists = async () => {
       try {
         const allUserLists = await u.fetchAllUserLists(userUID);
@@ -233,14 +234,6 @@ function Home() {
           listID: e[0],
           ...e[1],
         }));
-        if (!allUserListsWithIDs.length) {
-          // first, check if there is an obj on db /userSyncStates endpoint with userID === our userID
-          // if yes, set our home state syncWithGCal value to be the one on that obj
-          // if no, create a /userSyncStates obj for this user for the first time
-          // user has not lists on the db, and therefore no list items, and therefore nth 2 b synced with gcal yet.
-          // so, initialise their 'syncWithGCal' on the db to false.
-          // u.createOrPatchSyncStateByUserID(userUID, false);
-        }
         setLists(allUserListsWithIDs);
       } catch {
         // Handle error fetching lists
@@ -263,10 +256,8 @@ function Home() {
       prevSliceRef.current !== syncWithGCal
     ) {
       // Your logic that should run only when syncWithGCal changes
-      console.log('syncWithGCal slider clicked');
-      console.log(syncWithGCal);
+
       if (syncWithGCal && listItems.length) {
-        console.log(listItems);
         // add all a user's listItems with dates' dates to their Google Calendar
         u.addAllListItemsToGCal(listItems);
       } else {
@@ -313,42 +304,39 @@ function Home() {
 
     try {
       await u.patchList(selectedListID, updatedListData);
-    } catch (error) {
-      console.log('Error updating List');
-    }
+    } catch (error) {}
   };
 
   const updateListItem = async (listItem, field, value) => {
-    console.log('updateListItem');
+    console.log('updateListItem!');
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
     );
-    // console.log(listItem);
-    // console.log(field);
-    // console.log(value);
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
-    console.log(updatedListItem);
+
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-    console.log(updatedListItems);
+
     setListItems(updatedListItems);
+    // and also update the listItemToEdit in state if there is one (will only be one in state if we're editing THAT one)
+    if (listItemToEdit) {
+      console.log(updatedListItem);
+      setListItemToEdit(updatedListItem);
+    }
     // then, remove the listItemID prior to patching the List Item on the db
-    // console.log(updatedListItem);
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
     try {
-      console.log('patchListItem on db...');
       const listItemUpdated = await u.patchListItem(
         unneededListItemID,
         updatedListItemMinusExplicitID
       );
       // extra step - now update any changes made to a list item in the edit pane to its corresponding google calendar event if
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
-      console.log(syncWithGCal);
+
       if (syncWithGCal) {
-        console.log('about to changeListItemOnGCalByID...');
-        await u.changeListItemOnGCalByID(updatedListItem, field, value);
+        await u.changeListItemOnGCalByIDOrCreate(updatedListItem, field, value);
       }
       // setListItemsModified(true);
     } catch (error) {

@@ -22,10 +22,10 @@ function ListItemEditPane({
   const handleTitleChange = (e) => {
     const text = e.target.value;
     setListItemRenameText(text);
-    // updateListItem(listItem.listItemID, 'title', text);
   };
 
   const handleTitleOnBlur = () => {
+    console.log('about to call updateListItem!');
     updateListItem(listItem, 'title', listItemRenameText);
   };
 

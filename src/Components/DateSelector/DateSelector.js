@@ -46,7 +46,6 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   }, [dates]);
 
   const handleChange = (update) => {
-    console.log(update);
     const [startDate, endDate] = update;
     if (
       (startDate && !(startDate instanceof Date)) ||

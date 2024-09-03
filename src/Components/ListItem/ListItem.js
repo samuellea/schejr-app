@@ -13,17 +13,11 @@ function ListItem({
   deleteListItem,
   updateListItem,
 }) {
-  // const handleItemTitleChange = (e) => {
-  //   const text = e.target.value;
-  //   updateListItem(selectedList.listID, 'title', text);
-  // };
-
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
     setListItemRenameText(text);
-    // updateListItem(listItem.listItemID, 'title', text);
   };
 
   const handleTitleOnBlur = () => {
