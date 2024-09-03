@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
@@ -6,7 +6,8 @@ import ChevronIcon from '../Icons/ChevronIcon';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 
 function ListItemEditPane({
-  listItem,
+  listItemEditID,
+  listItems,
   handleCloseEditPane,
   userUID,
   updateListItem,
@@ -15,6 +16,7 @@ function ListItemEditPane({
   syncWithGCal,
   handleSetSyncWithGCal,
 }) {
+  const listItem = listItems.find((e) => e.listItemID === listItemEditID); // title is locked in here - so DateSelector wont recieve
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
 
   const handleTitleChange = (e) => {
@@ -26,6 +28,12 @@ function ListItemEditPane({
     console.log('about to call updateListItem!');
     updateListItem(listItem, 'title', listItemRenameText);
   };
+
+  useEffect(() => {
+    console.log('listItems changed!');
+    console.log(listItems);
+    console.log(listItem);
+  }, [listItems]);
 
   return (
     <div className={styles.container}>

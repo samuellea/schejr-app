@@ -14,6 +14,12 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   const datePickerRef = useRef(null);
   const datesRef = useRef(dates);
 
+  // const listItemRef = useRef(listItem); // Using ref ensures handleClickOff always has the latest listItem value even if it was not redefined on prop change.
+  // // Something to do with how handleClickOutside > handleClickOff > updateListItem > listItem was being attached as event listener
+  // useEffect(() => {
+  //   listItemRef.current = listItem;
+  // }, [listItem]);
+
   const handleClickOff = () => {
     const convertToISOString = (value) => {
       if (value instanceof Date && !isNaN(value.getTime())) {
@@ -37,13 +43,20 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     const endDate = convertToISOString(datesRef.current[1]);
 
     const dateObj = { startDate, endDate };
-    updateListItem(listItem, 'date', dateObj); // add date to FB /listItems listItem object
+    console.log(listItem, ' <-- DateSelector handleClickOff call');
+    // updateListItem(listItemRef.current, 'date', dateObj); // add date to FB /listItems listItem object,
+    updateListItem(listItem, 'date', dateObj); // add date to FB /listItems listItem object,
     setIsInFocus(false);
   };
 
   useEffect(() => {
     datesRef.current = dates;
   }, [dates]);
+
+  useEffect(() => {
+    console.log('listItem in DateSelector *************');
+    console.log(listItem);
+  }, [listItem]);
 
   const handleChange = (update) => {
     const [startDate, endDate] = update;
@@ -73,7 +86,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [listItem]);
 
   const isPastDate = (date) => {
     const today = new Date();

@@ -82,7 +82,8 @@ function MainArea({
       ) : null}
       {listItemEditID ? (
         <ListItemEditPane
-          listItem={listItems.find((e) => e.listItemID === listItemEditID)}
+          listItemEditID={listItemEditID}
+          listItems={listItems}
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
           updateListItem={updateListItem}

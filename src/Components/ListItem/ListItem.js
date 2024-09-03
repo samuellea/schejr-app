@@ -37,7 +37,7 @@ function ListItem({
       </button>
       <button
         className={styles.editListItemButton}
-        onClick={() => handleEditListItem(listItem)}
+        onClick={() => handleEditListItem(listItem.listItemID)}
       >
         <EditIcon fill="white" width="16px" />
       </button>

@@ -267,6 +267,8 @@ function Home() {
 
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
+    console.log(updatedListItem);
+    console.log(updatedListItems);
 
     setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db
