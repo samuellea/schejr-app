@@ -24,6 +24,8 @@ function Sidebar({
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
       createdAt: Date.now(),
       createdBy: userUID,
+      sortOn: 'manualOrder',
+      order: 'ascending',
     };
     try {
       const listId = await u.createNewList(listData);

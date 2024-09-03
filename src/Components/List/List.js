@@ -18,8 +18,8 @@ function List({
   setListItems,
   existingTags,
 }) {
-  const [sortOn, setSortOn] = useState('manualOrder');
-  const [order, setOrder] = useState('ascending');
+  const [sortOn, setSortOn] = useState(selectedList.sortOn);
+  const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
 
   const handleTitleChange = (e) => {
@@ -28,18 +28,18 @@ function List({
     setListTitle(text);
   };
 
-  const handleTitleOnBlur = () => {
+  const handleTitleOnBlur = async () => {
     let newTitle = listTitle;
     if (!listTitle.length) newTitle = selectedList.title;
-    updateList(selectedList.listID, 'title', newTitle);
+    const newListValues = { title: newTitle };
+    updateList(selectedList, newListValues);
   };
 
-  const handleToggleOrder = () => {
-    if (order === 'ascending') {
-      setOrder('descending');
-    } else {
-      setOrder('ascending');
-    }
+  const handleToggleOrder = async () => {
+    let newOrder = order === 'ascending' ? 'descending' : 'ascending';
+    const newListValues = { order: newOrder, sortOn: sortOn };
+    updateList(selectedList, newListValues);
+    setOrder(newOrder);
   };
 
   const createListItem = async () => {
@@ -102,7 +102,7 @@ function List({
 
   return (
     <div className={styles.listContainerWrapper}>
-      <Droppable droppableId="list">
+      <Droppable droppableId={`list-${selectedList.listID}`}>
         {(provided) => (
           <div
             className={styles.container}
@@ -119,6 +119,8 @@ function List({
                 value={listTitle}
               />
               <Sort
+                selectedList={selectedList}
+                updateList={updateList}
                 sortOn={sortOn}
                 setSortOn={setSortOn}
                 order={order}

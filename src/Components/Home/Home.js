@@ -25,7 +25,25 @@ function Home() {
   const userUID = localStorage.getItem('firebaseID');
   const displayName = localStorage.getItem('displayName');
 
+  const updateList = async (list, newListValues) => {
+    const { listID: unneededListID, ...rest } = list;
+    const updatedListNoListID = { ...rest, ...newListValues };
+    try {
+      console.log(list.listID);
+      // update List obj on db, removing .listID first
+      await u.patchList(list.listID, updatedListNoListID);
+      // set updated List in state, keeping .listID
+      const updatedListWithListID = { ...list, ...newListValues };
+      const listsMinusUpdated = lists.filter((e) => e.listID !== list.listID);
+      const listsPlusUpdated = [...listsMinusUpdated, updatedListWithListID];
+      setLists(listsPlusUpdated);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onDragEnd = async (result) => {
+    console.log(result);
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -36,7 +54,7 @@ function Home() {
 
     // ⭐ MOVE TO DIFFERENT LIST
     if (
-      destination.droppableId !== 'list' &&
+      destination.droppableId.substring(0, 4) !== 'list' &&
       destination.droppableId !== 'main-area'
     ) {
       const listItemID = draggableId;
@@ -92,7 +110,12 @@ function Home() {
     }
 
     // ⭐ MOVE WITHIN A LIST
-    if (destination.droppableId === 'list') {
+
+    if (destination.droppableId.substring(0, 4) === 'list') {
+      const listID = destination.droppableId.substring(5);
+      const possibleSort = lists.find((e) => e.listID === listID).sortOn;
+      console.log(possibleSort);
+      console.log(source);
       const listItemID = draggableId;
       const startIndex = source.index;
       const destinationIndex = destination.index;
@@ -103,9 +126,41 @@ function Home() {
         destinationIndex
       );
 
-      // update listItems in state with new .manualOrder values
-      setListItems(newMOrders);
+      // if (possibleSort !== 'manualOrder') {
+      //   // if a sort is present on the List object, could intervene here -
+      //   // DO YOU WANT TO REMOVE SORT? IF NO, return
+      //   // IF YES - update listItems in state and on db with the dragged-to order
+      //   // eslint-disable-next-line no-restricted-globals
+      //   const userResponse = confirm('Do you want to proceed?');
 
+      //   // Check the user's response
+      //   if (userResponse) {
+      //     // User clicked "OK" (interpreted as "Yes")
+      //     alert('You selected Yes.');
+      //     setListItems(newMOrders);
+      //     try {
+      //       // 🌐 then update List on database with default sortOn and order
+      //       const selectedList = lists.find((e) => e.listID === selectedListID);
+      //       const { listID: unneededListID, ...rest } = selectedList;
+      //       const updatedList = {
+      //         ...rest,
+      //         sortOn: 'manualOrder',
+      //         order: 'ascending',
+      //       };
+      // // setLists with updated List object on front-end!
+      //       await u.patchList(selectedList.listID, updatedList);
+      //       // 🌐 then update ListItems on database with new .manualOrder values
+      //       const multipleListItemsPatched = await u.patchMultipleListItems(
+      //         onlyChanged
+      //       );
+      //     } catch (error) {
+      //       console.error(error);
+      //     }
+      //   } else {
+      //     return;
+      //   }
+      // } else {
+      setListItems(newMOrders);
       try {
         // 🌐 then update database
         const multipleListItemsPatched = await u.patchMultipleListItems(
@@ -114,6 +169,9 @@ function Home() {
       } catch (error) {
         console.error(error);
       }
+      // }
+
+      // update listItems in state with new .manualOrder values
     }
   };
 
@@ -203,7 +261,8 @@ function Home() {
       }
     };
     fetchLists();
-  }, [listsModified]);
+    // }, [listsModified]);
+  }, []);
 
   const prevSliceRef = useRef();
 
@@ -241,6 +300,9 @@ function Home() {
   };
 
   // Function which updates the list object (by id) in lists state - a separate, timed function will then update this list object on firebase
+
+  /*
+
   const updateList = async (listID, field, value) => {
     let newValue = value;
     if (field === 'title' && value === '') newValue = 'Untitled';
@@ -259,11 +321,13 @@ function Home() {
       createdBy,
       title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
     };
-
+    
     try {
       await u.patchList(selectedListID, updatedListData);
     } catch (error) {}
   };
+  
+  */
 
   const updateListItem = async (listItem, field, value) => {
     console.log('updateListItem!');

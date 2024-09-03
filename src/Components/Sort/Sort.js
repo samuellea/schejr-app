@@ -6,8 +6,11 @@ import DateIcon from '../Icons/DateIcon';
 import TickIcon from '../Icons/TickIcon';
 import ArrowIcon from '../Icons/ArrowIcon';
 import CloseIcon from '../Icons/CloseIcon';
+import * as u from '../../utils';
 
 function Sort({
+  selectedList,
+  updateList,
   sortOn,
   setSortOn,
   order,
@@ -18,6 +21,13 @@ function Sort({
   const [showDropdown, setShowDropdown] = useState(false);
 
   const sortDropdownRef = useRef(null);
+
+  // const sortOnRef = useRef(null);
+  // const orderRef = useRef(null);
+
+  useEffect(() => {
+    console.log(selectedList);
+  }, [selectedList]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -36,6 +46,14 @@ function Sort({
     };
   }, []); // Depend on childClickedOutside
 
+  useEffect(() => {
+    console.log('selectedList changed!');
+    if (selectedList.sortOn === 'manualOrder') {
+      setSortOn('manualOrder');
+      setOrder('ascending');
+    }
+  }, [selectedList]); // Depend on childClickedOutside
+
   const capitalizedOrderLabel = order.charAt(0).toUpperCase() + order.slice(1);
   const capitalizedSortLabel =
     sortOn === 'startDate'
@@ -52,7 +70,9 @@ function Sort({
     showDropdown ? styles.dropdownOpen : null
   }`;
 
-  const handleClearSort = () => {
+  const handleClearSort = async () => {
+    const newListValues = { sortOn: 'manualOrder', order: 'ascending' };
+    updateList(selectedList, newListValues);
     setSortOn('manualOrder');
     setOrder('ascending');
     setShowDropdown(false);
@@ -64,7 +84,9 @@ function Sort({
 
   const orderWindowCombined = `${styles.sortWindow} ${styles.orderWindowActive}`;
 
-  const handleSortSelect = (sortOn) => {
+  const handleSortSelect = async (sortOn) => {
+    const newListValues = { sortOn: sortOn, order: order };
+    updateList(selectedList, newListValues);
     setSortOn(sortOn);
     setShowDropdown(false);
   };
