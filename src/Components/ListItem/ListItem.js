@@ -7,7 +7,6 @@ import EditIcon from '../Icons/EditIcon';
 
 function ListItem({
   listItem,
-  setListItemsModified,
   handleEditListItem,
   existingTags,
   deleteListItem,

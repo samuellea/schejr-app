@@ -14,7 +14,6 @@ function List({
   updateListItem,
   userUID,
   handleEditListItem,
-  setListItemsModified,
   listItems,
   setListItems,
   existingTags,
@@ -60,7 +59,6 @@ function List({
     try {
       const newItemWithExplicitID = await u.createNewListItem(listData);
       setListItems([...listItems, newItemWithExplicitID]);
-      // setListItemsModified(true);
     } catch (error) {
       console.error('Failed to create list item:', error);
     }
@@ -89,10 +87,8 @@ function List({
         const multipleListItemsPatched = await u.patchMultipleListItems(
           updatedManualOrders
         );
-        // setListItemsModified(true);
       } catch (error) {
         console.error(error);
-        // setListItemsModified(true);
       }
     } catch (error) {
       console.error('Failed to delete list item:', error);
@@ -146,7 +142,6 @@ function List({
                       >
                         <ListItem
                           listItem={listItem}
-                          setListItemsModified={setListItemsModified}
                           handleEditListItem={handleEditListItem}
                           existingTags={existingTags}
                           deleteListItem={deleteListItem}

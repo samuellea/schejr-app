@@ -10,7 +10,6 @@ function TagSelector({
   userUID,
   listItem,
   updateListItem,
-  setListItemsModified,
   fetchTags,
   existingTags,
 }) {
@@ -56,7 +55,6 @@ function TagSelector({
       try {
         const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
         setTagsModified(true);
-        setListItemsModified(true);
         // if (tagOptions) setTagOptions(null); // close the Options menu if it's open
       } catch (error) {
         console.error('Failed to update tag:', error);
@@ -72,7 +70,6 @@ function TagSelector({
         const listItemsThatContainedTagID =
           await u.findAndRemoveTagIDFromMatchingListItems(tagID);
         setTagsModified(true);
-        setListItemsModified(true);
         setShowDeleteModal(false);
       } catch (error) {
         console.error('Failed to remove tag from matching list items:', error);
@@ -145,7 +142,6 @@ function TagSelector({
           'tags',
           updatedListItemTags
         );
-        setListItemsModified(true);
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
       }
@@ -168,7 +164,6 @@ function TagSelector({
         'tags',
         updatedListItemTags
       );
-      setListItemsModified(true);
       setInputText('');
     } catch (error) {
       console.error('Failed to create tag:', error);
@@ -193,7 +188,6 @@ function TagSelector({
         'tags',
         updatedListItemTags
       );
-      setListItemsModified(true);
       setInputText('');
     } catch (error) {
       console.error('Failed to remove tag:', error);

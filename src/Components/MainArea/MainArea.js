@@ -15,8 +15,6 @@ function MainArea({
   setListItemToEdit,
   listItems,
   setListItems,
-  listItemsModified,
-  setListItemsModified,
   listAndItemsLoaded,
   setListAndItemsLoaded,
   syncWithGCal,
@@ -35,6 +33,7 @@ function MainArea({
       }));
       setListItems(allListItemsWithIDs);
       setListAndItemsLoaded(true);
+      // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
       if (listItemToEdit) {
         // If we're currently editing a list item, also reload that to reflect any changes
         const listItemToEditUpdated = allListItemsWithIDs.filter(
@@ -42,12 +41,9 @@ function MainArea({
         )[0];
         setListItemToEdit(listItemToEditUpdated);
       }
+      // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
     } catch {
       // Handle error fetching list items
-    }
-
-    if (listItemsModified) {
-      setListItemsModified(false);
     }
   };
 
@@ -67,8 +63,9 @@ function MainArea({
   useEffect(() => {
     fetchListItems();
     fetchTags();
-  }, [selectedList, listItemsModified]);
+  }, [selectedList]);
 
+  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
   const handleEditListItem = (listItem) => {
     setListItemToEdit(listItem);
   };
@@ -76,6 +73,7 @@ function MainArea({
   const handleCloseEditPane = () => {
     setListItemToEdit(null);
   };
+  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
 
   return (
     <div
@@ -88,11 +86,9 @@ function MainArea({
           updateList={updateList}
           updateListItem={updateListItem}
           userUID={userUID}
-          handleEditListItem={handleEditListItem}
           listItems={listItems}
           setListItems={setListItems}
-          listItemsModified={listItemsModified}
-          setListItemsModified={setListItemsModified}
+          handleEditListItem={handleEditListItem}
           existingTags={existingTags}
         />
       ) : null}
@@ -102,7 +98,6 @@ function MainArea({
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
           updateListItem={updateListItem}
-          setListItemsModified={setListItemsModified}
           fetchTags={fetchTags}
           existingTags={existingTags}
           syncWithGCal={syncWithGCal}

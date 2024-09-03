@@ -11,7 +11,6 @@ function ListItemEditPane({
   handleCloseEditPane,
   userUID,
   updateListItem,
-  setListItemsModified,
   fetchTags,
   existingTags,
   syncWithGCal,
@@ -58,7 +57,6 @@ function ListItemEditPane({
           userUID={userUID}
           listItem={listItem}
           updateListItem={updateListItem}
-          setListItemsModified={setListItemsModified}
           fetchTags={fetchTags}
           existingTags={existingTags}
         />

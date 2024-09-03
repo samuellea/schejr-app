@@ -14,14 +14,14 @@ function Home() {
   const [listsModified, setListsModified] = useState(false);
   const [lists, setLists] = useState([]);
   const [listItems, setListItems] = useState([]);
-  const [selectedListID, setSelectedListID] = useState(null);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
   const [sidebarListAscending, setSidebarListAscending] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [listItemToEdit, setListItemToEdit] = useState(null);
-  const [listItemsModified, setListItemsModified] = useState(false);
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
   const [syncWithGCal, setSyncWithGCal] = useState(false);
+  const [selectedListID, setSelectedListID] = useState(null);
+  // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
+  const [listItemToEdit, setListItemToEdit] = useState(null);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -78,10 +78,8 @@ function Home() {
             toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
               duration: 2000,
             });
-            // setListItemsModified(true);
           } catch (error) {
             console.error(error);
-            // setListItemsModified(true);
           }
         } catch (error) {}
       } catch (error) {}
@@ -107,10 +105,8 @@ function Home() {
         const multipleListItemsPatched = await u.patchMultipleListItems(
           onlyChanged
         );
-        // setListItemsModified(true);
       } catch (error) {
         console.error(error);
-        // setListItemsModified(true);
       }
     }
   };
@@ -319,11 +315,13 @@ function Home() {
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
 
     setListItems(updatedListItems);
+    // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
     // and also update the listItemToEdit in state if there is one (will only be one in state if we're editing THAT one)
     if (listItemToEdit) {
       console.log(updatedListItem);
       setListItemToEdit(updatedListItem);
     }
+    // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
     // then, remove the listItemID prior to patching the List Item on the db
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
@@ -338,7 +336,6 @@ function Home() {
       if (syncWithGCal) {
         await u.changeListItemOnGCalByIDOrCreate(updatedListItem, field, value);
       }
-      // setListItemsModified(true);
     } catch (error) {
       console.error('Failed to update list item:', error);
     }
@@ -365,12 +362,6 @@ function Home() {
 
   const handleSetSyncWithGCal = () => {
     setSyncWithGCal((prev) => !prev);
-
-    // if (!syncWithGoogleCalendar) {
-    //   setSyncWithGoogleCalendar(true);
-    // } else {
-    //   setSyncWithGoogleCalendar(false);
-    // }
   };
 
   return (
@@ -383,16 +374,15 @@ function Home() {
           updateList={updateList}
           updateListItem={updateListItem}
           userUID={userUID}
-          listItemToEdit={listItemToEdit}
-          setListItemToEdit={setListItemToEdit}
           listItems={listItems}
           setListItems={setListItems}
-          listItemsModified={listItemsModified}
-          setListItemsModified={setListItemsModified}
           listAndItemsLoaded={listAndItemsLoaded}
           setListAndItemsLoaded={setListAndItemsLoaded}
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
+          // 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷 🚧 👷
+          listItemToEdit={listItemToEdit}
+          setListItemToEdit={setListItemToEdit}
         />
         <Sidebar
           userUID={userUID}
