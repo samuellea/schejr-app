@@ -256,6 +256,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
+    console.log('Home [] useEffect...');
     //
     const fetchLists = async () => {
       try {
@@ -434,7 +435,7 @@ function Home() {
         />
       </div>
       <Toaster />
-      {/* <button onClick={addEventToCalendar}> Hello</button> */}
+      <button onClick={() => setLists(lists)}> Hello</button>
     </DragDropContext>
   );
 }

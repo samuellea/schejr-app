@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './MainArea.module.css';
 import List from '../List/List';
 import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
@@ -23,6 +23,8 @@ function MainArea({
   const [listItemEditID, setListItemEditID] = useState(null);
 
   const fetchListItems = async () => {
+    console.log('');
+    console.log('fetchListItems!');
     setListAndItemsLoaded(false);
     try {
       const allListItems = await u.fetchListItemsByListID(selectedList.listID);
@@ -30,6 +32,8 @@ function MainArea({
         listItemID: e[0],
         ...e[1],
       }));
+      console.log('listItems fetched, loading in state');
+      console.log('');
       setListItems(allListItemsWithIDs);
       setListAndItemsLoaded(true);
     } catch {
@@ -50,9 +54,16 @@ function MainArea({
     }
   };
 
+  const prevListIDRef = useRef(selectedList.listID);
+
+  // this is firing when the sortOn and order keys change on the selectedList, taken from lists in Home state.
   useEffect(() => {
-    fetchListItems();
-    fetchTags();
+    // I only want to fetch new list items when a new list is selected, NOT when sortOn and order values for a list change!
+    if (prevListIDRef.current !== selectedList.listID) {
+      prevListIDRef.current = selectedList.listID;
+      fetchListItems();
+      fetchTags();
+    }
   }, [selectedList]);
 
   const handleEditListItem = (listItemID) => {

@@ -22,9 +22,20 @@ function List({
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
 
+  useEffect(() => {
+    console.log('');
+    console.log('List [] useEffect');
+    console.log('');
+  }, []);
+
+  useEffect(() => {
+    setSortOn(selectedList.sortOn);
+    setOrder(selectedList.order);
+    setListTitle(selectedList.title);
+  }, [selectedList]); // Dependency on selectedList
+
   const handleTitleChange = (e) => {
     const text = e.target.value;
-
     setListTitle(text);
   };
 

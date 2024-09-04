@@ -29,6 +29,7 @@ export const createNewList = async (listData) => {
 };
 
 export const patchList = async (listID, newData) => {
+  console.log('patchList!');
   try {
     const listRef = ref(database, `lists/${listID}`);
     await update(listRef, newData);

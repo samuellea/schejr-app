@@ -26,10 +26,6 @@ function Sort({
   // const orderRef = useRef(null);
 
   useEffect(() => {
-    console.log(selectedList);
-  }, [selectedList]);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         sortDropdownRef.current &&
