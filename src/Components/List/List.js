@@ -162,6 +162,7 @@ function List({
                           deleteListItem={deleteListItem}
                           updateListItem={updateListItem}
                           key={`list-item-${listItem.listItemID}`}
+                          provided={provided}
                         />
                       </div>
                     )}

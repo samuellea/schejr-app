@@ -1,5 +1,5 @@
 .container {
-  /* border: 1px solid green; */
+  border: 1px solid green;
   height: 30px;
   width: 100%;
   min-width: 100%;
@@ -13,16 +13,27 @@
   box-sizing: border-box;
   margin: 0;
   overflow: hidden; /* Prevent overflow from the container */
+  pointer-events: none;
 }
-
 .container:hover {
   background-color: #2a2a2a;
 }
 
+#flexidiv {
+  border: 2px solid orange;
+
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
+
+  flex-shrink: 1; /* Allow children to shrink if necessary */
+  min-width: 0; /* Prevent children from forcing min-widths */
+}
+
 .titleTagsDatesWrapper {
-  /* border: 1px solid white; */
+  border: 3px solid hotpink;
   height: 30px;
-  flex: 1; /* Allows the element to expand and fill remaining space */
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -33,23 +44,25 @@
   margin: 0;
   overflow: hidden; /* Ensure content does not overflow */
   padding-left: 1%;
+  width: 100%;
 }
 
 .listItemTitle {
+  border: 1px solid white;
+  background-color: red;
   font-size: 17px;
   font-weight: 500;
-  margin-left: 0px;
-  min-width: 38%;
-  max-width: 38%;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
-  text-overflow: ellipsis;
-  background: none;
-  border: none;
+  /* text-overflow: ellipsis; */
   color: white;
-  /* border: 1px solid yellow; */
-  /* margin: 0; */
-  outline: none;
+  box-sizing: content-box; /* Ensure padding and border do not affect width calculation */
+  pointer-events: auto;
+  outline: auto;
+  /* padding: 0px 6px; */
+  max-width: 50%;
+  text-overflow: ellipsis; /* Apply ellipsis if content overflows max width */
+  padding: 0px;
 }
 
 .deleteListItemButton,
@@ -62,6 +75,7 @@
   width: 31px;
   height: 26px;
   /* padding: 2px 8px; */
+  pointer-events: auto;
 }
 
 .deleteListItemButton:hover,
@@ -70,15 +84,18 @@
 }
 
 .tagsContainer {
+  flex-grow: 1; /* Grow to take available space */
+  flex-shrink: 1; /* Allow shrinking if necessary */
+  flex-basis: 0; /* Start from zero and grow as needed */
+  min-width: 0; /* Prevent from growing beyond available space */
+  margin-left: auto; /* Push it to the right */
+  background-color: blue;
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 100%;
   padding: 0px 6px;
-  margin-left: auto;
-  /* border: 1px solid cyan; */
   margin-right: 8px;
-  max-width: 38%;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
@@ -98,9 +115,57 @@
 }
 
 .dateContainer {
-  font-size: 12px;
   /* border: 1px solid red; */
-  max-width: 22%;
+  flex-grow: 0; /* Prevents third child from growing unnecessarily */
+  flex-basis: auto; /* Takes space as per its content */
+  min-width: 0; /* Allows it to shrink if necessary */
+  background-color: yellow;
+
+  font-size: 12px;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
+}
+
+.listItemDragHandle {
+  width: 20px;
+  height: 100%;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  pointer-events: auto;
+}
+
+.listItemDragHandle:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  pointer-events: auto;
+}
+
+.first {
+  flex-grow: 0; /* Do not grow beyond its content width */
+  flex-shrink: 1; /* Allow to shrink based on content */
+  flex-basis: auto; /* Start with natural width based on content */
+  max-width: 50%; /* Cap at 50% if needed */
+  background-color: red;
+}
+.second {
+  flex-grow: 1; /* Grow to take available space */
+  flex-shrink: 1; /* Allow shrinking if necessary */
+  flex-basis: 0; /* Start from zero and grow as needed */
+  min-width: 0; /* Prevent from growing beyond available space */
+  margin-left: auto; /* Push it to the right */
+  background-color: blue;
+}
+.third {
+  flex-grow: 0; /* Prevents third child from growing unnecessarily */
+  flex-basis: auto; /* Takes space as per its content */
+  min-width: 0; /* Allows it to shrink if necessary */
+  background-color: yellow;
 }

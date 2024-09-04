@@ -1,13 +1,13 @@
 .container {
   /* border: 2px solid red; */
   /* height: 100%; */
-  width: 100%;
+  /* width: 100%; */
   /* padding: 0px 10px; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
-  align-items: stretch; /* Make sure children take full width */
+  align-items: stretch;
   justify-content: flex-start;
   /* padding: 3% 2%; */
   box-sizing: border-box;
@@ -22,6 +22,7 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  pointer-events: auto;
 }
 
 .newListItemButtonDivier {
@@ -57,3 +58,9 @@
   border: 3px solid hotpink;
   height: 30px;
 } */
+
+.listItem {
+  display: flex;
+  flex-direction: row;
+  pointer-events: none;
+}

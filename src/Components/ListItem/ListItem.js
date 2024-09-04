@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './ListItem.module.css';
 import * as u from '../../utils';
 import * as h from '../../helpers';
@@ -27,8 +27,31 @@ function ListItem({
     setListItemRenameText(listItem.title);
   }, [listItem]);
 
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const adjustInputWidth = () => {
+      if (inputRef.current) {
+        const span = document.createElement('span');
+        span.style.visibility = 'hidden';
+        span.style.whiteSpace = 'nowrap';
+        span.style.fontSize = getComputedStyle(inputRef.current).fontSize;
+        span.style.fontWeight = getComputedStyle(inputRef.current).fontWeight;
+        span.textContent = listItemRenameText || inputRef.current.placeholder;
+        document.body.appendChild(span);
+
+        inputRef.current.style.width = `${span.offsetWidth + 20}px`; // Add a small buffer
+
+        document.body.removeChild(span);
+      }
+    };
+
+    adjustInputWidth();
+  }, [listItemRenameText]); // Adjust width whenever inputValue changes
+
   return (
     <div className={styles.container}>
+      <div className={styles.listItemDragHandle}>::</div>
       <button
         className={styles.deleteListItemButton}
         onClick={() => deleteListItem(listItem)}
@@ -48,8 +71,10 @@ function ListItem({
           onChange={handleTitleChange}
           onBlur={handleTitleOnBlur}
           value={listItemRenameText}
+          id="flexidiv"
+          ref={inputRef}
         />
-        <div className={styles.tagsContainer}>
+        <div className={styles.tagsContainer} id="flexidiv">
           {listItem?.tags?.map((tag) => {
             const matchingTag = existingTags?.find(
               (existingTag) => existingTag.tagID === tag
@@ -65,7 +90,19 @@ function ListItem({
             );
           })}
         </div>
-        <div className={styles.dateContainer}>{h.dateLabel(listItem.date)}</div>
+        <div className={styles.dateContainer} id="flexidiv">
+          {h.dateLabel(listItem.date)}
+        </div>
+        {/* <div className={styles.first} id={styles.flexidiv}>
+          title
+        </div>
+        <div className={styles.second} id={styles.flexidiv}>
+          tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag
+          tag tag tag
+        </div>
+        <div className={styles.third} id={styles.flexidiv}>
+          date date date
+        </div> */}
       </div>
     </div>
   );

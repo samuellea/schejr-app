@@ -54,12 +54,12 @@ function MainArea({
     }
   };
 
-  const prevListIDRef = useRef(selectedList.listID);
+  const prevListIDRef = useRef(selectedList?.listID);
 
   // this is firing when the sortOn and order keys change on the selectedList, taken from lists in Home state.
   useEffect(() => {
     // I only want to fetch new list items when a new list is selected, NOT when sortOn and order values for a list change!
-    if (prevListIDRef.current !== selectedList.listID) {
+    if (selectedList && prevListIDRef.current !== selectedList.listID) {
       prevListIDRef.current = selectedList.listID;
       fetchListItems();
       fetchTags();
