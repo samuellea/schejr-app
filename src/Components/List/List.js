@@ -22,11 +22,7 @@ function List({
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
 
-  useEffect(() => {
-    console.log('');
-    console.log('List [] useEffect');
-    console.log('');
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     setSortOn(selectedList.sortOn);

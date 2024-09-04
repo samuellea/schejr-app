@@ -20,6 +20,7 @@ function Home() {
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
   const [syncWithGCal, setSyncWithGCal] = useState(false);
   const [selectedListID, setSelectedListID] = useState(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -29,7 +30,6 @@ function Home() {
     const { listID: unneededListID, ...rest } = list;
     const updatedListNoListID = { ...rest, ...newListValues };
     try {
-      console.log(list.listID);
       // update List obj on db, removing .listID first
       await u.patchList(list.listID, updatedListNoListID);
       // set updated List in state, keeping .listID
@@ -37,13 +37,10 @@ function Home() {
       const listsMinusUpdated = lists.filter((e) => e.listID !== list.listID);
       const listsPlusUpdated = [...listsMinusUpdated, updatedListWithListID];
       setLists(listsPlusUpdated);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const onDragEnd = async (result) => {
-    console.log(result);
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -112,11 +109,9 @@ function Home() {
     // ⭐ MOVE WITHIN A LIST
 
     if (destination.droppableId.substring(0, 4) === 'list') {
-      console.log('⭐ MOVE WITHIN A LIST');
       const listID = destination.droppableId.substring(5);
       const possibleSort = lists.find((e) => e.listID === listID).sortOn;
-      console.log(possibleSort);
-      console.log(source);
+
       const listItemID = draggableId;
       const startIndex = source.index; // NO - if a filter's been applied it SHOULDN'T be this, should be the dragged obj's original .manualOrder value
       const destinationIndex = destination.index;
@@ -256,7 +251,6 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log('Home [] useEffect...');
     //
     const fetchLists = async () => {
       try {
@@ -282,6 +276,11 @@ function Home() {
   const prevSliceRef = useRef();
 
   useEffect(() => {
+    if (isFirstRender) {
+      // Set the flag to false after the first render
+      setIsFirstRender(false);
+      return;
+    }
     // Check if the previous slice is different from the current slice
     if (
       prevSliceRef.current !== undefined &&
@@ -345,7 +344,6 @@ function Home() {
   */
 
   const updateListItem = async (listItem, field, value) => {
-    console.log('updateListItem!');
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
@@ -354,8 +352,6 @@ function Home() {
 
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-    console.log(updatedListItem);
-    console.log(updatedListItems);
 
     setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db

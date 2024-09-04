@@ -6,7 +6,7 @@ function PlusIcon({ width }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="plus"
+        className="plus"
         style={{
           width: '14px',
           height: '14px',

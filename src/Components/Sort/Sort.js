@@ -43,8 +43,6 @@ function Sort({
   }, []); // Depend on childClickedOutside
 
   useEffect(() => {
-    console.log('selectedList changed!');
-    console.log(selectedList);
     if (selectedList.sortOn === 'manualOrder') {
       setSortOn('manualOrder');
       setOrder('ascending');

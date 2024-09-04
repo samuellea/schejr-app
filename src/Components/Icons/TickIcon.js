@@ -6,7 +6,7 @@ function TickIcon({ width }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="thinCheck"
+        className="thinCheck"
         style={{
           width: width,
           height: width,

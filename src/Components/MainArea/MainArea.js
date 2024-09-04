@@ -23,8 +23,6 @@ function MainArea({
   const [listItemEditID, setListItemEditID] = useState(null);
 
   const fetchListItems = async () => {
-    console.log('');
-    console.log('fetchListItems!');
     setListAndItemsLoaded(false);
     try {
       const allListItems = await u.fetchListItemsByListID(selectedList.listID);
@@ -32,8 +30,7 @@ function MainArea({
         listItemID: e[0],
         ...e[1],
       }));
-      console.log('listItems fetched, loading in state');
-      console.log('');
+
       setListItems(allListItemsWithIDs);
       setListAndItemsLoaded(true);
     } catch {

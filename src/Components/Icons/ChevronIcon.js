@@ -6,7 +6,7 @@ function ChevronIcon({ width, fill, flip }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="doubleChevronLeft"
+        className="doubleChevronLeft"
         style={{
           width: width,
           height: width,

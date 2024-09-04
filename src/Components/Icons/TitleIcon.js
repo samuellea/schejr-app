@@ -6,7 +6,7 @@ function TitleIcon() {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="typesTitle"
+        className="typesTitle"
         style={{
           width: '16px',
           height: '16px',

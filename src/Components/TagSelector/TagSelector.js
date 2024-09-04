@@ -220,6 +220,7 @@ function TagSelector({
               <div
                 className={styles.selectedTag}
                 style={{ backgroundColor: matchingTag?.color }}
+                key={`tag-${tagID}`}
               >
                 <p className={styles.selectedTagLabel}>{matchingTag?.name}</p>
                 {isInFocus ? (

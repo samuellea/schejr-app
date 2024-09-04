@@ -226,7 +226,6 @@ export const dateLabel = (dates) => {
 
     // Format the date string
     const formattedDate = `${day} ${month}${year}`;
-    console.log(formattedDate, ' ***');
     return formattedDate;
   };
 
@@ -245,8 +244,6 @@ export const dateLabel = (dates) => {
  * @returns {string} - The next calendar date in "YYYY-MM-DD" format.
  */
 export const getNextCalendarDate = (endDate) => {
-  console.log('');
-  console.log(endDate);
   // Parse the input end date
   const [year, month, day] = endDate.split('-').map(Number);
 
@@ -262,7 +259,5 @@ export const getNextCalendarDate = (endDate) => {
   const newDay = String(date.getDate()).padStart(2, '0');
 
   // Return the new date in "YYYY-MM-DD" format
-  console.log(`${newYear}-${newMonth}-${newDay}`);
-  console.log('');
   return `${newYear}-${newMonth}-${newDay}`;
 };

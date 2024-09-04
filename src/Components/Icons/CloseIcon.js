@@ -6,7 +6,7 @@ function CloseIcon({ width, fill }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 14 14"
-        class="collectionDeleteRule"
+        className="collectionDeleteRule"
         style={{
           width: width,
           height: width,

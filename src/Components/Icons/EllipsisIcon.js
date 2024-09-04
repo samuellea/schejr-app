@@ -6,7 +6,7 @@ function EllipsisIcon({ width, fill }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 13 3"
-        class="dots"
+        className="dots"
         style={{
           width: width,
           height: width,

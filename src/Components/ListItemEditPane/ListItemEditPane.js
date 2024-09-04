@@ -26,20 +26,14 @@ function ListItemEditPane({
   };
 
   const handleTitleOnBlur = () => {
-    console.log('about to call updateListItem!');
     updateListItem(listItem, 'title', listItemRenameText);
   };
 
   const handleCommentOnBlur = () => {
-    console.log('about to call updateListItem!');
     updateListItem(listItem, 'comment', commentText);
   };
 
-  useEffect(() => {
-    console.log('listItems changed!');
-    console.log(listItems);
-    console.log(listItem);
-  }, [listItems]);
+  useEffect(() => {}, [listItems]);
 
   const textareaRef = useRef(null);
 

@@ -6,7 +6,7 @@ function TrashIcon({ width, fill }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="rename"
+        className="rename"
         style={{
           width: width,
           height: width,

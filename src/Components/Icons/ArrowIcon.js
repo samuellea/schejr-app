@@ -6,7 +6,7 @@ function ArrowIcon({ width, fill, flip }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="arrowUpThick"
+        className="arrowUpThick"
         style={{
           width: width,
           height: '100%',

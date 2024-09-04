@@ -6,7 +6,7 @@ function TagsIcon() {
       <svg
         role="graphics-symbol"
         viewBox="0 0 16 16"
-        class="typesMultipleSelect"
+        className="typesMultipleSelect"
         style={{
           width: '16px',
           height: '16px',

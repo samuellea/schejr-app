@@ -3,5 +3,3 @@ const newListValues = { name: 'goodbye' };
 
 const { id: unneededListID, ...rest } = list;
 const updatedList = { ...rest, ...newListValues };
-console.log(updatedList);
-console.log(unneededListID);

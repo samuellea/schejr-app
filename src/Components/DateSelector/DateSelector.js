@@ -43,7 +43,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     const endDate = convertToISOString(datesRef.current[1]);
 
     const dateObj = { startDate, endDate };
-    console.log(listItem, ' <-- DateSelector handleClickOff call');
+
     // updateListItem(listItemRef.current, 'date', dateObj); // add date to FB /listItems listItem object,
     updateListItem(listItem, 'date', dateObj); // add date to FB /listItems listItem object,
     setIsInFocus(false);
@@ -53,10 +53,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     datesRef.current = dates;
   }, [dates]);
 
-  useEffect(() => {
-    console.log('listItem in DateSelector *************');
-    console.log(listItem);
-  }, [listItem]);
+  useEffect(() => {}, [listItem]);
 
   const handleChange = (update) => {
     const [startDate, endDate] = update;
