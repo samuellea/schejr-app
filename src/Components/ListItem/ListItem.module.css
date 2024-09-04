@@ -1,5 +1,5 @@
 .container {
-  border: 1px solid green;
+  /* border: 1px solid green; */
   height: 30px;
   width: 100%;
   min-width: 100%;
@@ -31,7 +31,7 @@
 }
 
 .titleTagsDatesWrapper {
-  border: 3px solid hotpink;
+  /* border: 3px solid hotpink; */
   height: 30px;
 
   display: flex;
@@ -48,8 +48,11 @@
 }
 
 .listItemTitle {
-  border: 1px solid white;
-  background-color: red;
+  /* border: 1px solid white; */
+  /* background-color: red; */
+  background: none;
+  border: none;
+  outline: none;
   font-size: 17px;
   font-weight: 500;
   white-space: nowrap; /* Prevent text from wrapping */
@@ -58,9 +61,9 @@
   color: white;
   box-sizing: content-box; /* Ensure padding and border do not affect width calculation */
   pointer-events: auto;
-  outline: auto;
+  /* outline: auto; */
   /* padding: 0px 6px; */
-  max-width: 50%;
+  /* max-width: 50%; */
   text-overflow: ellipsis; /* Apply ellipsis if content overflows max width */
   padding: 0px;
 }
@@ -84,21 +87,22 @@
 }
 
 .tagsContainer {
-  flex-grow: 1; /* Grow to take available space */
+  flex-grow: 0; /* Grow to take available space */
   flex-shrink: 1; /* Allow shrinking if necessary */
-  flex-basis: 0; /* Start from zero and grow as needed */
+  flex-basis: 1; /* Start from zero and grow as needed */
   min-width: 0; /* Prevent from growing beyond available space */
   margin-left: auto; /* Push it to the right */
-  background-color: blue;
-  display: flex;
+  /* background-color: blue; */
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   height: 100%;
-  padding: 0px 6px;
-  margin-right: 8px;
+  /* padding: 0px 6px; */
+  /* margin-right: 8px; */
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
 .tag {
@@ -119,11 +123,12 @@
   flex-grow: 0; /* Prevents third child from growing unnecessarily */
   flex-basis: auto; /* Takes space as per its content */
   min-width: 0; /* Allows it to shrink if necessary */
-  background-color: yellow;
-
+  /* background-color: yellow; */
+  margin-left: 6px;
   font-size: 12px;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
+  padding: 0px 5px;
 }
 
 .listItemDragHandle {

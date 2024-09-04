@@ -194,8 +194,9 @@ export const updatedManualOrdersOnSourceList = (listItems, removedID) => {
 };
 
 export const dateLabel = (dates) => {
-  if (!dates) return '';
+  if (!dates) return null;
   const { startDate, endDate } = dates;
+  if (!startDate) return null;
   const formatDate = (isoDate) => {
     if (!isoDate) return null;
     const date = new Date(isoDate);
@@ -225,7 +226,7 @@ export const dateLabel = (dates) => {
 
     // Format the date string
     const formattedDate = `${day} ${month}${year}`;
-
+    console.log(formattedDate, ' ***');
     return formattedDate;
   };
 
