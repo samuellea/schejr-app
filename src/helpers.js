@@ -237,3 +237,32 @@ export const dateLabel = (dates) => {
   } ${endFormatted ? endFormatted : ''}`;
   return label;
 };
+
+/**
+ * Given an end date in the format "YYYY-MM-DD", returns the next calendar date.
+ *
+ * @param {string} endDate - The end date in "YYYY-MM-DD" format.
+ * @returns {string} - The next calendar date in "YYYY-MM-DD" format.
+ */
+export const getNextCalendarDate = (endDate) => {
+  console.log('');
+  console.log(endDate);
+  // Parse the input end date
+  const [year, month, day] = endDate.split('-').map(Number);
+
+  // Create a Date object from the end date
+  const date = new Date(year, month - 1, day); // Month is zero-based in JavaScript Date
+
+  // Add one day to the date
+  date.setDate(date.getDate() + 1);
+
+  // Extract the new date components
+  const newYear = date.getFullYear();
+  const newMonth = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const newDay = String(date.getDate()).padStart(2, '0');
+
+  // Return the new date in "YYYY-MM-DD" format
+  console.log(`${newYear}-${newMonth}-${newDay}`);
+  console.log('');
+  return `${newYear}-${newMonth}-${newDay}`;
+};

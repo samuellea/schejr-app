@@ -60,8 +60,8 @@
 }
 
 .fieldIndent {
-  /* border: 1px solid white; */
-  width: 10%;
+  /* border: 1px solid red; */
+  /* width: 10%; */
   min-width: 60px;
 }
 
@@ -77,8 +77,64 @@
 }
 
 .wrapperLabel {
+  /* border: 1px solid hotpink; */
   font-size: 14px;
   margin-right: 30px;
   margin-left: 10px;
   color: #7f7f7f;
+}
+
+.dividerLine {
+  border-top: 1px solid #9b9b9b65;
+  height: 1px;
+  width: 100%;
+}
+
+.commentContainer {
+  /* border: 1px solid red; */
+  width: 100%;
+  margin-left: 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.commentTextArea {
+  margin-left: 5px;
+  width: 100%;
+  background: none;
+  resize: none;
+  color: white;
+  padding: 5px 5px 5px 9px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
+    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  outline: none;
+  /* border: none; */
+  border-radius: 6px;
+  border: 1px solid #7f7f7f30;
+  font-size: 14px;
+
+  position: absolute; /* Position relative to the parent */
+  left: -10px; /* Move the textarea 10px outside the parent to the left */
+  top: 0; /* Align the textarea at the top of the parent */
+  width: 100%; /* Ensure the textarea width is 100% of its own width */
+  height: 100%; /* Ensure the textarea height is 100% of its own height */
+  min-height: 50px;
+  overflow: hidden; /* Hide scrollbars */
+  box-sizing: border-box; /* Include padding and border in width/height calculation */
+  resize: none; /* Optional: Prevent manual resizing by the user */
+}
+
+.commentTextArea:active,
+.commentTextArea:focus {
+  border-radius: 6px;
+  /* border: 1px solid #9b9b9b65; */
+  background-color: #2a2a2a;
+  border: 1px solid #2a2a2a;
+}
+
+.commentTextArea::placeholder {
+  color: #7f7f7f67;
 }

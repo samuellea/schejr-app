@@ -53,19 +53,19 @@ function ListItem({
   return (
     <div className={styles.container}>
       <div className={styles.listItemDragHandle}>
-        <DragIcon />
+        <DragIcon fill="#9b9b9b" />
       </div>
       <button
         className={styles.deleteListItemButton}
         onClick={() => deleteListItem(listItem)}
       >
-        <TrashIcon fill="white" width="16px" />
+        <TrashIcon fill="#9b9b9b" width="16px" />
       </button>
       <button
         className={styles.editListItemButton}
         onClick={() => handleEditListItem(listItem.listItemID)}
       >
-        <EditIcon fill="white" width="16px" />
+        <EditIcon fill="#9b9b9b" width="16px" />
       </button>
       <div className={styles.titleTagsDatesWrapper}>
         {/* <p className={styles.listItemTitle}>{listItem.title}</p> */}

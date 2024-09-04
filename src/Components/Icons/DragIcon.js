@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DragIcon({ width, fill }) {
+function DragIcon({ fill }) {
   return (
     <div
       style={{
@@ -16,7 +16,7 @@ function DragIcon({ width, fill }) {
         width="25px"
         height="25px"
         viewBox="0 0 30 25"
-        fill="white"
+        fill={fill}
         xmlns="http://www.w3.org/2000/svg"
         // style={{ width: '15px' }}
       >

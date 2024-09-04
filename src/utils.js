@@ -11,6 +11,7 @@ import {
   update,
 } from 'firebase/database';
 import { gapi } from 'gapi-script';
+import * as h from './helpers';
 
 export const createNewList = async (listData) => {
   try {
@@ -388,7 +389,7 @@ export const addAListItemToGCal = async (listItem) => {
     end: {
       date: !listItem.date.endDate
         ? listItem.date.startDate
-        : listItem.date.endDate,
+        : h.getNextCalendarDate(listItem.date.endDate), // so the end date INCLUDES the end date, not stopping on midnight the night before
     },
     extendedProperties: {
       private: {
@@ -481,7 +482,7 @@ export const changeListItemOnGCalByIDOrCreate = async (
     end: {
       date: !listItem.date.endDate
         ? listItem.date.startDate
-        : listItem.date.endDate,
+        : h.getNextCalendarDate(listItem.date.endDate),
     },
     extendedProperties: {
       private: {
@@ -507,6 +508,7 @@ export const changeListItemOnGCalByIDOrCreate = async (
       console.log(
         `No events found with extendedProperty 'listItemID': ${listItem.listItemID}`
       );
+      console.log(listItem);
       await addAListItemToGCal(listItem);
       return;
     }

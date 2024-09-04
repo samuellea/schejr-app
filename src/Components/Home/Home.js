@@ -370,7 +370,20 @@ function Home() {
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
 
       if (syncWithGCal) {
-        await u.changeListItemOnGCalByIDOrCreate(updatedListItem, field, value);
+        // if we're giving a listItem a startDate...
+        if (updatedListItem.date.startDate) {
+          await u.changeListItemOnGCalByIDOrCreate(
+            updatedListItem,
+            field,
+            value
+          );
+        }
+        // if we're removing a listItem's startDate...
+        const hadADateButDeleting =
+          listItem.date.startDate && !updatedListItem.date.startDate;
+        if (hadADateButDeleting) {
+          await u.removeGCalEventByListItemID(updatedListItem.listItemID);
+        }
       }
     } catch (error) {
       console.error('Failed to update list item:', error);
