@@ -23,18 +23,22 @@ function MainArea({
   const [listItemEditID, setListItemEditID] = useState(null);
 
   const fetchListItems = async () => {
-    setListAndItemsLoaded(false);
-    try {
-      const allListItems = await u.fetchListItemsByListID(selectedList.listID);
-      const allListItemsWithIDs = Object.entries(allListItems).map((e) => ({
-        listItemID: e[0],
-        ...e[1],
-      }));
+    if (selectedList.listID) {
+      setListAndItemsLoaded(false);
+      try {
+        const allListItems = await u.fetchListItemsByListID(
+          selectedList.listID
+        );
+        const allListItemsWithIDs = Object.entries(allListItems).map((e) => ({
+          listItemID: e[0],
+          ...e[1],
+        }));
 
-      setListItems(allListItemsWithIDs);
-      setListAndItemsLoaded(true);
-    } catch {
-      // Handle error fetching list items
+        setListItems(allListItemsWithIDs);
+        setListAndItemsLoaded(true);
+      } catch {
+        // Handle error fetching list items
+      }
     }
   };
 

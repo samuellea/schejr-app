@@ -27,11 +27,13 @@ function Sidebar({
       sortOn: 'manualOrder',
       order: 'ascending',
     };
-    const updatedLists = [...lists, newListData];
-    setLists(updatedLists);
     try {
-      const listId = await u.createNewList(newListData);
-      setSelectedListID(listId);
+      const listID = await u.createNewList(newListData);
+      console.log('Create list with id: ', listID);
+      const newListDataPlusID = { ...newListData, listID: listID };
+      const updatedLists = [...lists, newListDataPlusID];
+      setLists(updatedLists);
+      setSelectedListID(listID);
     } catch (error) {
       console.error('Failed to create list:', error);
       // Handle error
@@ -62,31 +64,35 @@ function Sidebar({
         </div>
       </div>
       <div className={styles.listContainer}>
-        {lists?.map((list) => (
-          <Droppable
-            key={list.listID}
-            droppableId={list.listID}
-            direction="horizontal"
-          >
-            {(provided) => (
-              <div
-                className={styles.listButton}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <ListButton
-                  listName={list.title}
-                  createdAt={list.createdAt}
-                  listID={list.listID}
-                  handleSelectListButton={handleSelectListButton}
-                  selected={list.listID === selectedListID}
-                  handleDeleteList={handleDeleteList}
-                />
-                {/* {provided.placeholder} */}
-              </div>
-            )}
-          </Droppable>
-        ))}
+        {lists
+          ?.sort((a, b) => a.createdAt - b.createdAt)
+          .map((list, i) => (
+            <Droppable
+              // key={list.listID}
+              // droppableId={list.listID}
+              direction="horizontal"
+              droppableId={`buttonList-${i}`}
+              key={`buttonList-${i}`}
+            >
+              {(provided) => (
+                <div
+                  className={styles.listButton}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <ListButton
+                    listName={list.title}
+                    createdAt={list.createdAt}
+                    listID={list.listID}
+                    handleSelectListButton={handleSelectListButton}
+                    selected={list.listID === selectedListID}
+                    handleDeleteList={handleDeleteList}
+                  />
+                  {/* {provided.placeholder} */}
+                </div>
+              )}
+            </Droppable>
+          ))}
       </div>
     </div>
   );
