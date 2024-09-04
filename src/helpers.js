@@ -261,3 +261,29 @@ export const getNextCalendarDate = (endDate) => {
   // Return the new date in "YYYY-MM-DD" format
   return `${newYear}-${newMonth}-${newDay}`;
 };
+
+export const removeDeletedTagFromListItems = (
+  listItems,
+  tagID,
+  setListItems
+) => {
+  const allListItemsThatHadTagIDinTags = listItems.filter((e) =>
+    e.tags?.includes(tagID)
+  );
+  console.log(allListItemsThatHadTagIDinTags);
+  const unchangedListItemsDidntHaveTag = listItems.filter(
+    (e) => !e.tags?.includes(tagID)
+  );
+  const updatedListItemsThatHadTag = allListItemsThatHadTagIDinTags.map(
+    (e) => ({
+      ...e,
+      tags: [...e.tags.filter((f) => f !== tagID)],
+    })
+  );
+  const updatedListItems = [
+    ...unchangedListItemsDidntHaveTag,
+    ...updatedListItemsThatHadTag,
+  ];
+  // set these updated list items in app .listItems state
+  setListItems(updatedListItems);
+};

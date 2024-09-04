@@ -123,6 +123,7 @@ function TagOptions({
         <div
           className={`${styles.tagOptionsButton} ${styles.colourOptionButton}`}
           onClick={() => handleChangeTagColor(color)}
+          key={`color-${color}`}
         >
           <div
             className={styles.colourBox}

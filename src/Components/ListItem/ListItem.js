@@ -92,12 +92,12 @@ function ListItem({
               </div>
             );
           })}
-          {h.dateLabel(listItem.date) ? (
-            <div className={styles.dateContainer} id="flexidiv">
-              {h.dateLabel(listItem.date)}
-            </div>
-          ) : null}
         </div>
+        {h.dateLabel(listItem.date) ? (
+          <div className={styles.dateContainer} id="flexidiv">
+            {h.dateLabel(listItem.date)}
+          </div>
+        ) : null}
         {/* <div className={styles.first} id={styles.flexidiv}>
           title
         </div>

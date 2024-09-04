@@ -59,9 +59,14 @@ function MainArea({
     if (selectedList && prevListIDRef.current !== selectedList.listID) {
       prevListIDRef.current = selectedList.listID;
       fetchListItems();
-      fetchTags();
+      // fetchTags();
     }
   }, [selectedList]);
+
+  useEffect(() => {
+    console.log('fetchingTags...');
+    fetchTags();
+  }, []);
 
   const handleEditListItem = (listItemID) => {
     setListItemEditID(listItemID);
@@ -92,11 +97,13 @@ function MainArea({
         <ListItemEditPane
           listItemEditID={listItemEditID}
           listItems={listItems}
+          setListItems={setListItems}
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
           updateListItem={updateListItem}
-          fetchTags={fetchTags}
+          // fetchTags={fetchTags}
           existingTags={existingTags}
+          setExistingTags={setExistingTags}
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
         />

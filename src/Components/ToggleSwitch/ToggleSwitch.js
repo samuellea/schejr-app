@@ -6,7 +6,7 @@ function ToggleSwitch({ syncWithGCal, handleSetSyncWithGCal }) {
   const sliderCombined = `${styles.slider} ${styles.round}`;
   return (
     <div className={styles.container}>
-      <label class={styles.switch}>
+      <label className={styles.switch}>
         <input
           type="checkbox"
           checked={syncWithGCal}

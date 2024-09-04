@@ -349,10 +349,11 @@ function Home() {
       (item) => item.listItemID === listItem.listItemID
     );
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
+    console.log(updatedListItem, ' 🚨');
 
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-
+    console.log(updatedListItems);
     setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
@@ -366,20 +367,17 @@ function Home() {
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
 
       if (syncWithGCal) {
-        // if we're giving a listItem a startDate...
-        if (updatedListItem.date.startDate) {
+        // if we're giving a listItem a startDate where it didnt have one before...
+        if (!listItem.date?.startDate && updatedListItem.date?.startDate) {
           await u.changeListItemOnGCalByIDOrCreate(
             updatedListItem,
             field,
             value
           );
         }
-        // if we're removing a listItem's startDate...
-        const hadADateButDeleting =
-          listItem.date.startDate && !updatedListItem.date.startDate;
-        if (hadADateButDeleting) {
+        // whereas if we're removing a listItem's startDate...
+        if (listItem.date?.startDate && !updatedListItem.date?.startDate)
           await u.removeGCalEventByListItemID(updatedListItem.listItemID);
-        }
       }
     } catch (error) {
       console.error('Failed to update list item:', error);
@@ -444,7 +442,6 @@ function Home() {
         />
       </div>
       <Toaster />
-      <button onClick={() => setLists(lists)}> Hello</button>
     </DragDropContext>
   );
 }

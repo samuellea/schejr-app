@@ -10,11 +10,13 @@ function TagSelector({
   userUID,
   listItem,
   updateListItem,
-  fetchTags,
+  // fetchTags,
   existingTags,
+  setExistingTags,
+  listItems,
+  setListItems,
 }) {
   const [isInFocus, setIsInFocus] = useState(false);
-  const [tagsModified, setTagsModified] = useState(false);
   const [inputText, setInputText] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [newTagColor, setNewTagColor] = useState(null);
@@ -24,6 +26,7 @@ function TagSelector({
   const [childClickedOutside, setChildClickedOutside] = useState(false);
 
   const tagSelectorRef = useRef(null);
+  const inputRef = useRef(null);
 
   const inputContainerCombined = `${styles.inputContainer} ${
     isInFocus ? styles.isInFocus : null
@@ -45,52 +48,6 @@ function TagSelector({
     '#69314C', // pink
     '#6E3630', // red
   ];
-
-  const handleUpdateExistingTag = async (tag, field, value) => {
-    // only run if field value has actually changed
-    if (tagOptions[field] !== value) {
-      const { tagID: unneededTagID, ...rest } = tag;
-      const updatedTag = { ...rest, [field]: value };
-
-      try {
-        const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
-        setTagsModified(true);
-        // if (tagOptions) setTagOptions(null); // close the Options menu if it's open
-      } catch (error) {
-        console.error('Failed to update tag:', error);
-        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
-      }
-    }
-  };
-
-  const handleDeleteTag = async (tagID) => {
-    try {
-      const tagDeleted = await u.deleteTagByID(tagID);
-      try {
-        const listItemsThatContainedTagID =
-          await u.findAndRemoveTagIDFromMatchingListItems(tagID);
-        setTagsModified(true);
-        setShowDeleteModal(false);
-      } catch (error) {
-        console.error('Failed to remove tag from matching list items:', error);
-      }
-    } catch (error) {
-      console.error('Failed to delete tag:', error);
-    }
-  };
-
-  const handleClickOutsideParent = () => {
-    if (!childClickedOutside) {
-      // Prevent the parent logic from firing until the child's logic has executed
-
-      setIsInFocus(false);
-    } else {
-      // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
-      setTagOptions(null); // close the Options menu if it's open
-    }
-    // Reset the state for future clicks
-    setChildClickedOutside(false);
-  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -117,25 +74,36 @@ function TagSelector({
   }, [existingTags]);
 
   useEffect(() => {
-    ('tags modified! fetching tags...');
-    fetchTags();
-    setTagsModified(false);
-  }, [tagsModified]);
+    console.log('isInFocus useEffect!');
+    if (isInFocus) {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }
+  }, [isInFocus]);
 
-  const handleInputChange = (e) => {
-    const text = e.target.value;
-    setInputText(text);
-  };
+  useEffect(() => {
+    console.log(listItems);
+  }, [listItems]);
 
   const handleCreateTag = async (newTagColor) => {
-    const tagData = {
+    // setIsInFocus(false);
+    const newTagData = {
       name: inputText,
       color: newTagColor, //
       userUID,
     };
     try {
-      const newTagID = await u.createNewTag(tagData);
+      const newTagID = await u.createNewTag(newTagData);
       try {
+        // update tags in app state
+        const newTagPlusID = { ...newTagData, tagID: newTagID };
+        const updatedExistingTags = [...existingTags, newTagPlusID];
+        setExistingTags(updatedExistingTags);
+        //////// 🚨 AND ALSO UPDATE LISTITEM'S .TAGS IN STATE!
+        const listItemTagsMinusPlusNewTag = [...listItem.tags, newTagPlusID];
+        updateListItem(listItem, 'tags', listItemTagsMinusPlusNewTag);
+        // then update listItem on db to have this new tag in .tags
         const updatedListItemTags = [...(listItem.tags || []), newTagID];
         const listItemTagsUpdated = await updateListItem(
           listItem,
@@ -145,11 +113,78 @@ function TagSelector({
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
       }
-      setTagsModified(true);
       setInputText('');
     } catch (error) {
       console.error('Failed to create tag:', error);
     }
+  };
+
+  const handleUpdateExistingTag = async (tag, field, value) => {
+    // only run if field value has actually changed
+    if (tagOptions[field] !== value) {
+      const { tagID: unneededTagID, ...rest } = tag;
+      const updatedTag = { ...rest, [field]: value };
+      try {
+        // update tags in app state
+        const updatedTagPlusID = { ...updatedTag, tagID: unneededTagID };
+        const existingTagsMinusThisTag = existingTags.filter(
+          (e) => e.tagID !== unneededTagID
+        );
+        const updatedExistingTags = [
+          ...existingTagsMinusThisTag,
+          updatedTagPlusID,
+        ];
+        setExistingTags(updatedExistingTags);
+        // then patch this tag on the db
+        const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
+      } catch (error) {
+        console.error('Failed to update tag:', error);
+        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
+      }
+    }
+  };
+
+  const handleDeleteTag = async (tagID) => {
+    console.log('deleting tag ', tagID);
+    try {
+      const tagDeleted = await u.deleteTagByID(tagID);
+      try {
+        // update tags in app state to no longer contain the deleted tag
+        const existingTagsMinusDeletedTag = existingTags.filter(
+          (e) => e.tagID !== tagID
+        );
+        setExistingTags(existingTagsMinusDeletedTag);
+        // then handle removing the deleted tag from any all listItems that used it
+        // on the front end
+        h.removeDeletedTagFromListItems(listItems, tagID, setListItems);
+        // AND on the db
+        const listItemsThatContainedTagID =
+          await u.findAndRemoveTagIDFromMatchingListItems(tagID);
+        setShowDeleteModal(false);
+      } catch (error) {
+        console.error('Failed to remove tag from matching list items:', error);
+      }
+    } catch (error) {
+      console.error('Failed to delete tag:', error);
+    }
+  };
+
+  const handleClickOutsideParent = () => {
+    if (!childClickedOutside) {
+      // Prevent the parent logic from firing until the child's logic has executed
+
+      setIsInFocus(false);
+    } else {
+      // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
+      setTagOptions(null); // close the Options menu if it's open
+    }
+    // Reset the state for future clicks
+    setChildClickedOutside(false);
+  };
+
+  const handleInputChange = (e) => {
+    const text = e.target.value;
+    setInputText(text);
   };
 
   const handleSelectExistingTag = async (tag) => {
@@ -168,17 +203,9 @@ function TagSelector({
     } catch (error) {
       console.error('Failed to create tag:', error);
     }
-
-    // const updatedSelectedTags = [...selectedTags, tag];
-    // setSelectedTags(updatedSelectedTags);
   };
 
   const handleRemoveSelectedTag = async (tagID) => {
-    // const updatedSelectedTags = [
-    //   ...selectedTags.filter((e) => e.tagID !== tagID),
-    // ];
-    //  => e.name));
-    // setSelectedTags(updatedSelectedTags);
     try {
       const updatedListItemTags = [
         ...listItem?.tags.filter((e) => e !== tagID),
@@ -202,6 +229,10 @@ function TagSelector({
     }
   };
 
+  const handleInputContainerClick = () => {
+    setIsInFocus(true);
+  };
+
   return (
     <div
       className={styles.container}
@@ -210,7 +241,10 @@ function TagSelector({
         // e.stopPropagation();
       }}
     >
-      <div className={inputContainerCombined}>
+      <div
+        className={inputContainerCombined}
+        onClick={handleInputContainerClick}
+      >
         {listItem?.tags?.length ? (
           listItem?.tags?.map((tagID) => {
             const matchingTag = existingTags?.find(
@@ -238,15 +272,18 @@ function TagSelector({
         ) : !isInFocus ? (
           <p className={styles.emptyLabel}>Empty</p>
         ) : null}
-        <input
-          className={inputCombined}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsInFocus(true);
-          }}
-          onChange={handleInputChange}
-          value={inputText}
-        />
+        {isInFocus ? (
+          <input
+            className={inputCombined}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsInFocus(true);
+            }}
+            onChange={handleInputChange}
+            value={inputText}
+            ref={inputRef}
+          />
+        ) : null}
         {isInFocus ? (
           <div className={styles.dropdown}>
             <p className={styles.selectP}>Select a tag or create one</p>
@@ -256,7 +293,10 @@ function TagSelector({
                 e.name.toLowerCase().includes(inputText.toLowerCase())
               )
               .map((tag) => (
-                <div className={styles.existingTagButton}>
+                <div
+                  className={styles.existingTagButton}
+                  key={`existingTag-${tag.tagID}`}
+                >
                   <div
                     className={styles.existingTagLabelWrapper}
                     onClick={() => handleSelectExistingTag(tag)}

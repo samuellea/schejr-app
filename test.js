@@ -1,5 +1,13 @@
-const list = { id: 1, name: 'hello', comment: '' };
-const newListValues = { name: 'goodbye' };
+const allListItemsThatHadTagIDinTags = [
+  { id: 2, tags: ['ccc', 'ddd', 'aaa'] },
+  { id: 3, tags: ['aaa', 'bbb'] },
+];
 
-const { id: unneededListID, ...rest } = list;
-const updatedList = { ...rest, ...newListValues };
+const tagID = 'aaa';
+
+const updatedListItems = allListItemsThatHadTagIDinTags.map((e) => ({
+  ...e,
+  tags: [...e.tags.filter((f) => f !== tagID)],
+}));
+
+console.log(updatedListItems);

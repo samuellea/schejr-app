@@ -8,15 +8,20 @@ import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 function ListItemEditPane({
   listItemEditID,
   listItems,
+  setListItems,
   handleCloseEditPane,
   userUID,
   updateListItem,
-  fetchTags,
+  // fetchTags,
   existingTags,
+  setExistingTags,
   syncWithGCal,
   handleSetSyncWithGCal,
 }) {
-  const listItem = listItems.find((e) => e.listItemID === listItemEditID); // title is locked in here - so DateSelector wont recieve
+  // title is locked in here - so DateSelector wont recieve
+  const [listItem, setListItem] = useState(
+    listItems.find((e) => e.listItemID === listItemEditID)
+  );
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [commentText, setCommentText] = useState(listItem.comment);
 
@@ -33,7 +38,12 @@ function ListItemEditPane({
     updateListItem(listItem, 'comment', commentText);
   };
 
-  useEffect(() => {}, [listItems]);
+  useEffect(() => {
+    console.log('listItems changed!');
+    const listItem = listItems.find((e) => e.listItemID === listItemEditID);
+    console.log(listItem.tags);
+    setListItem(listItem);
+  }, [listItems, listItemEditID]);
 
   const textareaRef = useRef(null);
 
@@ -81,13 +91,18 @@ function ListItemEditPane({
       </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>Tags</div>
+        <div className={styles.wrapperLabel} id={styles.tagsFieldLabel}>
+          <p className={styles.tagsLabelP}>Tags</p>
+        </div>
         <TagSelector
           userUID={userUID}
           listItem={listItem}
           updateListItem={updateListItem}
-          fetchTags={fetchTags}
+          // fetchTags={fetchTags}
           existingTags={existingTags}
+          setExistingTags={setExistingTags}
+          listItems={listItems}
+          setListItems={setListItems}
         />
       </div>
 

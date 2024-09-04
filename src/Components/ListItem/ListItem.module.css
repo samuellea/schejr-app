@@ -21,12 +21,9 @@
 
 #flexidiv {
   border: 2px solid orange;
-
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
-
-  flex-shrink: 1; /* Allow children to shrink if necessary */
   min-width: 0; /* Prevent children from forcing min-widths */
 }
 
@@ -66,6 +63,7 @@
   /* max-width: 50%; */
   text-overflow: ellipsis; /* Apply ellipsis if content overflows max width */
   padding: 0px;
+  flex-shrink: 1; /* Allow to shrink if necessary */
 }
 
 .deleteListItemButton,
@@ -87,8 +85,9 @@
 }
 
 .tagsContainer {
+  /* border: 1px solid cyan; */
   flex-grow: 0; /* Grow to take available space */
-  flex-shrink: 1; /* Allow shrinking if necessary */
+  flex-shrink: 1; /* Allow to shrink if necessary */
   flex-basis: 1; /* Start from zero and grow as needed */
   min-width: 0; /* Prevent from growing beyond available space */
   margin-left: auto; /* Push it to the right */
@@ -120,9 +119,7 @@
 
 .dateContainer {
   /* border: 1px solid red; */
-  flex-grow: 0; /* Prevents third child from growing unnecessarily */
-  flex-basis: auto; /* Takes space as per its content */
-  min-width: 0; /* Allows it to shrink if necessary */
+  flex: 0 0 auto;
   /* background-color: yellow; */
   margin-left: 6px;
   font-size: 12px;

@@ -1,21 +1,23 @@
 .container {
   width: 100%;
-  /* border: 2px solid green; */
+  /* border: 1px solid red; */
   position: relative;
 }
 
 .inputContainer {
   /* border: 1px solid yellow; */
   width: 90%;
-  max-width: 100%;
-  padding: 7px 6px;
+  max-width: 90%;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   background-color: #202020;
   box-sizing: border-box;
-  height: 35px;
+  min-height: 35px;
+  padding: 7px 6px;
+  flex-wrap: wrap; /* Allows the children to wrap to the next line */
+  gap: 6px;
   position: relative;
 }
 
@@ -37,11 +39,16 @@
 
 .tagSelectorInput {
   /* background-color: #202020; */
-  background: none;
   border: none;
+  /* border: 1px solid green; */
+  background: none;
   outline: none;
   color: white;
-  width: 100%;
+  /* width: 100%; */
+
+  flex: 1 1; /* Allows the input to grow and shrink */
+  min-width: 50px; /* Sets the minimum width before wrapping occurs */
+  box-sizing: border-box; /* Includes padding and border in width calculation */
 }
 
 /* .inputContainer input:hover {
@@ -57,7 +64,7 @@
   min-height: 35px;
   /* border: 1px solid red; */
   position: absolute;
-  top: 35px;
+  top: 100%;
   left: 0;
   width: 98%;
   border-radius: 0px 0px 4px 4px;
@@ -142,6 +149,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  align-items: flex-end;
 }
 
 .existingTagLabel,
@@ -154,9 +162,13 @@
   display: inline-flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: 12px;
   /* width: 100px; */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
+  /* max-width: 100%; */
 }
 
 .selectedTagLabel {
@@ -165,7 +177,7 @@
 }
 
 .selectedTag {
-  margin: 0px 6px 6px 0px;
+  margin: 0px 0px 0px 0px;
 }
 
 .selectedTag p {
