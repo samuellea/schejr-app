@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './TagOptions.module.css';
 import TrashIcon from '../Icons/TrashIcon';
 import TickIcon from '../Icons/TickIcon';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
 function TagOptions({
   tag,
@@ -81,10 +82,6 @@ function TagOptions({
     };
   }, [onChildClickOutside]); // Depend on onChildClickOutside
 
-  const confirmDeleteCombined = `${styles.confirmDeleteTagButton} ${styles.deleteTagModalButton}`;
-
-  const cancelDeleteCombined = `${styles.cancelDeleteTagButton} ${styles.deleteTagModalButton}`;
-
   const handleChangeTagColor = (color) => {
     setSelectedColor(color);
 
@@ -138,25 +135,11 @@ function TagOptions({
         </div>
       ))}
       {showDeleteModal ? (
-        <div className={styles.deleteTagModalBackground}>
-          <div className={styles.deleteTagModal}>
-            <p styles={styles.deleteTagModalP}>
-              Are you sure you want to delete this option?
-            </p>
-            <button
-              className={confirmDeleteCombined}
-              onClick={() => handleDeleteTag(tag.tagID)}
-            >
-              Delete
-            </button>
-            <button
-              className={cancelDeleteCombined}
-              onClick={() => setShowDeleteModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <ConfirmDeleteModal
+          message="Are you sure you want to delete this option?"
+          handleConfirm={() => handleDeleteTag(tag.tagID)}
+          handleCancel={() => setShowDeleteModal(false)}
+        />
       ) : null}
     </div>
   );

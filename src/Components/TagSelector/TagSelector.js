@@ -94,6 +94,7 @@ function TagSelector({
       userUID,
     };
     try {
+      // create this tag on the db
       const newTagID = await u.createNewTag(newTagData);
       try {
         // update tags in app state
@@ -101,7 +102,10 @@ function TagSelector({
         const updatedExistingTags = [...existingTags, newTagPlusID];
         setExistingTags(updatedExistingTags);
         //////// 🚨 AND ALSO UPDATE LISTITEM'S .TAGS IN STATE!
-        const listItemTagsMinusPlusNewTag = [...listItem.tags, newTagPlusID];
+        const listItemTagsMinusPlusNewTag = [
+          ...(listItem.tags || []),
+          newTagPlusID,
+        ];
         updateListItem(listItem, 'tags', listItemTagsMinusPlusNewTag);
         // then update listItem on db to have this new tag in .tags
         const updatedListItemTags = [...(listItem.tags || []), newTagID];

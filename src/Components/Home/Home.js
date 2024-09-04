@@ -11,7 +11,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import { gapi } from 'gapi-script';
 
 function Home() {
-  const [listsModified, setListsModified] = useState(false);
   const [lists, setLists] = useState([]);
   const [listItems, setListItems] = useState([]);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
@@ -263,14 +262,8 @@ function Home() {
       } catch {
         // Handle error fetching lists
       }
-
-      if (listsModified) {
-        // Reset state whenever setListsModified(true) is called
-        setListsModified(false);
-      }
     };
     fetchLists();
-    // }, [listsModified]);
   }, []);
 
   const prevSliceRef = useRef();
@@ -379,6 +372,19 @@ function Home() {
         if (listItem.date?.startDate && !updatedListItem.date?.startDate)
           await u.removeGCalEventByListItemID(updatedListItem.listItemID);
       }
+      // if we're changing a lisItem's startDate that already has a startDate...
+      if (listItem.date?.startDate && updatedListItem.date?.startDate) {
+        const startDateChanged =
+          listItem.date.startDate !== updatedListItem.date.startDate &&
+          updatedListItem.date.startDate !== null;
+        if (startDateChanged) {
+          await u.changeListItemOnGCalByIDOrCreate(
+            updatedListItem,
+            field,
+            value
+          );
+        }
+      }
     } catch (error) {
       console.error('Failed to update list item:', error);
     }
@@ -389,7 +395,8 @@ function Home() {
   };
 
   const handleSelectListButton = (listID) => {
-    setListAndItemsLoaded(false);
+    console.log(listID);
+    // setListAndItemsLoaded(false);
     setSelectedListID(listID);
   };
 
@@ -398,6 +405,18 @@ function Home() {
     setLists(listsMinusDeleted);
     try {
       await u.deleteListByID(listID);
+      const childListItems = listItems.filter((e) => e.parentID === listID);
+      // also delete any listItems with .parentID === listID on db
+      await u.deleteListItemsWithParentID(listID, childListItems);
+      // AND in state
+      const listItemsMinusDeletedChildren = listItems.filter(
+        (e) => e.parentID !== listID
+      );
+      setListItems(listItemsMinusDeletedChildren);
+      // AND delete any Gcal events for those delete child listItems!
+      const deletedListItemIDs = childListItems.map((e) => e.listItemID);
+      console.log(deletedListItemIDs);
+      await u.removeMultipleGCalEventsByListItemIDs(deletedListItemIDs);
     } catch (error) {
       console.error('Failed to delete list:', error);
     }
@@ -413,7 +432,7 @@ function Home() {
         <TopBar toggleSidebar={toggleSidebar} />
         <MainArea
           showSidebar={showSidebar}
-          selectedList={lists.find((e) => e.listID === selectedListID)}
+          selectedList={lists?.find((e) => e.listID === selectedListID)}
           updateList={updateList}
           updateListItem={updateListItem}
           userUID={userUID}
@@ -427,14 +446,10 @@ function Home() {
         <Sidebar
           userUID={userUID}
           displayName={displayName}
-          sortedLists={h.sortByProperty(
-            lists,
-            sidebarListSortOn,
-            sidebarListAscending
-          )}
+          lists={lists}
+          setLists={setLists}
           selectedListID={selectedListID}
           setSelectedListID={setSelectedListID}
-          setListsModified={setListsModified}
           toggleSidebar={toggleSidebar}
           showSidebar={showSidebar}
           handleSelectListButton={handleSelectListButton}

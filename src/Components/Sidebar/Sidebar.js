@@ -10,27 +10,28 @@ import ChevronIcon from '../Icons/ChevronIcon';
 function Sidebar({
   userUID,
   displayName,
-  sortedLists,
+  lists,
+  setLists,
   selectedListID,
   setSelectedListID,
-  setListsModified,
   toggleSidebar,
   showSidebar,
   handleSelectListButton,
   handleDeleteList,
 }) {
   const createList = async () => {
-    const listData = {
+    const newListData = {
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
       createdAt: Date.now(),
       createdBy: userUID,
       sortOn: 'manualOrder',
       order: 'ascending',
     };
+    const updatedLists = [...lists, newListData];
+    setLists(updatedLists);
     try {
-      const listId = await u.createNewList(listData);
+      const listId = await u.createNewList(newListData);
       setSelectedListID(listId);
-      setListsModified(true);
     } catch (error) {
       console.error('Failed to create list:', error);
       // Handle error
@@ -61,7 +62,7 @@ function Sidebar({
         </div>
       </div>
       <div className={styles.listContainer}>
-        {sortedLists.map((list) => (
+        {lists?.map((list) => (
           <Droppable
             key={list.listID}
             droppableId={list.listID}
@@ -77,7 +78,6 @@ function Sidebar({
                   listName={list.title}
                   createdAt={list.createdAt}
                   listID={list.listID}
-                  setListsModified={setListsModified}
                   handleSelectListButton={handleSelectListButton}
                   selected={list.listID === selectedListID}
                   handleDeleteList={handleDeleteList}

@@ -170,6 +170,17 @@ export const deleteListItemByID = async (listItemID) => {
   }
 };
 
+export const deleteListItemsWithParentID = async (listID, childListItems) => {
+  try {
+    const deletePromises = childListItems.map((listItem) => {
+      return deleteListItemByID(listItem.listItemID);
+    });
+    return await Promise.all(deletePromises);
+  } catch (error) {
+    console.error(`Error deleting list items with parentID ${listID}: `, error);
+  }
+};
+
 export const fetchAllUserTags = async (userUID) => {
   try {
     // Reference to the 'lists' endpoint
@@ -462,6 +473,17 @@ export const removeGCalEventByListItemID = async (listItemID) => {
   } catch (error) {
     console.error('Error fetching events:', error);
     return [];
+  }
+};
+
+export const removeMultipleGCalEventsByListItemIDs = async (listItemIDs) => {
+  try {
+    const deletePromises = listItemIDs.map((listItemID) => {
+      return removeGCalEventByListItemID(listItemID);
+    });
+    return await Promise.all(deletePromises);
+  } catch (error) {
+    console.log(error);
   }
 };
 

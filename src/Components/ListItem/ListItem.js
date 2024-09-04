@@ -5,6 +5,8 @@ import * as h from '../../helpers';
 import TrashIcon from '../Icons/TrashIcon';
 import EditIcon from '../Icons/EditIcon';
 import DragIcon from '../Icons/DragIcon';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
+import toast from 'react-hot-toast';
 
 function ListItem({
   listItem,
@@ -14,6 +16,7 @@ function ListItem({
   updateListItem,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
@@ -50,6 +53,22 @@ function ListItem({
     adjustInputWidth();
   }, [listItemRenameText]); // Adjust width whenever inputValue changes
 
+  const handleConfirmDeleteListItem = async (listItem) => {
+    const listItemTitle = listItem.title;
+    try {
+      await deleteListItem(listItem);
+      setShowDeleteModal(false);
+      toast(`Deleted ${listItemTitle}`, {
+        duration: 3000,
+      });
+    } catch (error) {
+      toast(`Problem deleting ${listItemTitle}`, {
+        duration: 3000,
+      });
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.listItemDragHandle}>
@@ -57,7 +76,7 @@ function ListItem({
       </div>
       <button
         className={styles.deleteListItemButton}
-        onClick={() => deleteListItem(listItem)}
+        onClick={() => setShowDeleteModal(true)}
       >
         <TrashIcon fill="#9b9b9b" width="16px" />
       </button>
@@ -109,6 +128,13 @@ function ListItem({
           date date date
         </div> */}
       </div>
+      {showDeleteModal ? (
+        <ConfirmDeleteModal
+          message="Are you sure you want to delete this option?"
+          handleConfirm={() => handleConfirmDeleteListItem(listItem)}
+          handleCancel={() => setShowDeleteModal(false)}
+        />
+      ) : null}
     </div>
   );
 }
