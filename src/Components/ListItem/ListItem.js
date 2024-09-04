@@ -4,6 +4,7 @@ import * as u from '../../utils';
 import * as h from '../../helpers';
 import TrashIcon from '../Icons/TrashIcon';
 import EditIcon from '../Icons/EditIcon';
+import DragIcon from '../Icons/DragIcon';
 
 function ListItem({
   listItem,
@@ -51,7 +52,9 @@ function ListItem({
 
   return (
     <div className={styles.container}>
-      <div className={styles.listItemDragHandle}>::</div>
+      <div className={styles.listItemDragHandle}>
+        <DragIcon />
+      </div>
       <button
         className={styles.deleteListItemButton}
         onClick={() => deleteListItem(listItem)}
