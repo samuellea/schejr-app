@@ -39,10 +39,14 @@ function ListItemEditPane({
   };
 
   useEffect(() => {
-    console.log('listItems changed!');
-    const listItem = listItems.find((e) => e.listItemID === listItemEditID);
-    console.log(listItem.tags);
-    setListItem(listItem);
+    if (!listItemEditID) {
+      console.log(listItemEditID);
+      handleCloseEditPane();
+    } else {
+      console.log('listItems changed!');
+      const listItem = listItems.find((e) => e.listItemID === listItemEditID);
+      setListItem(listItem);
+    }
   }, [listItems, listItemEditID]);
 
   const textareaRef = useRef(null);
@@ -122,6 +126,11 @@ function ListItemEditPane({
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
         />
+        <span className={styles.syncExplanation}>
+          {syncWithGCal
+            ? 'Synchronizing all your dates with Google Calendar'
+            : 'Turn on to synchronize all your dates with Google Calendar'}
+        </span>
       </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />

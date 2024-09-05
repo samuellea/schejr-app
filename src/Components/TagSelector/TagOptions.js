@@ -139,6 +139,7 @@ function TagOptions({
           message="Are you sure you want to delete this option?"
           handleConfirm={() => handleDeleteTag(tag.tagID)}
           handleCancel={() => setShowDeleteModal(false)}
+          confirmLabel="Delete"
         />
       ) : null}
     </div>

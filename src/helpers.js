@@ -81,25 +81,18 @@ export const sortItems = (items, sortKey, order, existingTags) => {
 
   if (sortKey === 'startDate') {
     return items.sort((a, b) => {
-      // Access .startDate or provide a default date if missing
-      const dateA = a.date?.startDate
-        ? new Date(a.date.startDate)
-        : new Date(-8640000000000000); // Default to very distant past date
-      const dateB = b.date?.startDate
-        ? new Date(b.date.startDate)
-        : new Date(8640000000000000); // Default to very distant future date
+      const dateA = a.date?.startDate ? new Date(a.date.startDate) : null;
+      const dateB = b.date?.startDate ? new Date(b.date.startDate) : null;
 
-      // Determine sort direction
-      const direction = order === 'descending' ? -1 : 1;
+      // Handle null values by placing them at the end (ascending) or the beginning (descending)
+      if (dateA === null && dateB === null) return 0;
+      if (dateA === null) return isAscending ? 1 : -1;
+      if (dateB === null) return isAscending ? -1 : 1;
 
       // Compare the dates
-      if (dateA < dateB) {
-        return -1 * direction; // Ascending or descending based on direction
-      }
-      if (dateA > dateB) {
-        return 1 * direction; // Ascending or descending based on direction
-      }
-      return 0; // If dates are equal
+      return isAscending
+        ? dateA - dateB // Ascending order
+        : dateB - dateA; // Descending order
     });
   }
 

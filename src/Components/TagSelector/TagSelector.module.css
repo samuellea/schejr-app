@@ -2,6 +2,7 @@
   width: 100%;
   /* border: 1px solid red; */
   position: relative;
+  cursor: pointer;
 }
 
 .inputContainer {

@@ -237,6 +237,14 @@ function TagSelector({
     setIsInFocus(true);
   };
 
+  const handleKeyDown = (e) => {
+    // Check if the pressed key is Enter (key code 13)
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCreateTag(newTagColor);
+    }
+  };
+
   return (
     <div
       className={styles.container}
@@ -286,6 +294,7 @@ function TagSelector({
             onChange={handleInputChange}
             value={inputText}
             ref={inputRef}
+            onKeyDown={handleKeyDown}
           />
         ) : null}
         {isInFocus ? (

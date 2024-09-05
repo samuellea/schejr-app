@@ -7,7 +7,7 @@
   position: absolute; /* Allow overlaying */
   top: 0; /* Adjust as needed */
   left: 0%; /* Adjust as needed */
-  z-index: 20; /* Ensure this sibling is on top */
+  z-index: 10; /* Ensure this sibling is on top */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,6 +57,7 @@
   outline: none;
   width: 100%;
   /* padding-left: 4%; */
+  cursor: pointer;
 }
 
 .fieldIndent {
@@ -82,6 +83,7 @@
   margin-right: 30px;
   margin-left: 10px;
   color: #7f7f7f;
+  user-select: none;
 }
 
 #tagsFieldLabel {
@@ -94,9 +96,10 @@
 }
 
 .dividerLine {
-  border-top: 1px solid #9b9b9b65;
+  border-top: 1px solid #7f7f7f30;
   height: 1px;
-  width: 100%;
+  /* min-width: 310px; */
+  width: 75%;
 }
 
 .commentContainer {
@@ -109,7 +112,8 @@
 
 .commentTextArea {
   margin-left: 5px;
-  width: 100%;
+  /* width: 100%; */
+  /* width: 250px; */
   background: none;
   resize: none;
   color: white;
@@ -124,11 +128,14 @@
   border-radius: 6px;
   border: 1px solid #7f7f7f30;
   font-size: 14px;
-
+  cursor: pointer;
   position: absolute; /* Position relative to the parent */
   left: -10px; /* Move the textarea 10px outside the parent to the left */
   top: 0; /* Align the textarea at the top of the parent */
-  width: 100%; /* Ensure the textarea width is 100% of its own width */
+  /* min-width: 60%; */
+  /* width: 100%; */
+  min-width: 310px;
+  width: 75%;
   height: 100%; /* Ensure the textarea height is 100% of its own height */
   min-height: 50px;
   overflow: hidden; /* Hide scrollbars */
@@ -146,4 +153,12 @@
 
 .commentTextArea::placeholder {
   color: #7f7f7f67;
+}
+
+.syncExplanation {
+  margin-left: 18px;
+  font-weight: 200;
+  font-size: 12px;
+  color: #d1d1d183;
+  user-select: none;
 }

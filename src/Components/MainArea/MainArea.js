@@ -63,6 +63,7 @@ function MainArea({
     if (selectedList && prevListIDRef.current !== selectedList.listID) {
       prevListIDRef.current = selectedList.listID;
       fetchListItems();
+      setListItemEditID(null);
       // fetchTags();
     }
   }, [selectedList]);

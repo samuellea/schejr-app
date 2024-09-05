@@ -1,6 +1,8 @@
 import React from 'react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import styles from './Auth.module.css';
+import TagsIcon from './Components/Icons/TagsIcon';
 
 function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
   const navigate = useNavigate();
@@ -40,9 +42,34 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
   };
 
   return (
-    <div className="Auth">
-      <h1>Auth</h1>
-      <button onClick={handleLogin}>Login with Google</button>
+    <div className={styles.container}>
+      <div className={styles.logoContainer}>
+        <div className={styles.logo}>
+          <h1 className={styles.title}>Schejr.</h1>
+          <h1 className={styles.shadow}>Schejr.</h1>
+        </div>
+        <div className={styles.emojiContainer}>
+          <span className={styles.emoji}>📝</span>
+        </div>
+      </div>
+
+      <span className={styles.description}>
+        A Notion-like web app for making lists and scheduling.
+      </span>
+      <button className={styles.logonButton} onClick={handleLogin}>
+        Login with Google
+      </button>
+      <div className={styles.bottomGap} />
+      <div className={styles.copyright}>
+        2024 Sam Lea |{' '}
+        <a
+          href="https://www.github.com/samuellea"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Github
+        </a>
+      </div>
     </div>
   );
 }

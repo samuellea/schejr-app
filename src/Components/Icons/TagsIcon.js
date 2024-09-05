@@ -1,6 +1,10 @@
 import React from 'react';
 
-function TagsIcon() {
+function TagsIcon({
+  height = '16px',
+  width = '16px',
+  fill = 'rgba(255, 255, 255, 0.81)',
+}) {
   return (
     <div>
       <svg
@@ -8,10 +12,10 @@ function TagsIcon() {
         viewBox="0 0 16 16"
         className="typesMultipleSelect"
         style={{
-          width: '16px',
-          height: '16px',
+          width: width,
+          height: height,
           display: 'block',
-          fill: 'rgba(255, 255, 255, 0.81)',
+          fill: fill,
           flexShrink: '0',
           marginLeft: '6px',
           marginRight: '2px',

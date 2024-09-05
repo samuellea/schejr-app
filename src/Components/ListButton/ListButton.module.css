@@ -17,6 +17,7 @@
   padding: 0px 8px;
   box-sizing: border-box;
   word-wrap: no-wrap;
+  /* border: 1px solid red; */
 }
 
 .container:hover {

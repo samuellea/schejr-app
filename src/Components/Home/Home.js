@@ -121,10 +121,9 @@ function Home() {
       if (possibleSort !== 'manualOrder') {
         // if a sort is present on the List object, could intervene here -
         // eslint-disable-next-line no-restricted-globals
-        const userResponse = confirm('Do you want to proceed?');
+        const userResponse = confirm('Do you want to remove sorting?');
         // Check the user's response
         if (userResponse) {
-          alert('You selected Yes.');
           // update list obj in state to have .sortOn = 'manualOrder' and .order = 'ascending'
           const selectedList = lists.find((e) => e.listID === selectedListID);
           const indexOfListInLists = lists.findIndex(
@@ -385,6 +384,11 @@ function Home() {
           );
         }
       }
+
+      // if we're adding an end date to a lisItem that already has a startDate...
+      if (listItem.date?.startDate && updatedListItem.date?.endDate) {
+        await u.changeListItemOnGCalByIDOrCreate(updatedListItem, field, value);
+      }
     } catch (error) {
       console.error('Failed to update list item:', error);
     }
@@ -454,6 +458,7 @@ function Home() {
           showSidebar={showSidebar}
           handleSelectListButton={handleSelectListButton}
           handleDeleteList={handleDeleteList}
+          handleLogout={handleLogout}
         />
       </div>
       <Toaster />

@@ -74,12 +74,7 @@ function ListItem({
       <div className={styles.listItemDragHandle}>
         <DragIcon fill="#9b9b9b" />
       </div>
-      <button
-        className={styles.deleteListItemButton}
-        onClick={() => setShowDeleteModal(true)}
-      >
-        <TrashIcon fill="#9b9b9b" width="16px" />
-      </button>
+
       <button
         className={styles.editListItemButton}
         onClick={() => handleEditListItem(listItem.listItemID)}
@@ -127,12 +122,19 @@ function ListItem({
         <div className={styles.third} id={styles.flexidiv}>
           date date date
         </div> */}
+        <button
+          className={styles.deleteListItemButton}
+          onClick={() => setShowDeleteModal(true)}
+        >
+          <TrashIcon fill="#9b9b9b" width="16px" />
+        </button>
       </div>
       {showDeleteModal ? (
         <ConfirmDeleteModal
           message="Are you sure you want to delete this option?"
           handleConfirm={() => handleConfirmDeleteListItem(listItem)}
           handleCancel={() => setShowDeleteModal(false)}
+          confirmLabel="Delete"
         />
       ) : null}
     </div>

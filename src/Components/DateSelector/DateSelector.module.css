@@ -4,6 +4,7 @@
   position: relative;
   height: 100%;
   user-select: none;
+  cursor: pointer;
 }
 
 .inputContainer {

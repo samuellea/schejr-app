@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Sidebar.module.css';
 import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
@@ -6,6 +6,7 @@ import randomEmoji from 'random-emoji';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
 import EditIcon from '../Icons/EditIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
 function Sidebar({
   userUID,
@@ -18,7 +19,10 @@ function Sidebar({
   showSidebar,
   handleSelectListButton,
   handleDeleteList,
+  handleLogout,
 }) {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const createList = async () => {
     const newListData = {
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
@@ -68,11 +72,11 @@ function Sidebar({
           ?.sort((a, b) => a.createdAt - b.createdAt)
           .map((list, i) => (
             <Droppable
-              // key={list.listID}
-              // droppableId={list.listID}
+              key={list.listID}
+              droppableId={list.listID}
               direction="horizontal"
-              droppableId={`buttonList-${i}`}
-              key={`buttonList-${i}`}
+              // droppableId={`buttonList-${i}`}
+              // key={`buttonList-${i}`}
             >
               {(provided) => (
                 <div
@@ -94,6 +98,22 @@ function Sidebar({
             </Droppable>
           ))}
       </div>
+      <div className={styles.dividerLine} />
+      <div
+        role="button"
+        className={styles.logOutButton}
+        onClick={() => setShowLogoutModal(true)}
+      >
+        Log out
+      </div>
+      {showLogoutModal ? (
+        <ConfirmDeleteModal
+          message={`Log out ${displayName}`}
+          handleConfirm={() => handleLogout()}
+          handleCancel={() => setShowLogoutModal(false)}
+          confirmLabel="Log out"
+        />
+      ) : null}
     </div>
   );
 }

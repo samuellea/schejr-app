@@ -15,14 +15,19 @@
 
 .listTitleInput {
   font-size: 24px;
-  color: white;
-  background-color: #191919;
+  /* color: white; */
   border: none;
   /* margin: 10px; */
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   pointer-events: auto;
+  outline: none;
+
+  font-size: 28px;
+  background: none;
+  color: #d9d9d9;
+  font-weight: 600;
 }
 
 .newListItemButtonDivier {
