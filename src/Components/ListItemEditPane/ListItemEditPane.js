@@ -3,6 +3,9 @@ import styles from './ListItemEditPane.module.css';
 import TagSelector from '../TagSelector/TagSelector';
 import DateSelector from '../DateSelector/DateSelector';
 import ChevronIcon from '../Icons/ChevronIcon';
+import TagsIcon from '../Icons/TagsIcon';
+import DateIcon from '../Icons/DateIcon';
+import SyncIcon from '../Icons/SyncIcon';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 
 function ListItemEditPane({
@@ -96,7 +99,8 @@ function ListItemEditPane({
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel} id={styles.tagsFieldLabel}>
-          <p className={styles.tagsLabelP}>Tags</p>
+          <TagsIcon fill="#7f7f7f" />
+          <p className={styles.fieldLabelP}>Tags</p>
         </div>
         <TagSelector
           userUID={userUID}
@@ -112,7 +116,10 @@ function ListItemEditPane({
 
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>Date</div>
+        <div className={styles.wrapperLabel}>
+          <DateIcon fill="#7f7f7f" />
+          <p className={styles.fieldLabelP}>Date</p>
+        </div>
         <DateSelector
           listItem={listItem}
           updateListItem={updateListItem}
@@ -121,7 +128,10 @@ function ListItemEditPane({
       </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>Sync</div>
+        <div className={styles.wrapperLabel}>
+          <SyncIcon fill="#7f7f7f" />
+          <p className={styles.fieldLabelP}>Sync</p>
+        </div>
         <ToggleSwitch
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}

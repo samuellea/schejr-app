@@ -14,3 +14,27 @@
   box-sizing: border-box;
   position: relative;
 }
+
+.emptyMessage {
+  /* border: 1px solid red; */
+  height: 100%;
+  color: #9b9b9b;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: 100;
+  user-select: none;
+}
+
+.emptyMessageSpan {
+  /* border: 1px solid yellow; */
+  width: 270px;
+  position: relative;
+}
+
+.emptyMessageSpan span {
+  position: absolute;
+  right: 0px;
+  bottom: -1px;
+}

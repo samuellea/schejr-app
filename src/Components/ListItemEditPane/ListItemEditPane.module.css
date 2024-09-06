@@ -84,15 +84,25 @@
   margin-left: 10px;
   color: #7f7f7f;
   user-select: none;
+  width: 66px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 #tagsFieldLabel {
   /* border: 1px solid lime; */
   height: 100%;
 }
-.tagsLabelP {
+
+.fieldLabelP {
   margin: 0;
-  padding: 8px 0px 0px 0px;
+  padding: 0px 0px 0px 8px;
+  /* border: 1px solid cyan; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .dividerLine {

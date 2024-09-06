@@ -4,6 +4,7 @@ import List from '../List/List';
 import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
 import * as u from '../../utils';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
+import EditIcon from '../Icons/EditIcon';
 
 function MainArea({
   showSidebar,
@@ -97,7 +98,16 @@ function MainArea({
           handleEditListItem={handleEditListItem}
           existingTags={existingTags}
         />
-      ) : null}
+      ) : (
+        <div className={styles.emptyMessage}>
+          <p className={styles.emptyMessageSpan}>
+            Select a list or create one with
+            <span>
+              <EditIcon fill="#9b9b9b" width="20px" />
+            </span>
+          </p>
+        </div>
+      )}
       {listItemEditID ? (
         <ListItemEditPane
           listItemEditID={listItemEditID}

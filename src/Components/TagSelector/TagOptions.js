@@ -136,7 +136,7 @@ function TagOptions({
       ))}
       {showDeleteModal ? (
         <ConfirmDeleteModal
-          message="Are you sure you want to delete this option?"
+          message={`Are you sure you want to delete this tag? \n It will be removed from all lists & items that use it.`}
           handleConfirm={() => handleDeleteTag(tag.tagID)}
           handleCancel={() => setShowDeleteModal(false)}
           confirmLabel="Delete"
