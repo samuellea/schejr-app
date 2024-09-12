@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import styles from './DateSelector.module.css'; // Your component styles
 import * as h from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
-import CustomCalendarContainer from './CustomCalendarContainer';
 
 function DateSelector({ listItem, updateListItem, listItemID }) {
   const [startDate, setStartDate] = useState(null);
@@ -101,15 +100,95 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     setShowTimeInput(false);
   };
 
-  const CustomContainerWithProps = ({ children, className }) => (
-    <CustomCalendarContainer
-      className={className}
-      showTimeInput={showTimeInput}
-      handleClearTime={handleClearTime}
-    >
-      {children}
-    </CustomCalendarContainer>
-  );
+  const hours = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+  ];
+
+  const minutes = [
+    '00',
+    '01',
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+    '09',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '28',
+    '29',
+    '30',
+    '31',
+    '32',
+    '33',
+    '34',
+    '35',
+    '36',
+    '37',
+    '38',
+    '39',
+    '40',
+    '41',
+    '42',
+    '43',
+    '44',
+    '45',
+    '46',
+    '47',
+    '48',
+    '59',
+    '50',
+    '51',
+    '52',
+    '53',
+    '54',
+    '55',
+    '56',
+    '57',
+    '58',
+    '59',
+  ];
 
   return (
     <div className={styles.container} ref={containerRef}>
@@ -135,22 +214,34 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
             inline
             calendarClassName={styles.rastaStripes}
             dayClassName={(date) => (isPastDate(date) ? styles.pastDay : '')}
-            timeInputLabel={false}
-            showTimeInput={showTimeInput}
-            calendarContainer={CustomContainerWithProps}
-            slotProps={{
-              layout: {
-                sx: {
-                  svg: { fill: 'red !important' },
-                },
-              },
-            }}
           />
-          {!showTimeInput ? (
-            <div className={styles.bottomButton} onClick={handleAddTime}>
+          <div
+            className={styles.timeContainer}
+            id="timeButton"
+            onClick={handleAddTime}
+          >
+            <div
+              className={styles.bottomButton}
+              id="timeButton"
+              onClick={handleAddTime}
+            >
               <p className={styles.bottomButtonLabel}>Time</p>
             </div>
-          ) : null}
+            {showTimeInput ? (
+              <div className={styles.timeInput}>
+                <div className={styles.unitContainer}>
+                  {hours.map((e) => (
+                    <div className={styles.unitBlock}>{e}</div>
+                  ))}
+                </div>
+                <div className={styles.unitContainer}>
+                  {minutes.map((e) => (
+                    <div className={styles.unitBlock}>{e}</div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
           <div
             className={styles.bottomButton}
             onClick={() => setStartDate(null)}

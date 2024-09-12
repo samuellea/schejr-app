@@ -110,3 +110,43 @@
   color: #8b9898 !important; /* Grey color for past days */
   /* background-color: #f5f5f5; */
 }
+
+.timeContainer {
+  position: relative;
+  border: 1px solid yellow;
+}
+
+.timeInput {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  background-color: red;
+  z-index: 3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.unitContainer {
+  width: 45%;
+  height: 100px;
+  border: 1px solid white;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar in Edge and IE */
+}
+
+.unitBlock {
+  height: 25px;
+  width: 100;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
