@@ -172,3 +172,66 @@ body {
   border-radius: 0px;
   color: white;
 }
+/* 
+.react-datepicker__input-time-container {
+  width: 100%;
+  margin: 0;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  margin-top: 8px;
+}
+
+.react-datepicker-time__caption {
+  line-height: 120%;
+  font-size: 14px;
+  color: #757575;
+}
+
+.react-datepicker-time__input-container {
+  flex-grow: 1;
+  box-sizing: border-box;
+  height: 100% !important;
+  position: relative;
+  color: white !important;
+  fill: white !important;
+}
+
+.react-datepicker-time__input {
+  width: 82%;
+  height: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
+.react-datepicker-time__input input {
+  width: 100% !important;
+  border: 1px solid #8b9898;
+  border-radius: 6px;
+  padding: 0;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: none;
+  color: white !important;
+  fill: white !important;
+  padding-left: 8px;
+}
+
+.react-datepicker-time__input input path {
+  color: white !important;
+  fill: white !important;
+}
+
+.react-datepicker__time-container {
+  border: 2px solid red !important;
+}
+.react-datepicker__time-list {
+  border: 2px solid green !important;
+}
+.react-datepicker__time-list-item {
+  border: 2px solid blue !important;
+} */

@@ -59,7 +59,7 @@
   z-index: 44;
 }
 
-.clearDatesButton {
+.bottomButton {
   border: 1px solid #8b9898;
   cursor: pointer;
   /* margin-left: 4px; */
@@ -77,15 +77,15 @@
   font-size: 14px;
 }
 
-.clearDatesButton:hover {
+.bottomButton:hover {
   background-color: #2d2d2d;
 }
 
-.clearDatesButtonLabel {
+.bottomButtonLabel {
   margin: 0px 0px 0px 0px;
 }
 
-/* .clearDatesButton:hover {
+/* .bottomButton:hover {
   background-color: #2d2d2d;
 } */
 

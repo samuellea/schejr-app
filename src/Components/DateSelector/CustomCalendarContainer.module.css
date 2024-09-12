@@ -1,0 +1,22 @@
+.cancelTimeButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-left: 10px;
+  height: 30px;
+  width: 30px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #252525;
+  border: 1px solid #8b9898;
+  border-radius: 56px;
+  /* border: none; */
+}
+
+.cancelTimeButton:hover {
+  background-color: #2d2d2d;
+}
