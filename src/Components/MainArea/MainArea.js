@@ -70,7 +70,6 @@ function MainArea({
   }, [selectedList]);
 
   useEffect(() => {
-    console.log('fetchingTags...');
     fetchTags();
   }, []);
 

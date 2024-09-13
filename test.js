@@ -9,5 +9,3 @@ const updatedListItems = allListItemsThatHadTagIDinTags.map((e) => ({
   ...e,
   tags: [...e.tags.filter((f) => f !== tagID)],
 }));
-
-console.log(updatedListItems);

@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, isThisYear } from 'date-fns';
 
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
@@ -35,8 +35,22 @@ export const leastUsedColours = (colorOptions, existingTags) => {
 };
 
 export const formatDate = (date) => {
-  if (!date) return null;
-  return format(date, 'MMMM dd, yyyy');
+  const getOrdinalSuffix = (day) => {
+    const suffixes = ['th', 'st', 'nd', 'rd'];
+    const value = day % 100;
+    return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
+  };
+  const currentYear = new Date().getFullYear();
+  const dateYear = date.getFullYear();
+  const day = date.getDate();
+  const month = format(date, 'MMMM');
+  const dayWithSuffix = day + getOrdinalSuffix(day);
+
+  if (isThisYear(date)) {
+    return `${month} ${dayWithSuffix}`;
+  } else {
+    return `${month} ${dayWithSuffix}, ${dateYear}`;
+  }
 };
 
 export const sortItems = (items, sortKey, order, existingTags) => {
@@ -263,7 +277,7 @@ export const removeDeletedTagFromListItems = (
   const allListItemsThatHadTagIDinTags = listItems.filter((e) =>
     e.tags?.includes(tagID)
   );
-  console.log(allListItemsThatHadTagIDinTags);
+
   const unchangedListItemsDidntHaveTag = listItems.filter(
     (e) => !e.tags?.includes(tagID)
   );
@@ -279,6 +293,44 @@ export const removeDeletedTagFromListItems = (
   ];
   // set these updated list items in app .listItems state
   setListItems(updatedListItems);
+};
+
+export const convertToISOString = (value) => {
+  // THIS IS FOR GCAL CONVERSION?! TO ENSURE AN UN-TIMED EVENT STARTS AT MIDNIGHT ON CORRECT DAY???
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    // Convert local date to YYYY-MM-DD format
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+    // Convert string to Date object, then to YYYY-MM-DD format
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  return null;
+};
+
+export const dateTimeTo12Hour = (date) => {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // Determine AM or PM
+  let ampm = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert 24-hour format to 12-hour format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // If hours is 0, set it to 12 (for midnight)
+
+  // Ensure minutes are two digits (e.g., 01, 05)
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  // Format the final time string
+  let formattedTime = `${hours}:${minutes} ${ampm}`;
+  return formattedTime;
 };
 
 export const times = [

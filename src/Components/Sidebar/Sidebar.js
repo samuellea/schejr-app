@@ -33,7 +33,7 @@ function Sidebar({
     };
     try {
       const listID = await u.createNewList(newListData);
-      console.log('Create list with id: ', listID);
+
       const newListDataPlusID = { ...newListData, listID: listID };
       const updatedLists = [...lists, newListDataPlusID];
       setLists(updatedLists);

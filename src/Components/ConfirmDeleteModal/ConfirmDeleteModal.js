@@ -5,7 +5,7 @@ function ConfirmDeleteModal({
   message,
   handleConfirm,
   handleCancel,
-  confirmLabel,
+  confirmLabel = 'Delete',
 }) {
   const confirmDeleteCombined = `${styles.confirmDeleteButton} ${styles.deleteModalButton}`;
   const cancelDeleteCombined = `${styles.cancelDeleteButton} ${styles.deleteModalButton}`;

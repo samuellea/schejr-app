@@ -21,7 +21,7 @@ export const createNewList = async (listData) => {
     const newListRef = push(listsRef);
     // Set the data at the new reference
     await set(newListRef, listData);
-    console.log('New list created with ID:', newListRef.key);
+
     return newListRef.key; // Return the unique ID of the newly created list
   } catch (error) {
     console.error('Error creating new list:', error);
@@ -30,11 +30,9 @@ export const createNewList = async (listData) => {
 };
 
 export const patchList = async (listID, newData) => {
-  console.log('patchList!');
   try {
     const listRef = ref(database, `lists/${listID}`);
     await update(listRef, newData);
-    console.log('Object updated successfully');
   } catch (error) {
     console.error('Error updating list:', error);
     throw error;
@@ -42,12 +40,9 @@ export const patchList = async (listID, newData) => {
 };
 
 export const patchListItem = async (listItemID, newData) => {
-  console.log(listItemID);
-  console.log(newData);
   try {
     const listItemRef = ref(database, `listItems/${listItemID}`);
     await update(listItemRef, newData);
-    console.log('Object updated successfully');
   } catch (error) {
     console.error('Error updating list item:', error);
     throw error;
@@ -58,7 +53,6 @@ export const patchTag = async (tagID, newData) => {
   try {
     const tagRef = ref(database, `tags/${tagID}`);
     await update(tagRef, newData);
-    console.log('Tag updated successfully');
   } catch (error) {
     console.error('Error updating tag:', error);
     throw error;
@@ -82,7 +76,6 @@ export const fetchAllUserLists = async (userUID) => {
       const data = snapshot.val();
       return data;
     } else {
-      console.log('No lists found for the user.');
       return {};
     }
   } catch (error) {
@@ -95,7 +88,6 @@ export const deleteListByID = async (listID) => {
   try {
     const objectRef = ref(database, `lists/${listID}`);
     await remove(objectRef);
-    console.log('List deleted successfully');
   } catch (error) {
     console.error('Error deleting list:', error);
     throw error;
@@ -106,7 +98,6 @@ export const deleteTagByID = async (tagID) => {
   try {
     const objectRef = ref(database, `tags/${tagID}`);
     await remove(objectRef);
-    console.log('Tag deleted successfully');
   } catch (error) {
     console.error('Error deleting tag:', error);
     throw error;
@@ -125,7 +116,7 @@ export const createNewListItem = async (listItemData) => {
       ...listItemData,
       listItemID: newListItemRef.key,
     };
-    console.log('New list item created with ID:', newListItemRef.key);
+
     return newItemWithExplicitID; // Return the unique ID of the newly created list
   } catch (error) {
     console.error('Error creating new list item:', error);
@@ -141,7 +132,7 @@ export const fetchListItemsByListID = async (parentListID) => {
     const listItemsQuery = query(
       listItemsRef,
       orderByChild('parentID'),
-      equalTo(parentListID)
+      equalTo(`parentListID-${parentListID}`)
     );
     // Get the data from the query
     const snapshot = await get(listItemsQuery);
@@ -150,7 +141,6 @@ export const fetchListItemsByListID = async (parentListID) => {
       const data = snapshot.val();
       return data;
     } else {
-      console.log('No list itmes found for this list.');
       return {};
     }
   } catch (error) {
@@ -163,7 +153,6 @@ export const deleteListItemByID = async (listItemID) => {
   try {
     const objectRef = ref(database, `listItems/${listItemID}`);
     await remove(objectRef);
-    console.log('List item deleted successfully');
   } catch (error) {
     console.error('Error deleting list item:', error);
     throw error;
@@ -194,7 +183,6 @@ export const fetchAllUserTags = async (userUID) => {
       const data = snapshot.val();
       return data;
     } else {
-      console.log('No tags found for this user.');
       return {};
     }
   } catch (error) {
@@ -208,7 +196,7 @@ export const createNewTag = async (tagData) => {
     const tagsRef = ref(database, 'tags');
     const newTagRef = push(tagsRef);
     await set(newTagRef, tagData);
-    console.log('New tag created with ID:', newTagRef.key);
+
     return newTagRef.key;
   } catch (error) {
     console.error('Error creating new tag:', error);
@@ -241,17 +229,14 @@ export const findAndRemoveTagIDFromMatchingListItems = async (
         }
       }
 
-      // console.log(updates);
+      //
       // only sending tags! ensure all other information for each listItem object is included!
       // Perform batch update
       if (Object.keys(updates).length > 0) {
         await update(ref(database), updates);
-        console.log('Removed tag from all matching list items');
       } else {
-        console.log('No items needed updating.');
       }
     } else {
-      console.log('No items found.');
     }
   } catch (error) {
     console.error('Error updating items:', error);
@@ -265,7 +250,7 @@ export const getMaxManualOrderByParentID = async (parentID) => {
     const parentIDQuery = query(
       listItemsRef,
       orderByChild('parentID'),
-      equalTo(parentID)
+      equalTo(`parentListID-${parentID}`)
     );
     // Fetch the data
     const snapshot = await get(parentIDQuery);
@@ -286,14 +271,12 @@ export const getMaxManualOrderByParentID = async (parentID) => {
           highestItem
         );
         const maxManualOrderForList = highestItem.manualOrder;
-        console.log('so, new maxManualOrderForList: ', maxManualOrderForList);
+
         return maxManualOrderForList;
       } else {
-        console.log('No items found with the matching parentID');
         return 0;
       }
     } else {
-      console.log('No data available for the provided parentID');
       return 0;
     }
   } catch (error) {
@@ -302,7 +285,7 @@ export const getMaxManualOrderByParentID = async (parentID) => {
 };
 
 export const patchMultipleListItems = async (updates) => {
-  console.log(updates); // {data: {} }, {data: {} }, // {}, {}
+  // {data: {} }, {data: {} }, // {}, {}
   try {
     const updatePromises = updates.map((update) => {
       const { listItemID: unneededListItemID, ...rest } = update;
@@ -331,7 +314,6 @@ export const getUserSyncState = async (userUID) => {
       const data = snapshot.val();
       return data;
     } else {
-      console.log('No userSyncState found for the user.');
       return {};
     }
   } catch (error) {
@@ -347,11 +329,11 @@ export const createSyncStateByUserID = async (userUID, state) => {
   const syncStateRef = push(userSyncStatesRef);
   // Set the data at the new reference
   await set(syncStateRef, initUserSyncState);
-  console.log('New list created with ID:', syncStateRef.key);
+
   // patch
   // const listItemRef = ref(database, `listItems/${listItemID}`);
   // await update(listItemRef, newData);
-  // console.log('Object updated successfully');
+  //
 
   try {
   } catch (error) {
@@ -381,10 +363,7 @@ export const patchSyncStateByUserID = async (userUID, state) => {
         const updateRef = ref(database, `userSyncStates/${key}`); // Replace with your actual path
         update(updateRef, patchData);
       });
-
-      console.log('userSyncStates obj for this user updated successfully.');
     } else {
-      console.log('No userSyncStates object found with the provided userUID.');
     }
   } catch (error) {
     console.error('Error updating userSyncState object for this user:', error);
@@ -410,14 +389,11 @@ export const addAListItemToGCal = async (listItem) => {
     },
   };
 
-  console.log(event);
-
   try {
     const response = await gapi.client.calendar.events.insert({
       calendarId: 'primary',
       resource: event,
     });
-    console.log('Event created:', response);
   } catch (error) {
     console.error('Error creating event:', error);
   }
@@ -427,7 +403,7 @@ export const addAllListItemsToGCal = async (listItems) => {
   const onlyListItemsWithDates = listItems.filter((e) =>
     e.hasOwnProperty('date')
   );
-  console.log(onlyListItemsWithDates);
+
   const updatePromises = onlyListItemsWithDates.map((listItem) => {
     return addAListItemToGCal(listItem);
   });
@@ -440,7 +416,6 @@ export const removeListItemFromGCal = async (event) => {
       calendarId: 'primary',
       eventId: event.id,
     });
-    console.log(`Deleted event: ${event.summary}`);
   } catch (error) {
     console.error(`Failed to delete event ${event.summary}:`, error);
   }
@@ -460,7 +435,6 @@ export const removeGCalEventByListItemID = async (listItemID) => {
           calendarId: 'primary',
           eventId: eventId,
         });
-        console.log(`Event with ID ${eventId} deleted.`);
       } catch (error) {
         console.error('Failed to delete event:', error);
       }
@@ -482,9 +456,7 @@ export const removeMultipleGCalEventsByListItemIDs = async (listItemIDs) => {
       return removeGCalEventByListItemID(listItemID);
     });
     return await Promise.all(deletePromises);
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const changeListItemOnGCalByIDOrCreate = async (
@@ -492,10 +464,6 @@ export const changeListItemOnGCalByIDOrCreate = async (
   field,
   value
 ) => {
-  console.log(listItem);
-  console.log(field);
-  console.log(value);
-
   const updatedEventData = {
     summary: listItem.title,
     start: {
@@ -514,8 +482,6 @@ export const changeListItemOnGCalByIDOrCreate = async (
     },
   };
 
-  console.log(updatedEventData);
-
   try {
     // Fetch events with the specified extended property id
     const response = await gapi.client.calendar.events.list({
@@ -530,7 +496,7 @@ export const changeListItemOnGCalByIDOrCreate = async (
       console.log(
         `No events found with extendedProperty 'listItemID': ${listItem.listItemID}`
       );
-      console.log(listItem);
+
       await addAListItemToGCal(listItem);
       return;
     }
@@ -582,7 +548,6 @@ export const removeAllListItemsFromGCal = async () => {
     const allEventsMadeByUser = response.result.items;
 
     if (!allEventsMadeByUser || allEventsMadeByUser.length === 0) {
-      console.log('No events found with the specified extended property.');
       return;
     }
 
@@ -590,9 +555,7 @@ export const removeAllListItemsFromGCal = async () => {
       return removeListItemFromGCal(event);
     });
     return await Promise.all(updatePromises);
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 /*

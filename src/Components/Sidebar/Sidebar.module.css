@@ -7,7 +7,7 @@
   position: absolute; /* Allow overlaying */
   top: 0; /* Adjust as needed */
   left: 0; /* Adjust as needed */
-  z-index: 10; /* Ensure this sibling is on top */
+  z-index: 8; /* Ensure this sibling is on top */
   padding: 0px 8px 0px 4px;
   box-sizing: border-box;
   display: flex;

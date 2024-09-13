@@ -54,17 +54,19 @@ function List({
       listItems.reduce((max, item) => Math.max(max, item.manualOrder), 0) || 0;
     const newHighestManualOrder = maxManualOrderOnList + 1;
     const listData = {
-      comment: '',
+      notes: '',
       createdAt: Date.now(),
       createdBy: userUID,
       date: { startDate: null, endDate: null },
       manualOrder: newHighestManualOrder,
-      parentID: `list-${selectedList.listID}`,
+      parentID: `parentListID-${selectedList.listID}`,
       tags: [],
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
     };
+
     try {
       const newItemWithExplicitID = await u.createNewListItem(listData);
+
       setListItems([...listItems, newItemWithExplicitID]);
     } catch (error) {
       console.error('Failed to create list item:', error);
@@ -77,6 +79,7 @@ function List({
     const listItemsMinusDeleted = listItems.filter(
       (e) => e.listItemID !== listItem.listItemID
     );
+
     setListItems(listItemsMinusDeleted); // <<<<< these won't have tidied .manualOrders, but removes deleted item from state/UI...
     try {
       //   // then actually delete the listItem on db
@@ -88,6 +91,7 @@ function List({
       }));
 
       //   // update the list items in state to have tidied .manualOrders
+
       setListItems(updatedManualOrders);
       // // then patch these tidied objects to their corresponding objs on db
       try {

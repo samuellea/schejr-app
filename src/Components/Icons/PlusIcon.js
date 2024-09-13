@@ -1,6 +1,10 @@
 import React from 'react';
 
-function PlusIcon({ width }) {
+function PlusIcon({
+  fill,
+  width = 'rgba(255, 255, 255, 0.282)',
+  margin = '0px 6px 0px 0px',
+}) {
   return (
     <div>
       <svg
@@ -8,13 +12,12 @@ function PlusIcon({ width }) {
         viewBox="0 0 16 16"
         className="plus"
         style={{
-          width: '14px',
-          height: '14px',
+          width: width,
+          height: width,
           display: 'block',
-          fill: 'rgba(255, 255, 255, 0.282)',
+          fill: fill,
           flexShrink: '0',
-          marginLeft: '0px',
-          marginRight: '6px',
+          margin: margin,
         }}
       >
         <path d="M7.977 14.963c.407 0 .747-.324.747-.723V8.72h5.362c.399 0 .74-.34.74-.747a.746.746 0 00-.74-.738H8.724V1.706c0-.398-.34-.722-.747-.722a.732.732 0 00-.739.722v5.529h-5.37a.746.746 0 00-.74.738c0 .407.341.747.74.747h5.37v5.52c0 .399.332.723.739.723z"></path>

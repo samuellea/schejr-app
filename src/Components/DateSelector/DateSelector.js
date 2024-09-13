@@ -5,65 +5,79 @@ import * as h from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
 import ClockIcon from '../Icons/ClockIcon';
 import CloseIcon from '../Icons/CloseIcon';
+import { nanoid } from 'nanoid';
+import PlusIcon from '../Icons/PlusIcon';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
-function DateSelector({ listItem, updateListItem, listItemID }) {
-  const [startDate, setStartDate] = useState(listItem.date?.startDate || null);
+function DateSelector({ date, listItem, updateListItem }) {
+  const [startDateTime, setStartDateTime] = useState(
+    date?.startDateTime ? new Date(date.startDateTime) : null
+  );
+  const [timeSet, setTimeSet] = useState(date?.timeSet || false);
   const [isInFocus, setIsInFocus] = useState(false);
   const [showTimeSelect, setShowTimeSelect] = useState(false);
-  const [startTime, setStartTime] = useState(listItem.date?.startTime || null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const containerRef = useRef(null);
   const datePickerRef = useRef(null);
-  const dateRef = useRef(startDate);
-  const timeRef = useRef(startTime);
-
-  const handleChange = (date) => {
-    setStartDate(date);
-    setShowTimeSelect(false);
-  };
+  const startDateTimeRef = useRef(startDateTime);
+  const listItemRef = useRef(listItem);
+  const timeSetRef = useRef(timeSet);
 
   const handleClickOff = () => {
-    // convert the date portion of the JS date/time, for displaying the DATE in our app
-    // seperately, store the time portion of the JS date/time - or null if we're clearing a time we set before
-    const convertToISOString = (value) => {
-      // THIS IS FOR GCAL CONVERSION?! TO ENSURE AN UN-TIMED EVENT STARTS AT MIDNIGHT ON CORRECT DAY???
-      if (value instanceof Date && !isNaN(value.getTime())) {
-        // Convert local date to YYYY-MM-DD format
-        const year = value.getFullYear();
-        const month = String(value.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        const day = String(value.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-        // Convert string to Date object, then to YYYY-MM-DD format
-        const date = new Date(value);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+    if (startDateTimeRef.current) {
+      // are we creating a new datetime, or editing an existing one?
+      const isoDateUTC = startDateTimeRef.current.toISOString();
+      if (!date?.startDateTime) {
+        // we're creating a new .dates arr object / 'date' object
+        // create a datetime object
+        const newEventID = nanoid();
+        const newDateObj = {
+          eventID: `parentListItemID-${listItem.listItemID}-${newEventID}`,
+          parentID: `parentListItemID-${listItem.listItemID}`,
+          startDateTime: isoDateUTC, // ISO 8601 UTC format
+          timeSet: timeSet,
+        };
+
+        // add this to the ListItem's .dates array in state
+        // + add this to the ListItem's .dates array on db
+        let updatedDates;
+        listItem.dates?.length
+          ? (updatedDates = [...listItem.dates, newDateObj])
+          : (updatedDates = [newDateObj]);
+        updateListItem(listItem, 'dates', updatedDates);
+        // send this to /events on the db
+      } else {
+        // we're editing an existing one
+        const updatedDateObj = {
+          ...date,
+          startDateTime: isoDateUTC, // ISO 8601 UTC format
+          timeSet: timeSet,
+        };
+        console.log(updatedDateObj);
+        const listItemDatesMinusEdited = listItemRef.current.dates.filter(
+          (e) => e.eventID !== date.eventID
+        );
+        const updatedDates = [...listItemDatesMinusEdited, updatedDateObj];
+        updateListItem(listItem, 'dates', updatedDates);
       }
-      return null;
-    };
+    }
 
-    const startDate = convertToISOString(dateRef.current);
-    const startTime = timeRef.current;
-
-    const dateObj = { startDate, startTime };
-    let updatedDateTimes;
-    listItem.date?.length
-      ? (updatedDateTimes = [...listItem.date, dateObj])
-      : (updatedDateTimes = [dateObj]);
-    console.log(dateObj);
-    updateListItem(listItem, 'date', updatedDateTimes); // add date to FB /listItems listItem object,
+    // updateListItem(listItem, 'date', updatedDateTimes); // add date to FB /listItems listItem object,
     setIsInFocus(false);
   };
 
   useEffect(() => {
-    dateRef.current = startDate;
-  }, [startDate]);
+    listItemRef.current = listItem;
+  }, [listItem]);
 
   useEffect(() => {
-    timeRef.current = startTime;
-  }, [startTime]);
+    startDateTimeRef.current = startDateTime;
+  }, [startDateTime]);
+
+  useEffect(() => {
+    timeSetRef.current = timeSet;
+  }, [timeSet]);
 
   const handleClickOutside = (event) => {
     if (
@@ -81,11 +95,16 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [listItem]);
+  }, [date]);
 
   const isPastDate = (date) => {
     const today = new Date();
     return date < today.setHours(0, 0, 0, 0);
+  };
+
+  const handleChange = (date) => {
+    setStartDateTime(date); // JS Date obj
+    setShowTimeSelect(false);
   };
 
   const handleAddTime = () => {
@@ -93,30 +112,47 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
   };
 
   const handleTimeBlockClick = (value) => {
-    // update the time object in state
-    const updatedTime = {
-      display12: value.display12,
-      hour12: value.hour12,
-      hour24: value.hour24,
-      minute: value.minute,
-      amPm: value.amPm,
-    };
-    setStartTime(updatedTime);
+    //
+    //
+    const updatedDateTime = startDateTime;
+    updatedDateTime.setHours(value.hour24);
+    updatedDateTime.setMinutes(value.minute);
+    //
+    setStartDateTime(updatedDateTime);
+    setTimeSet(true);
     setShowTimeSelect(false);
   };
 
   const timeButtonCombined = `${
-    startDate ? styles.timeButtonExistingDate : null
-  } ${startTime ? styles.timeButtonExistingTime : null} ${styles.bottomButton}`;
+    startDateTime ? styles.timeButtonExistingDate : null
+  } ${timeSet ? styles.timeButtonExistingTime : null} ${styles.bottomButton}`;
 
-  const handleClear = () => {
-    setStartDate(null);
-    setStartTime(null);
+  const handleClear = (event) => {
+    event.stopPropagation();
+    setShowDeleteModal(true);
+  };
+
+  const handleCancelDeleteDate = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleConfirmDeleteDate = () => {
+    const updatedDates = listItem.dates.filter(
+      (e) => e.eventID !== date.eventID
+    );
+    updateListItem(listItem, 'dates', updatedDates);
+    setShowDeleteModal(false);
+    setTimeSet(false);
+    setStartDateTime(null);
   };
 
   const handleClearTime = (event) => {
     event.stopPropagation();
-    setStartTime(null);
+    const resetToMidnight = startDateTime;
+    resetToMidnight.setHours(0);
+    resetToMidnight.setMinutes(0);
+    setStartDateTime(resetToMidnight);
+    setTimeSet(false);
   };
 
   return (
@@ -127,24 +163,44 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
         }`}
         onClick={() => setIsInFocus(true)}
       >
-        {startDate ? (
-          <div className={styles.dateLabels}>
-            <p className={styles.startLabel}>{h.formatDate(startDate)}</p>
-          </div>
+        {startDateTime ? (
+          <>
+            <div className={styles.dateLabels}>
+              <p className={styles.startLabel}>{h.formatDate(startDateTime)}</p>
+              <div
+                className={styles.deleteDateButton}
+                role="button"
+                onClick={(e) => handleClear(e)}
+              >
+                <CloseIcon fill="#FFFFFFBF" width="12px" />
+              </div>
+            </div>
+            {timeSet && (
+              <div className={styles.timeLabel}>
+                <ClockIcon width="15px" fill="white" />
+                <p>{h.dateTimeTo12Hour(startDateTime)}</p>
+              </div>
+            )}
+          </>
         ) : (
-          <p className={styles.emptyLabel}>Empty</p>
+          <div className={styles.emptyLabel}>
+            {listItem.dates?.length > 0 && (
+              <PlusIcon fill="white" width="14px" margin="0px 0px 0px 0px" />
+            )}
+            <p>Add date</p>
+          </div>
         )}
       </div>
       {isInFocus && (
         <div className={styles.dropdown} ref={datePickerRef}>
           <DatePicker
-            selected={startDate}
+            selected={startDateTime}
             onChange={(date) => handleChange(date)}
             inline
             calendarClassName={styles.rastaStripes}
             dayClassName={(date) => (isPastDate(date) ? styles.pastDay : '')}
           />
-          {startDate ? (
+          {startDateTime ? (
             <div className={styles.timeContainer}>
               <div
                 className={timeButtonCombined}
@@ -152,13 +208,14 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
                 onClick={handleAddTime}
               >
                 <ClockIcon
-                  width="17px"
-                  fill={startTime ? 'white' : '#7f7f7f'}
+                  width="18px"
+                  fill={startDateTime ? 'white' : '#7f7f7f'}
+                  margin="0px 3px 2px 0px"
                 />
                 <p className={styles.bottomButtonLabel}>
-                  {startTime ? startTime.display12 : 'Time'}
+                  {timeSet ? h.dateTimeTo12Hour(startDateTime) : 'Time'}
                 </p>
-                {startTime ? (
+                {timeSet ? (
                   <div
                     className={styles.clearTimeButton}
                     role="button"
@@ -175,6 +232,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
                       <div
                         className={styles.unitBlock}
                         onClick={() => handleTimeBlockClick(e)}
+                        key={e.display12}
                       >
                         {e.display12}
                       </div>
@@ -184,7 +242,7 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
               ) : null}
             </div>
           ) : null}
-          {startDate ? (
+          {date ? (
             <div
               className={styles.bottomButton}
               onClick={(event) => handleClear(event)}
@@ -193,6 +251,13 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
             </div>
           ) : null}
         </div>
+      )}
+      {showDeleteModal && (
+        <ConfirmDeleteModal
+          message="Are you sure you want to delete this date / time?"
+          handleCancel={handleCancelDeleteDate}
+          handleConfirm={handleConfirmDeleteDate}
+        />
       )}
     </div>
   );

@@ -74,7 +74,6 @@ function TagSelector({
   }, [existingTags]);
 
   useEffect(() => {
-    console.log('isInFocus useEffect!');
     if (isInFocus) {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -82,9 +81,7 @@ function TagSelector({
     }
   }, [isInFocus]);
 
-  useEffect(() => {
-    console.log(listItems);
-  }, [listItems]);
+  useEffect(() => {}, [listItems]);
 
   const handleCreateTag = async (newTagColor) => {
     // setIsInFocus(false);
@@ -149,7 +146,6 @@ function TagSelector({
   };
 
   const handleDeleteTag = async (tagID) => {
-    console.log('deleting tag ', tagID);
     try {
       const tagDeleted = await u.deleteTagByID(tagID);
       try {
@@ -282,7 +278,7 @@ function TagSelector({
             );
           })
         ) : !isInFocus ? (
-          <p className={styles.emptyLabel}>Empty</p>
+          <p className={styles.emptyLabel}>Add tags</p>
         ) : null}
         {isInFocus ? (
           <input

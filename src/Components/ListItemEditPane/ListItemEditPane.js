@@ -26,7 +26,7 @@ function ListItemEditPane({
     listItems.find((e) => e.listItemID === listItemEditID)
   );
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
-  const [commentText, setCommentText] = useState(listItem.comment);
+  const [notesText, setNotesText] = useState(listItem.notes);
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
@@ -37,20 +37,22 @@ function ListItemEditPane({
     updateListItem(listItem, 'title', listItemRenameText);
   };
 
-  const handleCommentOnBlur = () => {
-    updateListItem(listItem, 'comment', commentText);
+  const handleNotesOnBlur = () => {
+    updateListItem(listItem, 'notes', notesText);
   };
 
   useEffect(() => {
     if (!listItemEditID) {
-      console.log(listItemEditID);
       handleCloseEditPane();
     } else {
-      console.log('listItems changed!');
-      const listItem = listItems.find((e) => e.listItemID === listItemEditID);
-      setListItem(listItem);
+      const newListItem = listItems.find(
+        (e) => e.listItemID === listItemEditID
+      );
+      setListItem(newListItem); // This should trigger a re-render if newListItem is different
     }
   }, [listItems, listItemEditID]);
+
+  useEffect(() => {}, [listItem]);
 
   const textareaRef = useRef(null);
 
@@ -67,7 +69,7 @@ function ListItemEditPane({
     if (textareaRef.current) {
       adjustHeight(textareaRef.current);
     }
-    setCommentText(e.target.value);
+    setNotesText(e.target.value);
   };
 
   // Adjust height on mount and whenever content changes
@@ -114,18 +116,49 @@ function ListItemEditPane({
         />
       </div>
 
-      <div className={styles.fieldWrapper}>
+      {!listItem.dates
+        ? null
+        : listItem.dates
+            .sort(
+              (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+            )
+            .map((date, i) => (
+              <div
+                className={styles.fieldWrapper}
+                key={`new-selector-${date.eventID}`}
+              >
+                <div className={styles.fieldIndent} />
+                <div className={styles.wrapperLabel}>
+                  {i === 0 && (
+                    <>
+                      <DateIcon fill="#7f7f7f" />
+                      <p className={styles.fieldLabelP}>Date</p>
+                    </>
+                  )}
+                </div>
+                <DateSelector
+                  date={date}
+                  listItem={listItem}
+                  updateListItem={updateListItem}
+                />
+              </div>
+            ))}
+      <div
+        className={styles.fieldWrapper}
+        key={`new-selector-${listItem.dates?.length || 0}`}
+      >
         <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>
-          <DateIcon fill="#7f7f7f" />
-          <p className={styles.fieldLabelP}>Date</p>
+          {!listItem.dates?.length ? (
+            <>
+              <DateIcon fill="#7f7f7f" />
+              <p className={styles.fieldLabelP}>Date</p>
+            </>
+          ) : null}
         </div>
-        <DateSelector
-          listItem={listItem}
-          updateListItem={updateListItem}
-          listItemID={listItem.listItemID}
-        />
+        <DateSelector listItem={listItem} updateListItem={updateListItem} />
       </div>
+
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>
@@ -149,19 +182,19 @@ function ListItemEditPane({
 
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>Comment</div>
+        <div className={styles.wrapperLabel}>Notes</div>
       </div>
 
       <div className={styles.fieldWrapper} style={{ alignItems: 'flex-start' }}>
         <div className={styles.fieldIndent} style={{ minWidth: '55px' }} />
-        <div className={styles.commentContainer}>
+        <div className={styles.notesContainer}>
           <textarea
-            className={styles.commentTextArea}
-            placeholder="Add a comment..."
+            className={styles.notesTextArea}
+            placeholder="Add notes..."
             ref={textareaRef}
             onInput={handleInput}
-            value={commentText}
-            onBlur={handleCommentOnBlur}
+            value={notesText}
+            onBlur={handleNotesOnBlur}
           />
         </div>
       </div>

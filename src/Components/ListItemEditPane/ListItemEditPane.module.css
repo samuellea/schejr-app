@@ -84,7 +84,7 @@
   margin-left: 10px;
   color: #7f7f7f;
   user-select: none;
-  width: 66px;
+  min-width: 66px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -112,7 +112,7 @@
   width: 75%;
 }
 
-.commentContainer {
+.notesContainer {
   /* border: 1px solid red; */
   width: 100%;
   margin-left: 10px;
@@ -120,7 +120,7 @@
   position: relative;
 }
 
-.commentTextArea {
+.notesTextArea {
   margin-left: 5px;
   /* width: 100%; */
   /* width: 250px; */
@@ -153,15 +153,15 @@
   resize: none; /* Optional: Prevent manual resizing by the user */
 }
 
-.commentTextArea:active,
-.commentTextArea:focus {
+.notesTextArea:active,
+.notesTextArea:focus {
   border-radius: 6px;
   /* border: 1px solid #9b9b9b65; */
   background-color: #2a2a2a;
   border: 1px solid #2a2a2a;
 }
 
-.commentTextArea::placeholder {
+.notesTextArea::placeholder {
   color: #7f7f7f67;
 }
 

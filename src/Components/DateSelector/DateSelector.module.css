@@ -28,9 +28,23 @@
 
 .emptyLabel {
   font-size: 14px;
-  margin: 0px 0px 0px 6px;
+  /* margin: 0px 0px 0px 6px; */
   padding-top: 2px;
   color: #7f7f7f;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid white; */
+  height: 18px;
+}
+
+.emptyLabel p {
+  /* margin-bottom: 2px; */
+  height: 18px;
+  /* border: 1px solid red; */
+  padding-bottom: 0px;
+  margin-left: 6px;
 }
 
 .isInFocus {
@@ -93,15 +107,27 @@
 
 .dateLabels {
   font-size: 14px;
-  margin: 0px 0px 0px 6px;
-  padding-top: 2px;
+  /* padding-top: 2px; */
+  /* margin-top: 2px; */
+  padding: 0px 1px 0px 6px;
   color: white;
   display: flex;
   flex-direction: row;
+  border: 1px solid #7948469f;
+  background: #7948464d;
+  border-radius: 4px;
+  display: flex;
+  /* justify-content: center; */
+  height: 20px;
+  /* width: 100px; */
+  /* min-width: 76px; */
+  align-items: center; /* Center items vertically */
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .dateLabels p {
-  margin: 0px 6px 0px 0px;
+  /* margin: 0px 6px 0px 0px; */
 }
 
 .rastaStripes {
@@ -227,4 +253,43 @@
 
 .clearTimeButton:active {
   background-color: #454444;
+}
+
+.deleteDateButton {
+  margin-left: 4px;
+  border-radius: 4px;
+  padding: 1px 0px;
+  border: 1px solid rgba(255, 0, 0, 0);
+}
+
+.deleteDateButton:hover {
+  /* border: 1px solid white; */
+  border: 1px solid #794846;
+  background: #794846;
+}
+
+.startLabel {
+  flex: 1; /* Allow this item to take up available space between deleteDateButton and the container's edge */
+  /* margin-right: 6px; */
+}
+
+.timeLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid #7948469f; */
+  border-radius: 3px;
+  font-size: 11px;
+  height: 20px;
+  padding: 1px 2px;
+  margin-left: 5px;
+  box-sizing: border-box;
+  /* background-color: #7948469f; */
+}
+
+.timeLabel p {
+  margin: 0;
+  margin-left: 3px;
+  padding: 0px 2px 0px 0px;
 }

@@ -73,6 +73,7 @@ function Home() {
       );
 
       // update listItems in state
+
       setListItems(newMOrders);
 
       // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
@@ -81,7 +82,7 @@ function Home() {
         const maxManualOrderOnDestinationList =
           await u.getMaxManualOrderByParentID(destinationListID);
         const updates = {
-          parentID: `list-${destinationListID}`,
+          parentID: `parentListID-${destinationListID}`,
           manualOrder: maxManualOrderOnDestinationList + 1,
         };
 
@@ -143,6 +144,7 @@ function Home() {
             'manualOrder',
             'ascending'
           );
+
           setListItems(listItemsSortedByOriginalManualOrders);
           // then update the list obj on the database with these reset .sortOn and .order values. AND STOP THERE!
           try {
@@ -169,6 +171,7 @@ function Home() {
           destinationIndex
         );
         // update listItems in state
+
         setListItems(newMOrders);
         try {
           // 🌐 then update database
@@ -341,11 +344,10 @@ function Home() {
       (item) => item.listItemID === listItem.listItemID
     );
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
-    console.log(updatedListItem, ' 🚨');
 
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
-    console.log(updatedListItems);
+
     setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
@@ -399,7 +401,6 @@ function Home() {
   };
 
   const handleSelectListButton = (listID) => {
-    console.log(listID);
     // setListAndItemsLoaded(false);
     setSelectedListID(listID);
   };
@@ -409,19 +410,22 @@ function Home() {
     setLists(listsMinusDeleted);
     try {
       await u.deleteListByID(listID);
+
       const childListItems = listItems.filter(
-        (e) => e.parentID === `list-${listID}`
+        (e) => e.parentID === `parentListID-${listID}`
       );
+
       // also delete any listItems with .parentID === listID on db
       await u.deleteListItemsWithParentID(listID, childListItems);
       // AND in state
       const listItemsMinusDeletedChildren = listItems.filter(
-        (e) => e.parentID !== `list-${listID}`
+        (e) => e.parentID !== `parentListID-${listID}`
       );
+
       setListItems(listItemsMinusDeletedChildren);
       // AND delete any Gcal events for those delete child listItems!
       const deletedListItemIDs = childListItems.map((e) => e.listItemID);
-      console.log(deletedListItemIDs);
+
       await u.removeMultipleGCalEventsByListItemIDs(deletedListItemIDs);
     } catch (error) {
       console.error('Failed to delete list:', error);
