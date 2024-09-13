@@ -60,7 +60,7 @@
 }
 
 .bottomButton {
-  border: 1px solid #8b9898;
+  border: 1px solid #8b987c85;
   cursor: pointer;
   /* margin-left: 4px; */
   /* margin-right: 4px; */
@@ -75,6 +75,7 @@
   width: 100%;
   min-height: 28px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .bottomButton:hover {
@@ -82,6 +83,7 @@
 }
 
 .bottomButtonLabel {
+  color: #7f7f7f;
   margin: 0px 0px 0px 0px;
 }
 
@@ -113,7 +115,7 @@
 
 .timeContainer {
   position: relative;
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
 }
 
 .timeInput {
@@ -122,31 +124,107 @@
   left: 0;
   width: 120px;
   height: 120px;
-  background-color: red;
+  background-color: #252525;
   z-index: 3;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
   box-sizing: border-box;
-  padding: 5px;
+  /* padding: 5px; */
+  /* border: 1px solid green; */
+  box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px;
 }
 
 .unitContainer {
-  width: 45%;
-  height: 100px;
-  border: 1px solid white;
+  width: 100%;
+  height: 100%;
+  /* border: 1px solid white; */
   overflow-y: scroll;
-  scrollbar-width: none; /* Hide scrollbar in Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar in Edge and IE */
+  padding: 4px;
+  background-color: #1e1e1e;
 }
 
 .unitBlock {
-  height: 25px;
+  height: 32px;
   width: 100;
-  border: 1px solid black;
+  /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
+  padding-left: 8px;
+  color: white;
+  background-color: #1e1e1e;
+  border-radius: 6px;
+}
+
+.unitBlock:hover {
+  background-color: #454444;
+}
+
+.unitContainer::-webkit-scrollbar {
+  width: 10px !important;
+  padding: 2px !important;
+}
+
+.unitContainer::-webkit-scrollbar-track {
+  background: #2c2c2c !important;
+  border-left: 1px solid #3e3e3e !important;
+  border-right: 1px solid #3e3e3e !important;
+  /* border-radius: 6px !important; */
+  height: 100% !important;
+}
+
+.unitContainer::-webkit-scrollbar-thumb {
+  background: #6b6b6b !important;
+  border-radius: 10px !important;
+  width: 8px !important;
+}
+
+.unitContainer::-webkit-scrollbar-thumb:hover {
+  background: #939393 !important;
+}
+
+.timeButtonExistingTime {
+  border: 1px solid #8b987c;
+}
+
+.timeButtonExistingTime p {
+  color: white;
+}
+
+.bottomButton svg {
+  /* border: 1px solid red; */
+  margin-right: 4px;
+  padding-top: 2px;
+}
+
+.bottomButtonLabel {
+  padding-top: 0px;
+}
+
+.clearTimeButton {
+  position: absolute;
+  right: 0px;
+  /* border: 1px solid #8b987c; */
+  width: 20px;
+  height: 19px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  padding-bottom: 1px;
+  margin-right: 4px;
+  margin-bottom: 1px;
+}
+
+.clearTimeButton:hover {
+  background-color: #454444;
+}
+
+.clearTimeButton:active {
+  background-color: #454444;
 }

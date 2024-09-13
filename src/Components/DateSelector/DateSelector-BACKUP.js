@@ -26,7 +26,6 @@ function DateSelector({ listItem, updateListItem, listItemID }) {
     // convert the date portion of the JS date/time, for displaying the DATE in our app
     // seperately, store the time portion of the JS date/time - or null if we're clearing a time we set before
     const convertToISOString = (value) => {
-      // THIS IS FOR GCAL CONVERSION?! TO ENSURE AN UN-TIMED EVENT STARTS AT MIDNIGHT ON CORRECT DAY???
       if (value instanceof Date && !isNaN(value.getTime())) {
         // Convert local date to YYYY-MM-DD format
         const year = value.getFullYear();

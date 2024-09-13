@@ -81,7 +81,7 @@ function Home() {
         const maxManualOrderOnDestinationList =
           await u.getMaxManualOrderByParentID(destinationListID);
         const updates = {
-          parentID: destinationListID,
+          parentID: `list-${destinationListID}`,
           manualOrder: maxManualOrderOnDestinationList + 1,
         };
 
@@ -409,12 +409,14 @@ function Home() {
     setLists(listsMinusDeleted);
     try {
       await u.deleteListByID(listID);
-      const childListItems = listItems.filter((e) => e.parentID === listID);
+      const childListItems = listItems.filter(
+        (e) => e.parentID === `list-${listID}`
+      );
       // also delete any listItems with .parentID === listID on db
       await u.deleteListItemsWithParentID(listID, childListItems);
       // AND in state
       const listItemsMinusDeletedChildren = listItems.filter(
-        (e) => e.parentID !== listID
+        (e) => e.parentID !== `list-${listID}`
       );
       setListItems(listItemsMinusDeletedChildren);
       // AND delete any Gcal events for those delete child listItems!
