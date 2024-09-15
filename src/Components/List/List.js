@@ -116,8 +116,8 @@ function List({
     <div
       className={styles.listContainerWrapper}
       style={{
-        height: showPlanner ? '50%' : '100%',
         // padding: showPlanner ? '28px 13px 0px 28px' : '28px 20px 0px 28px',
+        height: showPlanner ? '50%' : '100%',
         display: showPlanner ? null : 'flex',
       }}
     >

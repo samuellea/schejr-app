@@ -39,18 +39,22 @@ function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
       className={styles.container}
       style={{
         height: !showPlanner ? '0%' : plannerMax ? '100%' : '50%',
-        padding: !showPlanner ? '0px' : '28px 28px 12px 0px',
+        padding: !showPlanner
+          ? '0px'
+          : plannerMax
+          ? '0px 28px 12px 0px'
+          : '12px 28px 12px 0px',
       }}
     >
       {showPlanner ? (
         <div className={styles.contentAndControls}>
           <div className={styles.contentContainer}>
             <div className={styles.monthNavigator}>
-              <div className={styles.navButton}>
-                <div
-                  className={styles.navIconL}
-                  onClick={() => handleNavMonth('-')}
-                ></div>
+              <div
+                className={styles.navButton}
+                onClick={() => handleNavMonth('-')}
+              >
+                <div className={styles.navIconL}></div>
               </div>
               <div className={styles.monthNavLabel}>
                 <span>
@@ -63,11 +67,11 @@ function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
                   <h4>{viewMonth.getFullYear()}</h4>
                 </span>
               </div>
-              <div className={styles.navButton}>
-                <div
-                  className={styles.navIconR}
-                  onClick={() => handleNavMonth('+')}
-                ></div>
+              <div
+                className={styles.navButton}
+                onClick={() => handleNavMonth('+')}
+              >
+                <div className={styles.navIconR}></div>
               </div>
             </div>
 

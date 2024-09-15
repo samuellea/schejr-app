@@ -116,7 +116,7 @@
   width: 15px;
   border-radius: 6px;
   background-color: #333333;
-  margin-top: auto;
+  margin: auto 0px 12px 12px;
 }
 
 .listsHeaderButton:hover {
