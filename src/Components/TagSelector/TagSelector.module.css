@@ -1,25 +1,32 @@
 .container {
-  width: 100%;
-  /* border: 1px solid red; */
+  /* width: 100%; */
+  /* border: 2px solid red; */
   position: relative;
+  /* height: 100%; */
+  user-select: none;
   cursor: pointer;
+  flex-grow: 1;
+  /* display: flex; */
+  box-sizing: border-box;
+  /* padding: 0; */
+  /* height: 80px; */
 }
 
 .inputContainer {
-  /* border: 1px solid yellow; */
-  width: 90%;
-  max-width: 90%;
+  /* border: 1px solid orange; */
+  max-width: 100%;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   background-color: #202020;
-  box-sizing: border-box;
   min-height: 35px;
   padding: 7px 6px;
   flex-wrap: wrap; /* Allows the children to wrap to the next line */
   gap: 6px;
   position: relative;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .inputContainer:hover {
@@ -155,7 +162,7 @@
 
 .existingTagLabel,
 .selectedTag {
-  color: white;
+  /* color: white; */
   /* background-color: remediumslateblue; */
   padding: 0px 6px;
   border-radius: 3px;
@@ -169,6 +176,7 @@
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
+  box-sizing: border-box;
   /* max-width: 100%; */
 }
 

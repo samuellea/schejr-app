@@ -7,6 +7,7 @@ import TagsIcon from '../Icons/TagsIcon';
 import DateIcon from '../Icons/DateIcon';
 import SyncIcon from '../Icons/SyncIcon';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
+import NotesIcon from '../Icons/NotesIcon';
 
 function ListItemEditPane({
   listItemEditID,
@@ -100,7 +101,7 @@ function ListItemEditPane({
       </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel} id={styles.tagsFieldLabel}>
+        <div className={styles.wrapperLabel}>
           <TagsIcon fill="#7f7f7f" />
           <p className={styles.fieldLabelP}>Tags</p>
         </div>
@@ -182,7 +183,10 @@ function ListItemEditPane({
 
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>Notes</div>
+        <div className={styles.wrapperLabel}>
+          <NotesIcon fill="#7f7f7f" width="16px" />
+          <p className={styles.fieldLabelP}>Notes</p>
+        </div>
       </div>
 
       <div className={styles.fieldWrapper} style={{ alignItems: 'flex-start' }}>

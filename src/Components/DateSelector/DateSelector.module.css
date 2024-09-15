@@ -1,16 +1,21 @@
 .container {
-  width: 100%;
+  /* width: 100%; */
   /* border: 2px solid green; */
   position: relative;
   height: 100%;
   user-select: none;
   cursor: pointer;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .inputContainer {
   /* border: 1px solid yellow; */
-  width: 90%;
-  max-width: 90%;
+  width: 75%;
+  /* max-width: 90%; */
   padding: 7px 6px;
   border-radius: 4px;
   display: flex;
@@ -18,7 +23,7 @@
   justify-content: flex-start;
   background-color: #202020;
   box-sizing: border-box;
-  height: 35px;
+  /* height: 35px; */
   position: relative;
 }
 
@@ -106,7 +111,7 @@
 } */
 
 .dateLabels {
-  font-size: 14px;
+  font-size: 12px;
   /* padding-top: 2px; */
   /* margin-top: 2px; */
   padding: 0px 1px 0px 6px;
@@ -114,11 +119,12 @@
   display: flex;
   flex-direction: row;
   border: 1px solid #7948469f;
-  background: #7948464d;
+  background: #79484621;
   border-radius: 4px;
   display: flex;
   /* justify-content: center; */
   height: 20px;
+  /* height: 100%; */
   /* width: 100px; */
   /* min-width: 76px; */
   align-items: center; /* Center items vertically */
@@ -128,6 +134,7 @@
 
 .dateLabels p {
   /* margin: 0px 6px 0px 0px; */
+  padding-bottom: 2px;
 }
 
 .rastaStripes {
