@@ -13,7 +13,7 @@ function Day({ date, viewMonth }) {
       if (todayRef.current) {
         todayRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 500);
+    }, 250);
     return () => clearTimeout(timer);
   }, [viewMonth]);
 
