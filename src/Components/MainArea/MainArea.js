@@ -5,6 +5,7 @@ import ListItemEditPane from '../ListItemEditPane/ListItemEditPane';
 import * as u from '../../utils';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
 import EditIcon from '../Icons/EditIcon';
+import Planner from '../Planner/Planner';
 
 function MainArea({
   showSidebar,
@@ -22,6 +23,8 @@ function MainArea({
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
   const [listItemEditID, setListItemEditID] = useState(null);
+  const [showPlanner, setShowPlanner] = useState(false);
+  const [plannerMax, setPlannerMax] = useState(false);
 
   const fetchListItems = async () => {
     if (selectedList.listID) {
@@ -81,6 +84,14 @@ function MainArea({
     setListItemEditID(null);
   };
 
+  const togglePlanner = async () => {
+    setShowPlanner((prev) => !prev);
+  };
+
+  const toggleExpand = async () => {
+    setPlannerMax((prev) => !prev);
+  };
+
   return (
     <div
       className={styles.container}
@@ -96,6 +107,8 @@ function MainArea({
           setListItems={setListItems}
           handleEditListItem={handleEditListItem}
           existingTags={existingTags}
+          showPlanner={showPlanner}
+          togglePlanner={togglePlanner}
         />
       ) : (
         <div className={styles.emptyMessage}>
@@ -122,6 +135,14 @@ function MainArea({
           handleSetSyncWithGCal={handleSetSyncWithGCal}
         />
       ) : null}
+      {/* {showPlanner ? ( */}
+      <Planner
+        showPlanner={showPlanner}
+        togglePlanner={togglePlanner}
+        plannerMax={plannerMax}
+        toggleExpand={toggleExpand}
+      />
+      {/* ) : null} */}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { format, isThisYear } from 'date-fns';
+import { format, isThisYear, parseISO, formatDistanceToNow } from 'date-fns';
 
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
@@ -344,6 +344,64 @@ export const formatDateForListItem = (startDateTime) => {
     // Format as 'Sep 16, 2025'
     return format(date, 'MMM d, yyyy');
   }
+};
+
+export const formatDateString = (dateString) => {
+  // Parse the input date string into a Date object
+  const date = parseISO(dateString);
+
+  // Get the day of the month
+  const day = date.getDate();
+
+  // Helper function to get the ordinal suffix
+  const ordinalSuffix = (day) => {
+    if (day >= 11 && day <= 13) return 'th'; // Special case for 11th, 12th, 13th
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
+
+  // Format the date and append the ordinal suffix to the day
+  const dayWithSuffix = day + ordinalSuffix(day);
+  const formattedDate = `${format(date, 'EEEE •  MMM')} ${dayWithSuffix}`;
+
+  return formattedDate;
+};
+
+export const generateMonthlyDays = (dateObj) => {
+  // Extract month and year from the provided date object
+  const month = dateObj.getUTCMonth(); // Get month in UTC
+  const year = dateObj.getUTCFullYear(); // Get year in UTC
+
+  // Create an array to hold the objects
+  const daysArray = [];
+
+  // Create a date object for the first day of the given month and year in UTC
+  const date = new Date(Date.UTC(year, month, 1));
+
+  // Get the number of days in the month
+  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+
+  // Loop through each day of the month
+  for (let day = 1; day <= lastDayOfMonth; day++) {
+    // Set the date to the current day in the loop
+    date.setUTCDate(day);
+
+    // Format the date as YYYY-MM-DD
+    const formattedDate = date.toISOString().split('T')[0];
+
+    // Create an object with the formatted date and an empty events array
+    daysArray.push({ date: formattedDate, events: [] });
+  }
+  console.log(daysArray);
+  return daysArray;
 };
 
 export const times = [

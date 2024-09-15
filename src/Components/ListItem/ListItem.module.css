@@ -128,7 +128,7 @@
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
 
-  border: 1px solid #7948469f;
+  /* border: 1px solid #7948469f; */
   background: #79484611;
   padding: 0px 6px;
   margin: 0px 0px 0px 6px;

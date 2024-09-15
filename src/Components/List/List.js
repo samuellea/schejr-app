@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as u from '../../utils';
 import * as h from '../../helpers';
 import randomEmoji from 'random-emoji';
@@ -7,6 +7,7 @@ import ListItem from '../ListItem/ListItem';
 import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 import Sort from '../Sort/Sort';
 import PlusIcon from '../Icons/PlusIcon';
+import ChevronIcon from '../Icons/ChevronIcon';
 
 function List({
   selectedList,
@@ -17,12 +18,12 @@ function List({
   listItems,
   setListItems,
   existingTags,
+  showPlanner,
+  togglePlanner,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     setSortOn(selectedList.sortOn);
@@ -109,75 +110,92 @@ function List({
     }
   };
 
-  useEffect(() => {}, [listItems]);
+  const plannerButtonCombined = `${styles.plannerButton} ${styles.listsHeaderButton}`;
 
   return (
-    <div className={styles.listContainerWrapper}>
+    <div
+      className={styles.listContainerWrapper}
+      style={{
+        height: showPlanner ? '50%' : '100%',
+        // padding: showPlanner ? '28px 13px 0px 28px' : '28px 20px 0px 28px',
+        display: showPlanner ? null : 'flex',
+      }}
+    >
       <Droppable droppableId={`list-${selectedList.listID}`}>
         {(provided) => (
           <div
             className={styles.container}
             ref={provided.innerRef}
             {...provided.droppableProps}
+            style={{
+              padding: showPlanner ? '28px 3px 0px 28px' : '28px 15px 0px 28px',
+            }}
           >
-            <div className={styles.container}>
-              <input
-                className={styles.listTitleInput}
-                type="text"
-                id="listTitle"
-                onChange={handleTitleChange} // Directly pass the handler
-                onBlur={handleTitleOnBlur}
-                value={listTitle}
-              />
-              <Sort
-                selectedList={selectedList}
-                updateList={updateList}
-                sortOn={sortOn}
-                setSortOn={setSortOn}
-                order={order}
-                setOrder={setOrder}
-                handleToggleOrder={handleToggleOrder}
-                existingTags={existingTags}
-              />
-              {h
-                .sortItems(listItems, sortOn, order, existingTags)
-                ?.map((listItem, index) => (
-                  <Draggable
-                    key={`draggable-${listItem.listItemID}`}
-                    draggableId={listItem.listItemID}
-                    index={index}
-                    type="list-item"
-                  >
-                    {(provided) => (
-                      <div
-                        className={styles.listItem}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <ListItem
-                          listItem={listItem}
-                          handleEditListItem={handleEditListItem}
-                          existingTags={existingTags}
-                          deleteListItem={deleteListItem}
-                          updateListItem={updateListItem}
-                          key={`list-item-${listItem.listItemID}`}
-                          provided={provided}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                )) || null}
-            </div>
+            <input
+              className={styles.listTitleInput}
+              type="text"
+              id="listTitle"
+              onChange={handleTitleChange} // Directly pass the handler
+              onBlur={handleTitleOnBlur}
+              value={listTitle}
+            />
+            <Sort
+              selectedList={selectedList}
+              updateList={updateList}
+              sortOn={sortOn}
+              setSortOn={setSortOn}
+              order={order}
+              setOrder={setOrder}
+              handleToggleOrder={handleToggleOrder}
+              existingTags={existingTags}
+            />
+            {h
+              .sortItems(listItems, sortOn, order, existingTags)
+              ?.map((listItem, index) => (
+                <Draggable
+                  key={`draggable-${listItem.listItemID}`}
+                  draggableId={listItem.listItemID}
+                  index={index}
+                  type="list-item"
+                >
+                  {(provided) => (
+                    <div
+                      className={styles.listItem}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <ListItem
+                        listItem={listItem}
+                        handleEditListItem={handleEditListItem}
+                        existingTags={existingTags}
+                        deleteListItem={deleteListItem}
+                        updateListItem={updateListItem}
+                        key={`list-item-${listItem.listItemID}`}
+                        provided={provided}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              )) || null}
             {provided.placeholder}
           </div>
         )}
       </Droppable>
       <div className={styles.newListItemButtonDivier} />
       <div className={styles.newListItemButton} onClick={createListItem}>
-        <PlusIcon />
+        <PlusIcon fill="white" width="16px" />
         <span>New</span>
       </div>
+      {!showPlanner ? (
+        <div
+          role="button"
+          className={styles.listsHeaderButton}
+          onClick={togglePlanner}
+        >
+          <ChevronIcon fill="white" width="20px" flip={90} />
+        </div>
+      ) : null}
     </div>
   );
 }

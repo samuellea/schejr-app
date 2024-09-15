@@ -1,7 +1,40 @@
-.container {
+.listContainerWrapper {
   /* border: 2px solid red; */
+  /* overflow-y: scroll; */
+  overflow-y: overlay;
+  /* padding: 28px 0px 20px 28px; */
+  /* padding: 4% 4% 4% 4%; */
+  flex-direction: column;
+  /* scroll-padding-right: 150px; */
+  /* transition: height 0.2s ease; */
+  box-sizing: border-box;
+}
+
+.listContainerWrapper::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.listContainerWrapper::-webkit-scrollbar-track {
+  background: #2c2c2c !important;
+  border-radius: 10px !important;
+}
+
+.listContainerWrapper::-webkit-scrollbar-thumb {
+  background: #6b6b6b !important;
+  border-radius: 6px !important;
+  width: 8px !important;
+  min-height: 30px !important; /* Ensures minimum height */
+  height: 30px !important; /* Forces the thumb height to always be fixed */
+}
+
+.listContainerWrapper::-webkit-scrollbar-thumb:hover {
+  background: #939393 !important;
+}
+
+.container {
+  /* border: 2px solid yellow; */
   /* height: 100%; */
-  /* width: 100%; */
+  width: 100%;
   /* padding: 0px 10px; */
   box-sizing: border-box;
   display: flex;
@@ -11,6 +44,7 @@
   justify-content: flex-start;
   /* padding: 3% 2%; */
   box-sizing: border-box;
+  /* height: 100%; */
 }
 
 .listTitleInput {
@@ -45,7 +79,7 @@
   align-items: center;
   justify-content: flex-start;
   border-radius: 5px;
-  padding-left: 18px;
+  padding-left: 28px;
   color: rgb(164, 164, 164);
   border: none;
   /* border: 1px solid white; */
@@ -53,6 +87,7 @@
 
 .newListItemButton:hover {
   background-color: #2a2a2a;
+  color: white;
 }
 
 .newListItemButton span {
@@ -68,4 +103,21 @@
   display: flex;
   flex-direction: row;
   pointer-events: none;
+}
+
+.listsHeaderButton {
+  /* border: 1px solid white; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  height: 15px;
+  width: 15px;
+  border-radius: 6px;
+  background-color: #333333;
+  margin-top: auto;
+}
+
+.listsHeaderButton:hover {
 }

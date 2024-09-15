@@ -1,0 +1,66 @@
+.container {
+  /* height: 20px; */
+  width: 100%;
+  /* border: 1px solid white; */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: rgb(155, 155, 155);
+  padding: 0px 20px;
+  margin-top: 28px;
+}
+
+.dayHeader {
+  font-size: 14px;
+  border-bottom: 1px solid rgba(155, 155, 155, 0.3);
+  padding: 6px 6px 6px 0px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* border: 1px solid white; */
+}
+
+.addEventButton path {
+  fill: rgba(164, 164, 164, 0.534);
+}
+
+.addEventButton {
+  height: 30px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 5px;
+  padding-left: 6px;
+  color: rgba(164, 164, 164, 0.534);
+  border: none;
+  /* border: 1px solid white; */
+  font-size: 12px;
+}
+
+.addEventButton:hover {
+  background-color: #343434;
+  border-radius: 0px 0px 5px 5px;
+  color: white;
+}
+
+.addEventButton:hover path {
+  fill: white;
+}
+
+.addEventButton span {
+  margin-left: 6px;
+}
+
+.today {
+  background-color: #de4c49;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  margin-right: 8px;
+}

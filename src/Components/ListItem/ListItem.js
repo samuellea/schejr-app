@@ -113,6 +113,7 @@ function ListItem({
             <DateIcon />
             <span>
               {h.formatDateForListItem(listItem.dates[0].startDateTime)}
+              {listItem.dates?.length > 1 ? '...' : null}
             </span>
             {listItem.dates?.length > 1 ? (
               <span>
