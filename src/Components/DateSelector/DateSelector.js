@@ -8,6 +8,7 @@ import CloseIcon from '../Icons/CloseIcon';
 import { nanoid } from 'nanoid';
 import PlusIcon from '../Icons/PlusIcon';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
+import DateIcon from '../Icons/DateIcon';
 
 function DateSelector({ date, listItem, updateListItem }) {
   const [startDateTime, setStartDateTime] = useState(
@@ -166,6 +167,7 @@ function DateSelector({ date, listItem, updateListItem }) {
         {startDateTime ? (
           <>
             <div className={styles.dateLabels}>
+              <DateIcon fill="white" />
               <p className={styles.startLabel}>{h.formatDate(startDateTime)}</p>
               <div
                 className={styles.deleteDateButton}

@@ -120,13 +120,13 @@
   height: 1px;
   /* min-width: 310px; */
   width: 75%;
-  margin-bottom: 12px;
+  margin: 12px 0px 6px 0px;
 }
 
 .notesContainer {
   /* border: 1px solid red; */
   width: 75%;
-  margin-left: 10px;
+  margin-left: 3px;
   box-sizing: border-box;
   position: relative;
   height: 300px;

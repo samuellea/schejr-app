@@ -2,7 +2,7 @@
   /* width: 100%; */
   /* border: 2px solid green; */
   position: relative;
-  height: 100%;
+  /* height: 100%; */
   user-select: none;
   cursor: pointer;
   flex-grow: 1;
@@ -10,18 +10,21 @@
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
+  height: 40px;
 }
 
 .inputContainer {
   /* border: 1px solid yellow; */
   width: 75%;
   /* max-width: 90%; */
-  padding: 7px 6px;
+  padding: 3px 3px;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: flex-start;
   background-color: #202020;
+  height: 100%;
   box-sizing: border-box;
   /* height: 35px; */
   position: relative;
@@ -114,17 +117,17 @@
   font-size: 12px;
   /* padding-top: 2px; */
   /* margin-top: 2px; */
-  padding: 0px 1px 0px 6px;
+  padding: 0px 10px 0px 10px;
   color: white;
   display: flex;
   flex-direction: row;
   border: 1px solid #7948469f;
-  background: #79484621;
+  background: #79484611;
   border-radius: 4px;
   display: flex;
   /* justify-content: center; */
-  height: 20px;
-  /* height: 100%; */
+  /* height: 30px; */
+  height: 100%;
   /* width: 100px; */
   /* min-width: 76px; */
   align-items: center; /* Center items vertically */
@@ -132,9 +135,32 @@
   box-sizing: border-box;
 }
 
+.timeLabel {
+  font-size: 12px;
+  /* padding-top: 2px; */
+  /* margin-top: 2px; */
+  padding: 0px 5px 0px 5px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #a14bb49f;
+  background: #a14bb42a;
+  border-radius: 4px;
+  display: flex;
+  /* justify-content: center; */
+  /* height: 30px; */
+  height: 70%;
+  /* width: 100px; */
+  /* min-width: 76px; */
+  align-items: center; /* Center items vertically */
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin-left: 8px;
+}
+
 .dateLabels p {
   /* margin: 0px 6px 0px 0px; */
-  padding-bottom: 2px;
+  /* padding-bottom: 2px; */
 }
 
 .rastaStripes {
@@ -278,21 +304,7 @@
 .startLabel {
   flex: 1; /* Allow this item to take up available space between deleteDateButton and the container's edge */
   /* margin-right: 6px; */
-}
-
-.timeLabel {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  /* border: 1px solid #7948469f; */
-  border-radius: 3px;
-  font-size: 11px;
-  height: 20px;
-  padding: 1px 2px;
-  margin-left: 5px;
-  box-sizing: border-box;
-  /* background-color: #7948469f; */
+  margin-left: 8px;
 }
 
 .timeLabel p {

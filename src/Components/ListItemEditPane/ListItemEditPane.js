@@ -190,7 +190,7 @@ function ListItemEditPane({
       </div>
 
       <div className={styles.fieldWrapper} style={{ alignItems: 'flex-start' }}>
-        <div className={styles.fieldIndent} style={{ minWidth: '55px' }} />
+        <div className={styles.fieldIndent} />
         <div className={styles.notesContainer}>
           <textarea
             className={styles.notesTextArea}
