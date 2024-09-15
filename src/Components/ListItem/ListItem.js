@@ -5,6 +5,7 @@ import * as h from '../../helpers';
 import TrashIcon from '../Icons/TrashIcon';
 import EditIcon from '../Icons/EditIcon';
 import DragIcon from '../Icons/DragIcon';
+import DateIcon from '../Icons/DateIcon';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import toast from 'react-hot-toast';
 
@@ -107,21 +108,22 @@ function ListItem({
             );
           })}
         </div>
-        {h.dateLabel(listItem.date) ? (
+        {listItem.dates ? (
           <div className={styles.dateContainer} id="flexidiv">
-            {h.dateLabel(listItem.date)}
+            <DateIcon />
+            <span>
+              {h.formatDateForListItem(listItem.dates[0].startDateTime)}
+            </span>
+            {listItem.dates?.length > 1 ? (
+              <span>
+                {`+`}
+                <span id={styles.dateCount}>{listItem.dates?.length}</span>
+                {``}
+              </span>
+            ) : null}
           </div>
         ) : null}
-        {/* <div className={styles.first} id={styles.flexidiv}>
-          title
-        </div>
-        <div className={styles.second} id={styles.flexidiv}>
-          tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag tag
-          tag tag tag
-        </div>
-        <div className={styles.third} id={styles.flexidiv}>
-          date date date
-        </div> */}
+
         <button
           className={styles.deleteListItemButton}
           onClick={() => setShowDeleteModal(true)}

@@ -127,6 +127,60 @@
   font-size: 12px;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
+
+  border: 1px solid #7948469f;
+  background: #79484611;
+  padding: 0px 6px;
+  margin: 0px 0px 0px 6px;
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.dateContainer span:nth-of-type(1) {
+  margin-left: 4px;
+  /* border: 1px solid red; */
+  /* height: 100%; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.dateContainer span:nth-of-type(2) {
+  background: #7948469f;
+  border-radius: 3px;
+  margin-left: 5px;
+  padding: 0px 4px 1px 4px;
+  /* color: red; */
+  font-size: 11px;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+#dateCount {
+  margin-right: 3px;
+  margin-left: 0px;
+  /* color: #e67bfe; */
+  /* font-weight: 400; */
+}
+
+.andMoreContainer {
+  /* border: 1px solid red; */
+  flex: 0 0 auto;
+  /* background-color: yellow; */
+  margin-left: 6px;
+  font-size: 10px;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
   padding: 0px 5px;
 }
 

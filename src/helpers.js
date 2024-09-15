@@ -333,6 +333,19 @@ export const dateTimeTo12Hour = (date) => {
   return formattedTime;
 };
 
+export const formatDateForListItem = (startDateTime) => {
+  const date = new Date(startDateTime);
+
+  // Check if the year is the current year
+  if (isThisYear(date)) {
+    // Format as 'Sep 16'
+    return format(date, 'MMM d');
+  } else {
+    // Format as 'Sep 16, 2025'
+    return format(date, 'MMM d, yyyy');
+  }
+};
+
 export const times = [
   {
     display12: '12:00 AM',
