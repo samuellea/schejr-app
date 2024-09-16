@@ -40,149 +40,153 @@ function Home() {
   };
 
   const onDragEnd = async (result) => {
+    console.log('onDragEnd!');
     const { destination, source, draggableId } = result;
+    console.log(destination);
+    console.log(source);
+    console.log(draggableId);
 
-    if (!destination) {
-      // Item was dropped outside a droppable area
+    // if (!destination) {
+    //   // Item was dropped outside a droppable area
 
-      return;
-    }
+    //   return;
+    // }
 
-    // ⭐ MOVE TO DIFFERENT LIST
-    if (
-      destination.droppableId.substring(0, 4) !== 'list' &&
-      destination.droppableId !== 'main-area'
-    ) {
-      const listItemID = draggableId;
-      const destinationListID = destination.droppableId; // id of the List you're moving it to
-      const listItemMoved = listItems.find((e) => e.listItemID === draggableId);
-      const destinationList = lists.find((e) => e.listID === destinationListID);
+    // // ⭐ MOVE TO DIFFERENT LIST
+    // if (
+    //   destination.droppableId.substring(0, 4) !== 'list' &&
+    //   destination.droppableId !== 'main-area'
+    // ) {
+    //   const listItemID = draggableId;
+    //   const destinationListID = destination.droppableId; // id of the List you're moving it to
+    //   const listItemMoved = listItems.find((e) => e.listItemID === draggableId);
+    //   const destinationList = lists.find((e) => e.listID === destinationListID);
 
-      // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
-      // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
-      // which may be determined by other sort options (title, date, tags etc.)
-      const listItemsSortedByOriginalManualOrders = h.sortItems(
-        listItems,
-        'manualOrder',
-        'ascending'
-      );
-      const newMOrders = h.updatedManualOrdersOnSourceList(
-        // listItems,
-        listItemsSortedByOriginalManualOrders,
-        listItemID
-      );
+    //   // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
+    //   // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+    //   // which may be determined by other sort options (title, date, tags etc.)
+    //   const listItemsSortedByOriginalManualOrders = h.sortItems(
+    //     listItems,
+    //     'manualOrder',
+    //     'ascending'
+    //   );
+    //   const newMOrders = h.updatedManualOrdersOnSourceList(
+    //     // listItems,
+    //     listItemsSortedByOriginalManualOrders,
+    //     listItemID
+    //   );
 
-      // update listItems in state
+    //   // update listItems in state
 
-      setListItems(newMOrders);
+    //   setListItems(newMOrders);
 
-      // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
-      // fetch the highest manual order value present on this List
-      try {
-        const maxManualOrderOnDestinationList =
-          await u.getMaxManualOrderByParentID(destinationListID);
-        const updates = {
-          parentID: `parentListID-${destinationListID}`,
-          manualOrder: maxManualOrderOnDestinationList + 1,
-        };
+    //   // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
+    //   // fetch the highest manual order value present on this List
+    //   try {
+    //     const maxManualOrderOnDestinationList =
+    //       await u.getMaxManualOrderByParentID(destinationListID);
+    //     const updates = {
+    //       parentID: `parentListID-${destinationListID}`,
+    //       manualOrder: maxManualOrderOnDestinationList + 1,
+    //     };
 
-        try {
-          // 🌐 update that item being moved accordingly
-          const updatedListItem = await u.patchListItem(listItemID, updates);
+    //     try {
+    //       // 🌐 update that item being moved accordingly
+    //       const updatedListItem = await u.patchListItem(listItemID, updates);
 
-          // now update remaining list items on db
-          try {
-            // 🌐
-            const multipleListItemsPatched = await u.patchMultipleListItems(
-              newMOrders
-            );
-            toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
-              duration: 2000,
-            });
-          } catch (error) {
-            console.error(error);
-          }
-        } catch (error) {}
-      } catch (error) {}
-    }
+    //       // now update remaining list items on db
+    //       try {
+    //         // 🌐
+    //         const multipleListItemsPatched = await u.patchMultipleListItems(
+    //           newMOrders
+    //         );
+    //         toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
+    //           duration: 2000,
+    //         });
+    //       } catch (error) {
+    //         console.error(error);
+    //       }
+    //     } catch (error) {}
+    //   } catch (error) {}
+    // }
 
-    // ⭐ MOVE WITHIN A LIST
+    // // ⭐ MOVE WITHIN A LIST
 
-    if (destination.droppableId.substring(0, 4) === 'list') {
-      const listID = destination.droppableId.substring(5);
-      const possibleSort = lists.find((e) => e.listID === listID).sortOn;
+    // if (destination.droppableId.substring(0, 4) === 'list') {
+    //   const listID = destination.droppableId.substring(5);
+    //   const possibleSort = lists.find((e) => e.listID === listID).sortOn;
 
-      const listItemID = draggableId;
-      const startIndex = source.index; // NO - if a filter's been applied it SHOULDN'T be this, should be the dragged obj's original .manualOrder value
-      const destinationIndex = destination.index;
+    //   const listItemID = draggableId;
+    //   const startIndex = source.index; // NO - if a filter's been applied it SHOULDN'T be this, should be the dragged obj's original .manualOrder value
+    //   const destinationIndex = destination.index;
 
-      // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
-      // which may be determined by other sort options (title, date, tags etc.)
+    //   // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+    //   // which may be determined by other sort options (title, date, tags etc.)
 
-      if (possibleSort !== 'manualOrder') {
-        // if a sort is present on the List object, could intervene here -
-        // eslint-disable-next-line no-restricted-globals
-        const userResponse = confirm('Do you want to remove sorting?');
-        // Check the user's response
-        if (userResponse) {
-          // update list obj in state to have .sortOn = 'manualOrder' and .order = 'ascending'
-          const selectedList = lists.find((e) => e.listID === selectedListID);
-          const indexOfListInLists = lists.findIndex(
-            (e) => e.listID === selectedListID
-          );
-          const updatedLists = [...lists];
-          const updatedList = {
-            ...selectedList,
-            sortOn: 'manualOrder',
-            order: 'ascending',
-          };
-          updatedLists.splice(indexOfListInLists, 1, updatedList);
-          setLists(updatedLists);
-          // then reset listItems in state to be sorted in that way
-          const listItemsSortedByOriginalManualOrders = h.sortItems(
-            listItems,
-            'manualOrder',
-            'ascending'
-          );
+    //   if (possibleSort !== 'manualOrder') {
+    //     // if a sort is present on the List object, could intervene here -
+    //     // eslint-disable-next-line no-restricted-globals
+    //     const userResponse = confirm('Do you want to remove sorting?');
+    //     // Check the user's response
+    //     if (userResponse) {
+    //       // update list obj in state to have .sortOn = 'manualOrder' and .order = 'ascending'
+    //       const selectedList = lists.find((e) => e.listID === selectedListID);
+    //       const indexOfListInLists = lists.findIndex(
+    //         (e) => e.listID === selectedListID
+    //       );
+    //       const updatedLists = [...lists];
+    //       const updatedList = {
+    //         ...selectedList,
+    //         sortOn: 'manualOrder',
+    //         order: 'ascending',
+    //       };
+    //       updatedLists.splice(indexOfListInLists, 1, updatedList);
+    //       setLists(updatedLists);
+    //       // then reset listItems in state to be sorted in that way
+    //       const listItemsSortedByOriginalManualOrders = h.sortItems(
+    //         listItems,
+    //         'manualOrder',
+    //         'ascending'
+    //       );
 
-          setListItems(listItemsSortedByOriginalManualOrders);
-          // then update the list obj on the database with these reset .sortOn and .order values. AND STOP THERE!
-          try {
-            // 🌐 then update List on database with default sortOn and order
-            const { listID: unneededListID, ...rest } = selectedList;
-            const updatedList = {
-              ...rest,
-              sortOn: 'manualOrder',
-              order: 'ascending',
-            };
-            // setLists with updated List object on front-end!
-            return await u.patchList(selectedList.listID, updatedList);
-          } catch (error) {
-            console.error(error);
-          }
-        } else {
-          return;
-        }
-      } else {
-        // no custom sort is applied, allow dragging and dropping of listItems within a list to change their .manualOrder
-        const { newMOrders, onlyChanged } = h.updatedManualOrders(
-          listItems,
-          startIndex,
-          destinationIndex
-        );
-        // update listItems in state
+    //       setListItems(listItemsSortedByOriginalManualOrders);
+    //       // then update the list obj on the database with these reset .sortOn and .order values. AND STOP THERE!
+    //       try {
+    //         // 🌐 then update List on database with default sortOn and order
+    //         const { listID: unneededListID, ...rest } = selectedList;
+    //         const updatedList = {
+    //           ...rest,
+    //           sortOn: 'manualOrder',
+    //           order: 'ascending',
+    //         };
+    //         // setLists with updated List object on front-end!
+    //         return await u.patchList(selectedList.listID, updatedList);
+    //       } catch (error) {
+    //         console.error(error);
+    //       }
+    //     } else {
+    //       return;
+    //     }
+    //   } else {
+    //     // no custom sort is applied, allow dragging and dropping of listItems within a list to change their .manualOrder
+    //     const { newMOrders, onlyChanged } = h.updatedManualOrders(
+    //       listItems,
+    //       startIndex,
+    //       destinationIndex
+    //     );
+    //     // update listItems in state
 
-        setListItems(newMOrders);
-        try {
-          // 🌐 then update database
-          const multipleListItemsPatched = await u.patchMultipleListItems(
-            onlyChanged
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    }
+    //     setListItems(newMOrders);
+    //     try {
+    //       // 🌐 then update database
+    //       const multipleListItemsPatched = await u.patchMultipleListItems(
+    //         onlyChanged
+    //       );
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   }
+    // }
   };
 
   // set Google Calendar API key in gapi
