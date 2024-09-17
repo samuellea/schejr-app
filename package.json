@@ -10,6 +10,7 @@
     "date-fns": "^3.6.0",
     "firebase": "^10.13.0",
     "gapi-script": "^1.2.0",
+    "lodash-es": "^4.17.21",
     "nanoid": "^5.0.7",
     "netlify-cli": "^17.34.3",
     "random-emoji": "^1.0.2",

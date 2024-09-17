@@ -1,4 +1,84 @@
 import { format, isThisYear, parseISO, formatDistanceToNow } from 'date-fns';
+import { differenceWith, isEqual, find } from 'lodash-es';
+
+export const detectChanges = (initialArray, updatedArray) => {
+  // Case 1: Both arrays are undefined
+  if (!initialArray && !updatedArray) {
+    return null;
+  }
+
+  // Case 2: initialArray is undefined, but updatedArray is not -> "added"
+  if (!initialArray && updatedArray) {
+    return { type: 'added', object: updatedArray[0] }; // Assuming you're looking at the first item added
+  }
+
+  // Case 3: updatedArray is undefined, but initialArray is not -> "removed"
+  if (initialArray && !updatedArray) {
+    return { type: 'removed', object: initialArray[0] }; // Assuming you're looking at the first item removed
+  }
+
+  // Normal comparison logic if both arrays are defined
+  if (initialArray.length !== updatedArray.length) {
+    // Check for added object
+    if (updatedArray.length > initialArray.length) {
+      const addedObject = find(
+        updatedArray,
+        (obj) => !find(initialArray, { eventID: obj.eventID })
+      );
+      if (addedObject) {
+        return { type: 'added', object: addedObject };
+      }
+    }
+
+    // Check for removed object
+    if (initialArray.length > updatedArray.length) {
+      const removedObject = find(
+        initialArray,
+        (obj) => !find(updatedArray, { eventID: obj.eventID })
+      );
+      if (removedObject) {
+        return { type: 'removed', object: removedObject };
+      }
+    }
+  }
+
+  // Case 4: Check if one object has been modified
+  const modifiedObject = find(updatedArray, (obj) => {
+    const originalObj = find(initialArray, { eventID: obj.eventID });
+    return originalObj && !isEqual(originalObj, obj);
+  });
+
+  if (modifiedObject) {
+    return { type: 'modified', object: modifiedObject };
+  }
+
+  // If no changes are detected
+  return null;
+};
+
+export const removedObject = (initialArr, nextArr) => {
+  return initialArr.find(
+    (obj1) =>
+      !nextArr.some((obj2) => JSON.stringify(obj1) === JSON.stringify(obj2))
+  );
+};
+
+export const addedObject = (initialArr, nextArr) => {
+  return nextArr.find(
+    (obj2) =>
+      !initialArr.some((obj1) => JSON.stringify(obj1) === JSON.stringify(obj2))
+  );
+};
+
+export const changedObject = (initialArr, nextArr) => {
+  return nextArr.find((obj2) =>
+    initialArr.some(
+      (obj1) =>
+        obj1.eventID === obj2.eventID &&
+        JSON.stringify(obj1) !== JSON.stringify(obj2)
+    )
+  );
+};
 
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {

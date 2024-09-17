@@ -108,11 +108,11 @@ function ListItem({
             );
           })}
         </div>
-        {listItem.dates ? (
+        {listItem.dates?.length ? (
           <div className={styles.dateContainer} id="flexidiv">
             <DateIcon />
             <span>
-              {h.formatDateForListItem(listItem.dates[0].startDateTime)}
+              {h.formatDateForListItem(listItem.dates[0]?.startDateTime)}
               {listItem.dates?.length > 1 ? '...' : null}
             </span>
             {listItem.dates?.length > 1 ? (

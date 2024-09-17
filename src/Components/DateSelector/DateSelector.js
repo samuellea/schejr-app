@@ -25,30 +25,36 @@ function DateSelector({ date, listItem, updateListItem }) {
   const listItemRef = useRef(listItem);
   const timeSetRef = useRef(timeSet);
 
+  const userUID = localStorage.getItem('firebaseID');
+
   const handleClickOff = () => {
     if (startDateTimeRef.current) {
       // are we creating a new datetime, or editing an existing one?
       const isoDateUTC = startDateTimeRef.current.toISOString();
-      if (!date?.startDateTime) {
+      console.log(date);
+      if (!date?.startDateTime.current) {
+        console.log('creating a NEW date object in listItem.dates!');
         // we're creating a new .dates arr object / 'date' object
         // create a datetime object
         const newEventID = nanoid();
         const newDateObj = {
+          createdBy: userUID,
           eventID: `parentListItemID-${listItem.listItemID}-${newEventID}`,
           parentID: `parentListItemID-${listItem.listItemID}`,
           startDateTime: isoDateUTC, // ISO 8601 UTC format
           timeSet: timeSet,
         };
-
         // add this to the ListItem's .dates array in state
         // + add this to the ListItem's .dates array on db
         let updatedDates;
         listItem.dates?.length
           ? (updatedDates = [...listItem.dates, newDateObj])
           : (updatedDates = [newDateObj]);
+        console.log(listItem, ' <-- DATESELECTOR listItem @ call');
         updateListItem(listItem, 'dates', updatedDates);
-        // send this to /events on the db
+        // send this to /events on the db ✅🌱
       } else {
+        console.log('editing an existing date object in listItem.dates!');
         // we're editing an existing one
         const updatedDateObj = {
           ...date,
@@ -61,6 +67,7 @@ function DateSelector({ date, listItem, updateListItem }) {
         );
         const updatedDates = [...listItemDatesMinusEdited, updatedDateObj];
         updateListItem(listItem, 'dates', updatedDates);
+        // send this to /events on the db 📝
       }
     }
 
@@ -138,9 +145,11 @@ function DateSelector({ date, listItem, updateListItem }) {
   };
 
   const handleConfirmDeleteDate = () => {
+    // console.log(listItem.dates);
     const updatedDates = listItem.dates.filter(
       (e) => e.eventID !== date.eventID
     );
+    // console.log(updatedDates);
     updateListItem(listItem, 'dates', updatedDates);
     setShowDeleteModal(false);
     setTimeSet(false);

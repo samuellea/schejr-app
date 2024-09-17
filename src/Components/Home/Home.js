@@ -342,6 +342,18 @@ function Home() {
   
   */
 
+  const updateEventFromListItem = (prevDates, newDates) => {
+    console.log('prevDates:');
+    console.log(prevDates);
+    // console.log('newDates:');
+    // console.log(newDates);
+    const res = h.detectChanges(prevDates, newDates);
+    console.log(res);
+    if (res.object) {
+      console.log(`${res.object.eventID.match(/[^-]+$/)[0]} was ${res.type}`);
+    }
+  };
+
   const updateListItem = async (listItem, field, value) => {
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
@@ -361,6 +373,12 @@ function Home() {
         unneededListItemID,
         updatedListItemMinusExplicitID
       );
+
+      // if we're creating / updating .dates on a List Item, we need to create / update an object on /events!
+      if (field === 'dates') {
+        updateEventFromListItem(listItem.dates, value);
+      }
+
       // extra step - now update any changes made to a list item in the edit pane to its corresponding google calendar event if
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
 
@@ -390,7 +408,6 @@ function Home() {
           );
         }
       }
-
       // if we're adding an end date to a lisItem that already has a startDate...
       if (listItem.date?.startDate && updatedListItem.date?.endDate) {
         await u.changeListItemOnGCalByIDOrCreate(updatedListItem, field, value);

@@ -558,11 +558,26 @@ export const removeAllListItemsFromGCal = async () => {
   } catch (error) {}
 };
 
-/*
-const event = {
-end: {dateTime: '2024-09-07'},
-start: {dateTime: '2024-09-07'},
-summary: "Event Created by My App"
-}
+export const createNewEvent = async (eventData) => {
+  try {
+    // Create a reference to the 'events' endpoint
+    const eventsRef = ref(database, 'events');
+    // Generate a new key under the 'events' endpoint
+    const newEventRef = push(eventsRef);
+    await set(newEventRef, eventData);
+    return newEventRef.key; // Return the unique ID of the newly created list
+  } catch (error) {
+    console.error('Error creating new event:', error);
+    throw error;
+  }
+};
 
-*/
+export const patchEvent = async (eventID, eventData) => {
+  try {
+    const eventRef = ref(database, `events/${eventID}`);
+    await update(eventRef, eventData);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw error;
+  }
+};

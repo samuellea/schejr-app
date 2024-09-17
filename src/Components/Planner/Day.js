@@ -45,13 +45,13 @@ const Day = forwardRef(({ date, viewMonth }, ref) => {
             </span>
           </div>
 
-          {date.events.map((event) => {
-            return ''; // Event rendering logic here
-          })}
-
           {snapshot.isDraggingOver && (
             <div className={styles.dropPlaceholder}>Drop item here</div>
           )}
+
+          {date.events.map((event) => {
+            return ''; // Event rendering logic here
+          })}
 
           <div className={styles.addEventButton}>
             <PlusIcon fill="inherit" width="16px" />
