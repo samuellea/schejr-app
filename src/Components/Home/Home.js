@@ -342,15 +342,21 @@ function Home() {
   
   */
 
+  // handle /events objects whenever a listItem's .dates array changes
   const updateEventFromListItem = (prevDates, newDates) => {
-    console.log('prevDates:');
-    console.log(prevDates);
-    // console.log('newDates:');
-    // console.log(newDates);
-    const res = h.detectChanges(prevDates, newDates);
-    console.log(res);
-    if (res.object) {
-      console.log(`${res.object.eventID.match(/[^-]+$/)[0]} was ${res.type}`);
+    const change = h.detectChanges(prevDates, newDates);
+    console.log(change);
+    if (change.object) {
+      // only do something if change is non-null
+      console.log(
+        `${change.object.eventID.match(/[^-]+$/)[0]} was ${change.type}`
+      );
+      if (change.type === 'added') {
+      }
+      if (change.type === 'modified') {
+      }
+      if (change.type === 'removed') {
+      }
     }
   };
 
@@ -432,15 +438,13 @@ function Home() {
     try {
       await u.deleteListByID(listID);
 
-      const childListItems = listItems.filter(
-        (e) => e.parentID === `parentListID-${listID}`
-      );
+      const childListItems = listItems.filter((e) => e.parentID === listID);
 
       // also delete any listItems with .parentID === listID on db
       await u.deleteListItemsWithParentID(listID, childListItems);
       // AND in state
       const listItemsMinusDeletedChildren = listItems.filter(
-        (e) => e.parentID !== `parentListID-${listID}`
+        (e) => e.parentID !== listID
       );
 
       setListItems(listItemsMinusDeletedChildren);

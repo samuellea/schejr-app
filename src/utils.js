@@ -132,7 +132,7 @@ export const fetchListItemsByListID = async (parentListID) => {
     const listItemsQuery = query(
       listItemsRef,
       orderByChild('parentID'),
-      equalTo(`parentListID-${parentListID}`)
+      equalTo(parentListID)
     );
     // Get the data from the query
     const snapshot = await get(listItemsQuery);
@@ -250,7 +250,7 @@ export const getMaxManualOrderByParentID = async (parentID) => {
     const parentIDQuery = query(
       listItemsRef,
       orderByChild('parentID'),
-      equalTo(`parentListID-${parentID}`)
+      equalTo(parentID)
     );
     // Fetch the data
     const snapshot = await get(parentIDQuery);
@@ -558,10 +558,10 @@ export const removeAllListItemsFromGCal = async () => {
   } catch (error) {}
 };
 
-export const createNewEvent = async (eventData) => {
+export const createNewEvent = async (userUID, eventData) => {
   try {
     // Create a reference to the 'events' endpoint
-    const eventsRef = ref(database, 'events');
+    const eventsRef = ref(database, `events/${userUID}`);
     // Generate a new key under the 'events' endpoint
     const newEventRef = push(eventsRef);
     await set(newEventRef, eventData);
@@ -572,12 +572,22 @@ export const createNewEvent = async (eventData) => {
   }
 };
 
-export const patchEvent = async (eventID, eventData) => {
+export const patchEventByID = async (userUID, eventData) => {
   try {
-    const eventRef = ref(database, `events/${eventID}`);
+    const eventRef = ref(database, `events/${userUID}/`);
     await update(eventRef, eventData);
   } catch (error) {
     console.error('Error updating event:', error);
+    throw error;
+  }
+};
+
+export const deleteEventByID = async (userUID, eventID) => {
+  try {
+    const objectRef = ref(database, `events/${userUID}/${eventID}`);
+    await remove(objectRef);
+  } catch (error) {
+    console.error('Error deleting list:', error);
     throw error;
   }
 };

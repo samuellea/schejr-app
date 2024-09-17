@@ -56,30 +56,6 @@ export const detectChanges = (initialArray, updatedArray) => {
   return null;
 };
 
-export const removedObject = (initialArr, nextArr) => {
-  return initialArr.find(
-    (obj1) =>
-      !nextArr.some((obj2) => JSON.stringify(obj1) === JSON.stringify(obj2))
-  );
-};
-
-export const addedObject = (initialArr, nextArr) => {
-  return nextArr.find(
-    (obj2) =>
-      !initialArr.some((obj1) => JSON.stringify(obj1) === JSON.stringify(obj2))
-  );
-};
-
-export const changedObject = (initialArr, nextArr) => {
-  return nextArr.find((obj2) =>
-    initialArr.some(
-      (obj1) =>
-        obj1.eventID === obj2.eventID &&
-        JSON.stringify(obj1) !== JSON.stringify(obj2)
-    )
-  );
-};
-
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
     if (a[property] < b[property]) {

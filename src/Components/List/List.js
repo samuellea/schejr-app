@@ -60,7 +60,7 @@ function List({
       createdBy: userUID,
       date: { startDate: null, endDate: null },
       manualOrder: newHighestManualOrder,
-      parentID: `parentListID-${selectedList.listID}`,
+      parentID: selectedList.listID,
       tags: [],
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
     };

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import styles from './DateSelector.module.css'; // Your component styles
+import * as u from '../../utils';
 import * as h from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
 import ClockIcon from '../Icons/ClockIcon';
@@ -27,28 +28,32 @@ function DateSelector({ date, listItem, updateListItem }) {
   const handleClickOff = () => {
     const isoDateUTC = startDateTime?.toISOString();
     if (!date) {
-      // Creating a new date
-      const newEventID = nanoid();
-      const newDateObj = {
+      // FIRST create new EVENT obj
+      // const newEventID = nanoid();
+      const newEventObj = {
         createdBy: userUID,
-        eventID: `parentListItemID-${listItem.listItemID}-${newEventID}`,
-        parentID: `parentListItemID-${listItem.listItemID}`,
+        listID: listItem.parentID,
+        listItemID: listItem.listItemID,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-      const updatedDates = [...(listItem.dates || []), newDateObj];
-      updateListItem(listItem, 'dates', updatedDates);
+      const newEventID = u.createNewEvent(userUID, newEventObj);
+
+      // const updatedDates = [...(listItem.dates || []), newDateObj];
+      // // THEN add it to .dates on listItem, in state and on db
+      // updateListItem(listItem, 'dates', updatedDates);
     } else {
-      // Updating an existing date
-      const updatedDateObj = {
-        ...date,
-        startDateTime: isoDateUTC, // ISO 8601 UTC format
-        timeSet: timeSet,
-      };
-      const updatedDates = listItem.dates
-        .filter((e) => e.eventID !== date.eventID)
-        .concat(updatedDateObj);
-      updateListItem(listItem, 'dates', updatedDates);
+      // FIRST update the EVENT obj
+      // const updatedDateObj = {
+      //   ...date,
+      //   startDateTime: isoDateUTC, // ISO 8601 UTC format
+      //   timeSet: timeSet,
+      // };
+      // const updatedDates = listItem.dates
+      //   .filter((e) => e.eventID !== date.eventID)
+      //   .concat(updatedDateObj);
+      // // THEN update it in .dates on listItem, in state and on db
+      // updateListItem(listItem, 'dates', updatedDates);
     }
     setIsInFocus(false);
   };
