@@ -1,61 +1,6 @@
 import { format, isThisYear, parseISO, formatDistanceToNow } from 'date-fns';
 import { differenceWith, isEqual, find } from 'lodash-es';
 
-export const detectChanges = (initialArray, updatedArray) => {
-  // Case 1: Both arrays are undefined
-  if (!initialArray && !updatedArray) {
-    return null;
-  }
-
-  // Case 2: initialArray is undefined, but updatedArray is not -> "added"
-  if (!initialArray && updatedArray) {
-    return { type: 'added', object: updatedArray[0] }; // Assuming you're looking at the first item added
-  }
-
-  // Case 3: updatedArray is undefined, but initialArray is not -> "removed"
-  if (initialArray && !updatedArray) {
-    return { type: 'removed', object: initialArray[0] }; // Assuming you're looking at the first item removed
-  }
-
-  // Normal comparison logic if both arrays are defined
-  if (initialArray.length !== updatedArray.length) {
-    // Check for added object
-    if (updatedArray.length > initialArray.length) {
-      const addedObject = find(
-        updatedArray,
-        (obj) => !find(initialArray, { eventID: obj.eventID })
-      );
-      if (addedObject) {
-        return { type: 'added', object: addedObject };
-      }
-    }
-
-    // Check for removed object
-    if (initialArray.length > updatedArray.length) {
-      const removedObject = find(
-        initialArray,
-        (obj) => !find(updatedArray, { eventID: obj.eventID })
-      );
-      if (removedObject) {
-        return { type: 'removed', object: removedObject };
-      }
-    }
-  }
-
-  // Case 4: Check if one object has been modified
-  const modifiedObject = find(updatedArray, (obj) => {
-    const originalObj = find(initialArray, { eventID: obj.eventID });
-    return originalObj && !isEqual(originalObj, obj);
-  });
-
-  if (modifiedObject) {
-    return { type: 'modified', object: modifiedObject };
-  }
-
-  // If no changes are detected
-  return null;
-};
-
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
     if (a[property] < b[property]) {
@@ -370,23 +315,28 @@ export const convertToISOString = (value) => {
   return null;
 };
 
-export const dateTimeTo12Hour = (date) => {
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
+export const dateTimeTo12Hour = (dateTime) => {
+  const date = new Date(dateTime);
+  if (date instanceof Date && !isNaN(date)) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
 
-  // Determine AM or PM
-  let ampm = hours >= 12 ? 'PM' : 'AM';
+    // Determine AM or PM
+    let ampm = hours >= 12 ? 'PM' : 'AM';
 
-  // Convert 24-hour format to 12-hour format
-  hours = hours % 12;
-  hours = hours ? hours : 12; // If hours is 0, set it to 12 (for midnight)
+    // Convert 24-hour format to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // If hours is 0, set it to 12 (for midnight)
 
-  // Ensure minutes are two digits (e.g., 01, 05)
-  minutes = minutes < 10 ? '0' + minutes : minutes;
+    // Ensure minutes are two digits (e.g., 01, 05)
+    minutes = minutes < 10 ? '0' + minutes : minutes;
 
-  // Format the final time string
-  let formattedTime = `${hours}:${minutes} ${ampm}`;
-  return formattedTime;
+    // Format the final time string
+    let formattedTime = `${hours}:${minutes} ${ampm}`;
+    return formattedTime;
+  } else {
+    return null;
+  }
 };
 
 export const formatDateForListItem = (startDateTime) => {
@@ -454,10 +404,37 @@ export const generateMonthlyDays = (dateObj) => {
     const formattedDate = date.toISOString().split('T')[0];
 
     // Create an object with the formatted date and an empty events array
-    daysArray.push({ date: formattedDate, events: [] });
+    daysArray.push({ date: formattedDate });
   }
-  console.log(daysArray);
+  // console.log(daysArray);
   return daysArray;
+};
+
+export const getEventsForDate = (targetDateStr, events) => {
+  // Convert the provided date string (YYYY-MM-DD) to a local Date object
+  const targetDate = new Date(targetDateStr);
+
+  // Get the start and end of the day in local time
+  const startOfDayLocal = new Date(targetDate);
+  startOfDayLocal.setHours(0, 0, 0, 0); // Start of the day
+
+  const endOfDayLocal = new Date(targetDate);
+  endOfDayLocal.setHours(23, 59, 59, 999); // End of the day
+
+  // Filter events based on the converted startDateTime values
+  return events.filter((event) => {
+    // Parse the event's startDateTime and convert to local time
+    const eventDateUTC = new Date(event.startDateTime);
+    const eventDateLocal = new Date(
+      eventDateUTC.getTime() - eventDateUTC.getTimezoneOffset() * 60000
+    );
+
+    // Extract the local date part
+    const eventDateLocalStr = eventDateLocal.toISOString().split('T')[0];
+
+    // Check if the event's local date matches the target date
+    return eventDateLocalStr === targetDateStr;
+  });
 };
 
 export const times = [

@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-bottom: 8px;
   /* border: 1px solid white; */
 }
 
@@ -67,4 +68,51 @@
 
 .dropPlaceholder {
   border: 3px solid red;
+}
+
+.event {
+  width: 100%;
+  border: 2px solid hotpink;
+  /* height: 50px; */
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12);
+  background-color: rgb(38, 38, 38);
+  border: 1px solid rgb(61, 61, 61);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  color: white;
+  padding: 8px;
+}
+
+.eventTitle {
+  font-size: 12px;
+}
+
+.eventTime {
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.285);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* justify-content: center; */
+  /* height: 18px; */
+  padding: 1px 3px 1px 1px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.eventTime span {
+  height: 100%;
+  /* border: 1px solid red; */
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 1px;
+  box-sizing: border-box;
+  margin-left: 2px;
+  color: rgb(190, 190, 190);
 }

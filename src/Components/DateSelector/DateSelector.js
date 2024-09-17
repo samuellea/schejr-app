@@ -25,35 +25,44 @@ function DateSelector({ date, listItem, updateListItem }) {
 
   const userUID = localStorage.getItem('firebaseID');
 
-  const handleClickOff = () => {
+  const handleClickOff = async () => {
     const isoDateUTC = startDateTime?.toISOString();
     if (!date) {
       // FIRST create new EVENT obj
-      // const newEventID = nanoid();
       const newEventObj = {
         createdBy: userUID,
-        listID: listItem.parentID,
         listItemID: listItem.listItemID,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
+        title: listItem.title,
       };
-      const newEventID = u.createNewEvent(userUID, newEventObj);
-
-      // const updatedDates = [...(listItem.dates || []), newDateObj];
+      const newEventID = await u.createNewEvent(userUID, newEventObj);
       // // THEN add it to .dates on listItem, in state and on db
-      // updateListItem(listItem, 'dates', updatedDates);
+      const newDateObj = {
+        ...newEventObj,
+        eventID: newEventID,
+      };
+      const updatedDates = [...(listItem.dates || []), newDateObj];
+      updateListItem(listItem, 'dates', updatedDates);
     } else {
       // FIRST update the EVENT obj
-      // const updatedDateObj = {
-      //   ...date,
-      //   startDateTime: isoDateUTC, // ISO 8601 UTC format
-      //   timeSet: timeSet,
-      // };
-      // const updatedDates = listItem.dates
-      //   .filter((e) => e.eventID !== date.eventID)
-      //   .concat(updatedDateObj);
-      // // THEN update it in .dates on listItem, in state and on db
-      // updateListItem(listItem, 'dates', updatedDates);
+      const { eventID, ...restOfDate } = date;
+      const updatedEvent = {
+        ...restOfDate,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: timeSet,
+      };
+      await u.patchEventByID(userUID, date.eventID, updatedEvent);
+      // THEN update it in .dates on listItem, in state and on db
+      const updatedDateObj = {
+        ...date,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: timeSet,
+      };
+      const updatedDates = listItem.dates
+        .filter((e) => e.eventID !== date.eventID)
+        .concat(updatedDateObj);
+      updateListItem(listItem, 'dates', updatedDates);
     }
     setIsInFocus(false);
   };
@@ -108,7 +117,10 @@ function DateSelector({ date, listItem, updateListItem }) {
     setShowDeleteModal(false);
   };
 
-  const handleConfirmDeleteDate = () => {
+  const handleConfirmDeleteDate = async () => {
+    // FIRST delete EVENT obj
+    await u.deleteEventByID(userUID, date.eventID);
+    // THEN remove it from .dates on listItem, in state and on db
     const updatedDates = listItem.dates.filter(
       (e) => e.eventID !== date.eventID
     );

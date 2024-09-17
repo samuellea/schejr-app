@@ -9,9 +9,12 @@ import {
   equalTo,
   remove,
   update,
+  startAt,
+  endAt,
 } from 'firebase/database';
 import { gapi } from 'gapi-script';
 import * as h from './helpers';
+import { lastDayOfMonth } from 'date-fns';
 
 export const createNewList = async (listData) => {
   try {
@@ -572,9 +575,9 @@ export const createNewEvent = async (userUID, eventData) => {
   }
 };
 
-export const patchEventByID = async (userUID, eventData) => {
+export const patchEventByID = async (userUID, eventID, eventData) => {
   try {
-    const eventRef = ref(database, `events/${userUID}/`);
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
     await update(eventRef, eventData);
   } catch (error) {
     console.error('Error updating event:', error);
@@ -584,10 +587,54 @@ export const patchEventByID = async (userUID, eventData) => {
 
 export const deleteEventByID = async (userUID, eventID) => {
   try {
-    const objectRef = ref(database, `events/${userUID}/${eventID}`);
-    await remove(objectRef);
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    await remove(eventRef);
   } catch (error) {
     console.error('Error deleting list:', error);
     throw error;
+  }
+};
+
+export const fetchUserEventsByMonth = async (userUID, month, year) => {
+  console.log('month: ', month);
+  console.log('year: ', year);
+  const date = new Date(year, month, 1);
+  const lastDay = lastDayOfMonth(date).getDate();
+  console.log('lastDay: ', lastDay);
+  const startOfMonthLocal = new Date(year, month, 1, 0, 0, 0, 0); // 1st September 2024, 00:00:00 local time
+  // User's local time for the end of September 30th, 23:59:59.999 (user's local time zone)
+  const endOfMonthLocal = new Date(year, month, lastDay, 23, 59, 59, 999); // 30th September 2024, 23:59:59.999 local time
+  // Convert to UTC ISO 8601 strings
+  const startOfMonthUTC = startOfMonthLocal.toISOString();
+  const endOfMonthUTC = endOfMonthLocal.toISOString();
+  // console.log(startOfMonthUTC);
+  // console.log(endOfMonthUTC);
+  // Reference to the /events endpoint
+  const eventsRef = ref(database, `events/${userUID}`);
+  // Query the events between the calculated UTC times
+  const monthQuery = query(
+    eventsRef,
+    orderByChild('startDateTime'),
+    startAt(startOfMonthUTC),
+    endAt(endOfMonthUTC)
+  );
+  try {
+    // Use .get() for a promise-based approach
+    const snapshot = await get(monthQuery);
+    const events = snapshot.val();
+    if (events) {
+      console.log('Fetched events:', events);
+      const eventsAsArr = Object.entries(events).map(([key, value]) => ({
+        eventID: key,
+        ...value,
+      }));
+      return eventsAsArr;
+    } else {
+      console.log('No events found for that month.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
   }
 };

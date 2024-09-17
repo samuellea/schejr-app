@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styles from './Planner.module.css';
 import ChevronIcon from '../Icons/ChevronIcon';
 import * as h from '../../helpers';
+import * as u from '../../utils';
 import Day from './Day';
 
 function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
   const [viewMonth, setViewMonth] = useState(new Date()); // set current day/month/year as default current view
-  const [dates, setDates] = useState(null);
+  const [dates, setDates] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  const userUID = localStorage.getItem('firebaseID');
 
   const handleNavMonth = (dir) => {
     const newDate = new Date(viewMonth);
@@ -19,6 +23,20 @@ function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
     setViewMonth(newDate);
   };
 
+  const getAndSetMonthUserEvents = async (viewMonth) => {
+    const month = viewMonth.getUTCMonth();
+    const year = viewMonth.getUTCFullYear();
+    try {
+      const monthUserEvents = await u.fetchUserEventsByMonth(
+        userUID,
+        month,
+        year
+      );
+      // need to set in state now
+      setEvents(monthUserEvents);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     const now = new Date();
     const year = now.getUTCFullYear();
@@ -27,11 +45,13 @@ function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
     // firstDayOfMonthUTC.setUTCHours(0, 0, 0, 0);
     setViewMonth(firstDayOfMonthUTC);
     // The time defaults to midnight (00:00:00) when only the year, month, and day are specified.
+    getAndSetMonthUserEvents(viewMonth);
   }, []);
 
   useEffect(() => {
     const datesForMonth = h.generateMonthlyDays(viewMonth);
     setDates(datesForMonth);
+    getAndSetMonthUserEvents(viewMonth);
   }, [viewMonth]);
 
   return (
@@ -77,7 +97,14 @@ function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
 
             <div className={styles.datesArea}>
               {dates.map((date) => {
-                return <Day date={date} viewMonth={viewMonth} />;
+                return (
+                  <Day
+                    date={date}
+                    viewMonth={viewMonth}
+                    key={`day-${date.date}`}
+                    events={events}
+                  />
+                );
               })}
             </div>
           </div>

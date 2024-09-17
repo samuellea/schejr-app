@@ -44,7 +44,23 @@ function Home() {
     const { destination, source, draggableId } = result;
     console.log(destination);
     console.log(source);
-    console.log(draggableId);
+    console.log(draggableId); // <-- listItem ID
+
+    // Item dropped onto planner
+    if (destination.droppableId.substring(0, 7) === 'planner') {
+      const listItemID = draggableId; // listItemID
+      const targetDate = destination.droppableId.slice(8); // day's date it's been dragged to - convert to 'timeless' ISO UTC date, ie. midnight of that date
+      const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
+      const isoDateUTC = dateMidnight.toISOString();
+      const newEventObj = {
+        createdBy: userUID,
+        listItemID: listItemID,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: false,
+        title: listItems.find((e) => e.listItemID === listItemID).title,
+      };
+      await u.createNewEvent(userUID, newEventObj);
+    }
 
     // if (!destination) {
     //   // Item was dropped outside a droppable area
@@ -54,6 +70,7 @@ function Home() {
 
     // // ⭐ MOVE TO DIFFERENT LIST
     // if (
+    //   destination.droppableId.substring(0, 7) !== 'planner' &&
     //   destination.droppableId.substring(0, 4) !== 'list' &&
     //   destination.droppableId !== 'main-area'
     // ) {
@@ -235,7 +252,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    const fetchUserSyncState = async () => {
+    const getAndSetUserSyncState = async () => {
       try {
         const userSyncStateObj = await u.getUserSyncState(userUID);
 
@@ -252,7 +269,7 @@ function Home() {
       } catch (error) {}
     };
 
-    fetchUserSyncState();
+    getAndSetUserSyncState();
   }, []);
 
   useEffect(() => {
@@ -342,24 +359,6 @@ function Home() {
   
   */
 
-  // handle /events objects whenever a listItem's .dates array changes
-  const updateEventFromListItem = (prevDates, newDates) => {
-    const change = h.detectChanges(prevDates, newDates);
-    console.log(change);
-    if (change.object) {
-      // only do something if change is non-null
-      console.log(
-        `${change.object.eventID.match(/[^-]+$/)[0]} was ${change.type}`
-      );
-      if (change.type === 'added') {
-      }
-      if (change.type === 'modified') {
-      }
-      if (change.type === 'removed') {
-      }
-    }
-  };
-
   const updateListItem = async (listItem, field, value) => {
     // update the List Item in state first
     const indexOfListItemInListItems = listItems.findIndex(
@@ -380,10 +379,7 @@ function Home() {
         updatedListItemMinusExplicitID
       );
 
-      // if we're creating / updating .dates on a List Item, we need to create / update an object on /events!
-      if (field === 'dates') {
-        updateEventFromListItem(listItem.dates, value);
-      }
+      // now we need to update any corresponding EVENTS whose parent is the listItem we've updated
 
       // extra step - now update any changes made to a list item in the edit pane to its corresponding google calendar event if
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true

@@ -4,11 +4,18 @@ import PlusIcon from '../Icons/PlusIcon';
 import * as h from '../../helpers';
 import { isToday, parseISO } from 'date-fns';
 import { Droppable } from '@hello-pangea/dnd';
+import ClockIcon from '../Icons/ClockIcon';
 
 // Using forwardRef to pass the ref down the tree
-const Day = forwardRef(({ date, viewMonth }, ref) => {
+const Day = forwardRef(({ date, viewMonth, events }, ref) => {
+  const [dateEvents, setDateEvents] = useState([]);
   const dateIsToday = isToday(parseISO(date.date));
   const todayRef = useRef(null);
+
+  useEffect(() => {
+    const eventsForThisDate = h.getEventsForDate(date.date, events);
+    setDateEvents(eventsForThisDate);
+  }, [events]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -20,7 +27,7 @@ const Day = forwardRef(({ date, viewMonth }, ref) => {
   }, [viewMonth, dateIsToday]);
 
   return (
-    <Droppable droppableId={date.date} key={date.date}>
+    <Droppable droppableId={`planner-${date.date}`} key={date.date}>
       {(provided, snapshot) => (
         <div
           className={styles.container}
@@ -49,8 +56,19 @@ const Day = forwardRef(({ date, viewMonth }, ref) => {
             <div className={styles.dropPlaceholder}>Drop item here</div>
           )}
 
-          {date.events.map((event) => {
-            return ''; // Event rendering logic here
+          {dateEvents.map((event) => {
+            const { timeSet, title, startDateTime } = event;
+            return (
+              <div className={styles.event}>
+                <div className={styles.eventTitle}>{title}</div>
+                {timeSet ? (
+                  <div className={styles.eventTime}>
+                    <ClockIcon width="16px" fill="white" />
+                    <span>{h.dateTimeTo12Hour(startDateTime) || null}</span>
+                  </div>
+                ) : null}
+              </div>
+            );
           })}
 
           <div className={styles.addEventButton}>
