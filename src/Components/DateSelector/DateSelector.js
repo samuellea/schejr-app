@@ -21,71 +21,37 @@ function DateSelector({ date, listItem, updateListItem }) {
 
   const containerRef = useRef(null);
   const datePickerRef = useRef(null);
-  const startDateTimeRef = useRef(startDateTime);
-  const listItemRef = useRef(listItem);
-  const timeSetRef = useRef(timeSet);
 
   const userUID = localStorage.getItem('firebaseID');
 
   const handleClickOff = () => {
-    if (startDateTimeRef.current) {
-      // are we creating a new datetime, or editing an existing one?
-      const isoDateUTC = startDateTimeRef.current.toISOString();
-      console.log(date);
-      if (!date?.startDateTime.current) {
-        console.log('creating a NEW date object in listItem.dates!');
-        // we're creating a new .dates arr object / 'date' object
-        // create a datetime object
-        const newEventID = nanoid();
-        const newDateObj = {
-          createdBy: userUID,
-          eventID: `parentListItemID-${listItem.listItemID}-${newEventID}`,
-          parentID: `parentListItemID-${listItem.listItemID}`,
-          startDateTime: isoDateUTC, // ISO 8601 UTC format
-          timeSet: timeSet,
-        };
-        // add this to the ListItem's .dates array in state
-        // + add this to the ListItem's .dates array on db
-        let updatedDates;
-        listItem.dates?.length
-          ? (updatedDates = [...listItem.dates, newDateObj])
-          : (updatedDates = [newDateObj]);
-        console.log(listItem, ' <-- DATESELECTOR listItem @ call');
-        updateListItem(listItem, 'dates', updatedDates);
-        // send this to /events on the db ✅🌱
-      } else {
-        console.log('editing an existing date object in listItem.dates!');
-        // we're editing an existing one
-        const updatedDateObj = {
-          ...date,
-          startDateTime: isoDateUTC, // ISO 8601 UTC format
-          timeSet: timeSet,
-        };
-        console.log(updatedDateObj);
-        const listItemDatesMinusEdited = listItemRef.current.dates.filter(
-          (e) => e.eventID !== date.eventID
-        );
-        const updatedDates = [...listItemDatesMinusEdited, updatedDateObj];
-        updateListItem(listItem, 'dates', updatedDates);
-        // send this to /events on the db 📝
-      }
+    const isoDateUTC = startDateTime?.toISOString();
+    if (!date) {
+      // Creating a new date
+      const newEventID = nanoid();
+      const newDateObj = {
+        createdBy: userUID,
+        eventID: `parentListItemID-${listItem.listItemID}-${newEventID}`,
+        parentID: `parentListItemID-${listItem.listItemID}`,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: timeSet,
+      };
+      const updatedDates = [...(listItem.dates || []), newDateObj];
+      updateListItem(listItem, 'dates', updatedDates);
+    } else {
+      // Updating an existing date
+      const updatedDateObj = {
+        ...date,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: timeSet,
+      };
+      const updatedDates = listItem.dates
+        .filter((e) => e.eventID !== date.eventID)
+        .concat(updatedDateObj);
+      updateListItem(listItem, 'dates', updatedDates);
     }
-
-    // updateListItem(listItem, 'date', updatedDateTimes); // add date to FB /listItems listItem object,
     setIsInFocus(false);
   };
-
-  useEffect(() => {
-    listItemRef.current = listItem;
-  }, [listItem]);
-
-  useEffect(() => {
-    startDateTimeRef.current = startDateTime;
-  }, [startDateTime]);
-
-  useEffect(() => {
-    timeSetRef.current = timeSet;
-  }, [timeSet]);
 
   const handleClickOutside = (event) => {
     if (
@@ -103,7 +69,7 @@ function DateSelector({ date, listItem, updateListItem }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [date]);
+  }, [date, startDateTime, timeSet, listItem]); // Include dependencies to ensure handlers are up-to-date
 
   const isPastDate = (date) => {
     const today = new Date();
@@ -120,20 +86,13 @@ function DateSelector({ date, listItem, updateListItem }) {
   };
 
   const handleTimeBlockClick = (value) => {
-    //
-    //
-    const updatedDateTime = startDateTime;
+    const updatedDateTime = new Date(startDateTime);
     updatedDateTime.setHours(value.hour24);
     updatedDateTime.setMinutes(value.minute);
-    //
     setStartDateTime(updatedDateTime);
     setTimeSet(true);
     setShowTimeSelect(false);
   };
-
-  const timeButtonCombined = `${
-    startDateTime ? styles.timeButtonExistingDate : null
-  } ${timeSet ? styles.timeButtonExistingTime : null} ${styles.bottomButton}`;
 
   const handleClear = (event) => {
     event.stopPropagation();
@@ -145,11 +104,9 @@ function DateSelector({ date, listItem, updateListItem }) {
   };
 
   const handleConfirmDeleteDate = () => {
-    // console.log(listItem.dates);
     const updatedDates = listItem.dates.filter(
       (e) => e.eventID !== date.eventID
     );
-    // console.log(updatedDates);
     updateListItem(listItem, 'dates', updatedDates);
     setShowDeleteModal(false);
     setTimeSet(false);
@@ -158,12 +115,16 @@ function DateSelector({ date, listItem, updateListItem }) {
 
   const handleClearTime = (event) => {
     event.stopPropagation();
-    const resetToMidnight = startDateTime;
+    const resetToMidnight = new Date(startDateTime);
     resetToMidnight.setHours(0);
     resetToMidnight.setMinutes(0);
     setStartDateTime(resetToMidnight);
     setTimeSet(false);
   };
+
+  const timeButtonCombined = `${
+    startDateTime ? styles.timeButtonExistingDate : ''
+  } ${timeSet ? styles.timeButtonExistingTime : ''} ${styles.bottomButton}`;
 
   return (
     <div className={styles.container} ref={containerRef}>
@@ -211,7 +172,7 @@ function DateSelector({ date, listItem, updateListItem }) {
             calendarClassName={styles.rastaStripes}
             dayClassName={(date) => (isPastDate(date) ? styles.pastDay : '')}
           />
-          {startDateTime ? (
+          {startDateTime && (
             <div className={styles.timeContainer}>
               <div
                 className={timeButtonCombined}
@@ -252,7 +213,7 @@ function DateSelector({ date, listItem, updateListItem }) {
                 </div>
               ) : null}
             </div>
-          ) : null}
+          )}
           {date ? (
             <div
               className={styles.bottomButton}

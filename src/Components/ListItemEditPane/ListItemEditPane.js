@@ -53,10 +53,6 @@ function ListItemEditPane({
     }
   }, [listItems, listItemEditID]);
 
-  useEffect(() => {
-    console.log('LISTITEMEDITPANE listItems changed, re-render!');
-  }, [listItems]);
-
   const textareaRef = useRef(null);
 
   // Function to adjust the height based on content
