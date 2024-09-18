@@ -12,15 +12,17 @@ function Planner({
   toggleExpand,
   events,
   setEvents,
+  viewMonth,
+  setViewMonth,
+  handleEvents,
 }) {
-  const [viewMonth, setViewMonth] = useState(new Date()); // set current day/month/year as default current view
   const [dates, setDates] = useState([]);
 
   const userUID = localStorage.getItem('firebaseID');
 
   const handleNavMonth = (dir) => {
     const newDate = new Date(viewMonth);
-    const currentMonth = newDate.getMonth();
+    const currentMonth = viewMonth.getMonth();
     if (dir === '+') {
       newDate.setMonth(currentMonth + 1);
     } else {
@@ -39,7 +41,7 @@ function Planner({
         year
       );
       // need to set in state now
-      setEvents(monthUserEvents);
+      setEvents(monthUserEvents, 'setAll');
     } catch (error) {}
   };
 
@@ -109,6 +111,7 @@ function Planner({
                     viewMonth={viewMonth}
                     key={`day-${date.date}`}
                     events={events}
+                    handleEvents={handleEvents}
                   />
                 );
               })}

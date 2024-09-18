@@ -73,7 +73,7 @@ function ListItem({
   return (
     <div className={styles.container}>
       <div className={styles.listItemDragHandle}>
-        <DragIcon fill="#9b9b9b" />
+        <DragIcon fill="#9b9b9b" position="absolute" width="100%" />
       </div>
 
       <button

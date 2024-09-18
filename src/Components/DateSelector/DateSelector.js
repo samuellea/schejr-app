@@ -11,12 +11,12 @@ import PlusIcon from '../Icons/PlusIcon';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import DateIcon from '../Icons/DateIcon';
 
-function DateSelector({ date, listItem, updateListItem }) {
+function DateSelector({ type, date, listItem, handleEvents, inFocus = false }) {
   const [startDateTime, setStartDateTime] = useState(
     date?.startDateTime ? new Date(date.startDateTime) : null
   );
   const [timeSet, setTimeSet] = useState(date?.timeSet || false);
-  const [isInFocus, setIsInFocus] = useState(false);
+  const [isInFocus, setIsInFocus] = useState(inFocus);
   const [showTimeSelect, setShowTimeSelect] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -26,8 +26,14 @@ function DateSelector({ date, listItem, updateListItem }) {
   const userUID = localStorage.getItem('firebaseID');
 
   const handleClickOff = async () => {
+    // console.log('startDateTime: ', startDateTime);
+    // console.log('date: ', date);
+    // console.log(listItem);
+    if (!startDateTime) return setIsInFocus(false);
+    // handle if no date has actually been selected - don't want to update ANYTHING
     const isoDateUTC = startDateTime?.toISOString();
     if (!date) {
+      console.log('create');
       // FIRST create new EVENT obj
       const newEventObj = {
         createdBy: userUID,
@@ -36,33 +42,16 @@ function DateSelector({ date, listItem, updateListItem }) {
         timeSet: timeSet,
         title: listItem.title,
       };
-      const newEventID = await u.createNewEvent(userUID, newEventObj);
-      // // THEN add it to .dates on listItem, in state and on db
-      const newDateObj = {
-        ...newEventObj,
-        eventID: newEventID,
-      };
-      const updatedDates = [...(listItem.dates || []), newDateObj];
-      updateListItem(listItem, 'dates', updatedDates);
+      await handleEvents('create', newEventObj, listItem);
     } else {
       // FIRST update the EVENT obj
-      const { eventID, ...restOfDate } = date;
-      const updatedEvent = {
-        ...restOfDate,
-        startDateTime: isoDateUTC, // ISO 8601 UTC format
-        timeSet: timeSet,
-      };
-      await u.patchEventByID(userUID, date.eventID, updatedEvent);
-      // THEN update it in .dates on listItem, in state and on db
-      const updatedDateObj = {
+      console.log('update');
+      const updatedEventObj = {
         ...date,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-      const updatedDates = listItem.dates
-        .filter((e) => e.eventID !== date.eventID)
-        .concat(updatedDateObj);
-      updateListItem(listItem, 'dates', updatedDates);
+      await handleEvents('update', updatedEventObj, listItem);
     }
     setIsInFocus(false);
   };
@@ -120,11 +109,7 @@ function DateSelector({ date, listItem, updateListItem }) {
   const handleConfirmDeleteDate = async () => {
     // FIRST delete EVENT obj
     await u.deleteEventByID(userUID, date.eventID);
-    // THEN remove it from .dates on listItem, in state and on db
-    const updatedDates = listItem.dates.filter(
-      (e) => e.eventID !== date.eventID
-    );
-    updateListItem(listItem, 'dates', updatedDates);
+    await handleEvents(listItem, 'delete', { eventID: date.eventID });
     setShowDeleteModal(false);
     setTimeSet(false);
     setStartDateTime(null);
@@ -144,44 +129,62 @@ function DateSelector({ date, listItem, updateListItem }) {
   } ${timeSet ? styles.timeButtonExistingTime : ''} ${styles.bottomButton}`;
 
   return (
-    <div className={styles.container} ref={containerRef}>
-      <div
-        className={`${styles.inputContainer} ${
-          isInFocus ? styles.isInFocus : ''
-        }`}
-        onClick={() => setIsInFocus(true)}
-      >
-        {startDateTime ? (
-          <>
-            <div className={styles.dateLabels}>
-              <DateIcon fill="white" />
-              <p className={styles.startLabel}>{h.formatDate(startDateTime)}</p>
-              <div
-                className={styles.deleteDateButton}
-                role="button"
-                onClick={(e) => handleClear(e)}
-              >
-                <CloseIcon fill="#FFFFFFBF" width="12px" />
+    <div
+      className={styles.container}
+      ref={containerRef}
+      style={{
+        height:
+          type === 'standalone' ? '0px' : type === 'field' ? '40px' : null,
+      }}
+    >
+      {type === 'field' ? (
+        <div
+          className={`${styles.inputContainer} ${
+            isInFocus ? styles.isInFocus : ''
+          }`}
+          onClick={() => setIsInFocus(true)}
+        >
+          {startDateTime ? (
+            <>
+              <div className={styles.dateLabels}>
+                <DateIcon fill="white" />
+                <p className={styles.startLabel}>
+                  {h.formatDate(startDateTime)}
+                </p>
+                <div
+                  className={styles.deleteDateButton}
+                  role="button"
+                  onClick={(e) => handleClear(e)}
+                >
+                  <CloseIcon fill="#FFFFFFBF" width="12px" />
+                </div>
               </div>
+              {timeSet && (
+                <div className={styles.timeLabel}>
+                  <ClockIcon width="15px" fill="white" />
+                  <p>{h.dateTimeTo12Hour(startDateTime)}</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className={styles.emptyLabel}>
+              {listItem.dates?.length > 0 && (
+                <PlusIcon fill="white" width="14px" margin="0px 0px 0px 0px" />
+              )}
+              <p>Add date</p>
             </div>
-            {timeSet && (
-              <div className={styles.timeLabel}>
-                <ClockIcon width="15px" fill="white" />
-                <p>{h.dateTimeTo12Hour(startDateTime)}</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className={styles.emptyLabel}>
-            {listItem.dates?.length > 0 && (
-              <PlusIcon fill="white" width="14px" margin="0px 0px 0px 0px" />
-            )}
-            <p>Add date</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      ) : null}
       {isInFocus && (
-        <div className={styles.dropdown} ref={datePickerRef}>
+        <div
+          className={styles.dropdown}
+          ref={datePickerRef}
+          style={{
+            top:
+              type === 'standalone' ? '0px' : type === 'field' ? '35px' : null,
+          }}
+        >
           <DatePicker
             selected={startDateTime}
             onChange={(date) => handleChange(date)}

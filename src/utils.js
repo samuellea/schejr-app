@@ -638,3 +638,20 @@ export const fetchUserEventsByMonth = async (userUID, month, year) => {
     return [];
   }
 };
+
+export const fetchListItemById = async (listItemId) => {
+  try {
+    const listItemRef = ref(database, `listItems/${listItemId}`);
+    const snapshot = await get(listItemRef);
+    if (snapshot.exists()) {
+      // Return the data if it exists
+      return snapshot.val();
+    } else {
+      console.log('No listItem data available for the provided ID.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching listItem:', error);
+    return null;
+  }
+};

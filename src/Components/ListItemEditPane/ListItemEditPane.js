@@ -16,6 +16,7 @@ function ListItemEditPane({
   handleCloseEditPane,
   userUID,
   updateListItem,
+  handleEvents,
   // fetchTags,
   existingTags,
   setExistingTags,
@@ -136,9 +137,10 @@ function ListItemEditPane({
                   )}
                 </div>
                 <DateSelector
+                  type="field"
                   date={date}
                   listItem={listItem}
-                  updateListItem={updateListItem}
+                  handleEvents={handleEvents}
                 />
               </div>
             ))}
@@ -155,7 +157,11 @@ function ListItemEditPane({
             </>
           ) : null}
         </div>
-        <DateSelector listItem={listItem} updateListItem={updateListItem} />
+        <DateSelector
+          type="field"
+          listItem={listItem}
+          handleEvents={handleEvents}
+        />
       </div>
 
       <div className={styles.fieldWrapper}>

@@ -21,6 +21,7 @@ function Home() {
   const [syncWithGCal, setSyncWithGCal] = useState(false);
   const [selectedListID, setSelectedListID] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
+  const [viewMonth, setViewMonth] = useState(new Date());
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -60,7 +61,8 @@ function Home() {
         timeSet: false,
         title: listItems.find((e) => e.listItemID === listItemID).title,
       };
-      await u.createNewEvent(userUID, newEventObj);
+      const listItem = listItems.find((e) => e.listItemID === listItemID);
+      await handleEvents('create', newEventObj, listItem);
     }
 
     // if (!destination) {
@@ -361,7 +363,7 @@ function Home() {
   */
 
   const updateListItem = async (listItem, field, value) => {
-    // update the List Item in state first
+    // update the List Item in state first 🍰🧾
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
     );
@@ -371,7 +373,7 @@ function Home() {
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
 
     setListItems(updatedListItems);
-    // then, remove the listItemID prior to patching the List Item on the db
+    // then, remove the listItemID prior to patching the List Item on the db 🌐🧾
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
     try {
@@ -379,8 +381,6 @@ function Home() {
         unneededListItemID,
         updatedListItemMinusExplicitID
       );
-
-      // now we need to update any corresponding EVENTS whose parent is the listItem we've updated
 
       // extra step - now update any changes made to a list item in the edit pane to its corresponding google calendar event if
       // a) it has one (ie. a date has been set for it) AND syncWithGCal is true
@@ -417,6 +417,58 @@ function Home() {
       }
     } catch (error) {
       console.error('Failed to update list item:', error);
+    }
+  };
+
+  const handleEvents = async (action, eventData, listItem) => {
+    /* 🪴 */
+    if (action === 'create') {
+      console.log('create');
+      // 🌐🎉 FIRST create new EVENT /events
+      const newEventID = await u.createNewEvent(userUID, eventData);
+      // 🌐🧾 + 🍰🧾  THEN add it to .dates on listItem, in state and on db
+      const newDateObj = {
+        ...eventData,
+        eventID: newEventID,
+      };
+      const updatedDates = [...(listItem.dates || []), newDateObj];
+      updateListItem(listItem, 'dates', updatedDates);
+      const eventMonth = new Date(eventData.startDateTime).getMonth();
+      const plannerMonth = viewMonth.getMonth();
+      console.log('eventMonth:', eventMonth);
+      console.log('plannerMonth:', plannerMonth);
+      if (eventMonth === plannerMonth) {
+        const newEventPlusID = { ...eventData, eventID: newEventID };
+        const updatedEvents = [...(events || []), newEventPlusID];
+        setEvents(updatedEvents);
+      }
+    }
+    /* 📝 */
+    if (action === 'update') {
+      console.log('update');
+      console.log(eventData);
+      console.log(listItem);
+      // 🌐🎉  FIRST update existing EVENT /events
+      await u.patchEventByID(userUID, eventData.eventID, eventData);
+      // 🌐🧾 + 🍰🧾 THEN update it in .dates on listItem, in state and on db
+      const { eventID, ...restOfEvent } = eventData;
+      const updatedDateObj = { ...restOfEvent };
+      const updatedDates = listItem.dates
+        .filter((e) => e.eventID !== eventData.eventID)
+        .concat(updatedDateObj);
+      console.log(
+        listItem,
+        '<--- listItem in handleEvents just b4 updateListItem'
+      );
+      updateListItem(listItem, 'dates', updatedDates);
+    }
+    /* 🗑️ */
+    if (action === 'delete') {
+      // THEN remove it from .dates on listItem, in state and on db
+      const updatedDates = listItem.dates.filter(
+        (e) => e.eventID !== eventData.eventID
+      );
+      updateListItem(listItem, 'dates', updatedDates);
     }
   };
 
@@ -476,6 +528,9 @@ function Home() {
           handleSetSyncWithGCal={handleSetSyncWithGCal}
           events={events}
           setEvents={setEvents}
+          viewMonth={viewMonth}
+          setViewMonth={setViewMonth}
+          handleEvents={handleEvents}
         />
         <Sidebar
           userUID={userUID}

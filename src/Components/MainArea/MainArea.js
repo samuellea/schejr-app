@@ -12,6 +12,7 @@ function MainArea({
   selectedList,
   updateList,
   updateListItem,
+  handleEvents,
   userUID,
   listItems,
   setListItems,
@@ -21,6 +22,8 @@ function MainArea({
   handleSetSyncWithGCal,
   events,
   setEvents,
+  viewMonth,
+  setViewMonth,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -130,6 +133,7 @@ function MainArea({
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
           updateListItem={updateListItem}
+          handleEvents={handleEvents}
           // fetchTags={fetchTags}
           existingTags={existingTags}
           setExistingTags={setExistingTags}
@@ -145,6 +149,9 @@ function MainArea({
         toggleExpand={toggleExpand}
         events={events}
         setEvents={setEvents}
+        viewMonth={viewMonth}
+        setViewMonth={setViewMonth}
+        handleEvents={handleEvents}
       />
       {/* ) : null} */}
     </div>

@@ -1,23 +1,28 @@
 import React from 'react';
 
-function DragIcon({ fill }) {
+function DragIcon({ fill, position = null, width }) {
   return (
     <div
       style={{
         // border: '1px solid red',
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
+        width: width,
+        height: '25px',
+        position: position,
         top: 0,
         right: 1,
+        // border: '1px solid green',
       }}
     >
       <svg
         width="25px"
         height="25px"
-        viewBox="0 0 30 25"
+        viewBox="0 0 25 25"
         fill={fill}
         xmlns="http://www.w3.org/2000/svg"
+        style={{
+          // border: '1px solid yellow',
+          width: width,
+        }}
         // style={{ width: '15px' }}
       >
         <path
