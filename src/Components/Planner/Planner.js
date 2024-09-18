@@ -5,10 +5,16 @@ import * as h from '../../helpers';
 import * as u from '../../utils';
 import Day from './Day';
 
-function Planner({ showPlanner, togglePlanner, plannerMax, toggleExpand }) {
+function Planner({
+  showPlanner,
+  togglePlanner,
+  plannerMax,
+  toggleExpand,
+  events,
+  setEvents,
+}) {
   const [viewMonth, setViewMonth] = useState(new Date()); // set current day/month/year as default current view
   const [dates, setDates] = useState([]);
-  const [events, setEvents] = useState([]);
 
   const userUID = localStorage.getItem('firebaseID');
 

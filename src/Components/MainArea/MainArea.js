@@ -19,6 +19,8 @@ function MainArea({
   setListAndItemsLoaded,
   syncWithGCal,
   handleSetSyncWithGCal,
+  events,
+  setEvents,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -141,6 +143,8 @@ function MainArea({
         togglePlanner={togglePlanner}
         plannerMax={plannerMax}
         toggleExpand={toggleExpand}
+        events={events}
+        setEvents={setEvents}
       />
       {/* ) : null} */}
     </div>

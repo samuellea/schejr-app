@@ -13,6 +13,7 @@ import { gapi } from 'gapi-script';
 function Home() {
   const [lists, setLists] = useState([]);
   const [listItems, setListItems] = useState([]);
+  const [events, setEvents] = useState([]);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
   const [sidebarListAscending, setSidebarListAscending] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
@@ -473,6 +474,8 @@ function Home() {
           setListAndItemsLoaded={setListAndItemsLoaded}
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
+          events={events}
+          setEvents={setEvents}
         />
         <Sidebar
           userUID={userUID}
