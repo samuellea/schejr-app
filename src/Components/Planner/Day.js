@@ -5,22 +5,15 @@ import * as h from '../../helpers';
 import * as u from '../../utils';
 import { isToday, parseISO } from 'date-fns';
 import { Droppable } from '@hello-pangea/dnd';
-import ClockIcon from '../Icons/ClockIcon';
-import DragIcon from '../Icons/DragIcon';
 import EditIcon from '../Icons/EditIcon';
-import EllipsisIcon from '../Icons/EllipsisIcon';
 import DuplicateIcon from '../Icons/DuplicateIcon';
-import EventEditPane from './EventEditPane';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
-import EventOptions from './EventOptions';
+import Event from './Event';
 
 // Using forwardRef to pass the ref down the tree
 const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
   const [dateEvents, setDateEvents] = useState([]);
-  const [eventEditID, setEventEditID] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
   const [editEvent, setEditEvent] = useState(false);
-  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
 
   const dateIsToday = isToday(parseISO(date.date));
   const todayRef = useRef(null);
@@ -39,38 +32,8 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
     return () => clearTimeout(timer);
   }, [viewMonth, dateIsToday]);
 
-  const handleOptions = (eventID) => {
-    setShowOptions(true);
-    setEventEditID(eventID);
-  };
-
-  const handleEdit = () => {
-    setShowOptions(false);
-    setEditEvent(true);
-  };
-
-  const handleDuplicate = async () => {
-    setShowOptions(false);
-    const event = dateEvents.find((e) => e.eventID === eventEditID);
-    const listItemForEvent = await u.fetchListItemById(event.listItemID);
-    const plusExplicitID = {
-      ...listItemForEvent,
-      listItemID: event.listItemID,
-    };
-    const { eventID, ...restOfEvent } = event;
-    const duplicateEventObj = { ...restOfEvent };
-    console.log(duplicateEventObj);
-    console.log(plusExplicitID);
-    await handleEvents('create', duplicateEventObj, plusExplicitID);
-  };
-
-  const handleStopEditing = () => {
-    setEditEvent(false);
-    setEventEditID(null);
-  };
-
   return (
-    <Droppable droppableId={`planner-${date.date}`} key={date.date}>
+    <Droppable droppableId={`planner-${date.date}`} key={`day-${date.date}`}>
       {(provided, snapshot) => (
         <div
           className={styles.container}
@@ -103,50 +66,16 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
             <div className={styles.dropPlaceholder}>Drop item here</div>
           )}
 
-          {dateEvents.map((event) => {
-            const { timeSet, title, startDateTime } = event;
+          {dateEvents.map((event, i) => {
             return (
-              <div className={styles.event} key={`event-${event.eventID}`}>
-                {showOptions && event.eventID === eventEditID ? (
-                  <EventOptions
-                    handleEdit={handleEdit}
-                    handleDuplicate={handleDuplicate}
-                    setShowOptions={setShowOptions}
-                    key={`eventOptions-${event.eventID}`}
-                  />
-                ) : null}
-                <div className={styles.eventGrabContainer}>
-                  <div className={styles.listItemDragHandle}>
-                    <DragIcon fill="#9b9b9b" width="20px" />
-                  </div>
-                </div>
-                <div className={styles.eventDetailsContainer}>
-                  <div className={styles.titleAndEditContainer}>
-                    <div className={styles.eventTitle}>{title}</div>
-                    <div
-                      className={styles.eventMoreButton}
-                      role="button"
-                      onClick={() => handleOptions(event.eventID)}
-                    >
-                      <EllipsisIcon fill="#9b9b9b" width="16px" />
-                    </div>
-                  </div>
-                  {timeSet ? (
-                    <div className={styles.eventTime}>
-                      <ClockIcon width="16px" fill="white" />
-                      <span>{h.dateTimeTo12Hour(startDateTime) || null}</span>
-                    </div>
-                  ) : null}
-                </div>
-                {editEvent && event.eventID === eventEditID ? (
-                  <EventEditPane
-                    event={event}
-                    handleStopEditing={handleStopEditing}
-                    handleEvents={handleEvents}
-                    key={event.eventID}
-                  />
-                ) : null}
-              </div>
+              <Event
+                event={event}
+                editEvent={editEvent}
+                setEditEvent={setEditEvent}
+                handleEvents={handleEvents}
+                key={`eventComp-${event.eventID}`}
+                index={i}
+              />
             );
           })}
           {/* <div className={styles.addEventButton}>

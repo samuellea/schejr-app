@@ -44,12 +44,15 @@ function Home() {
   const onDragEnd = async (result) => {
     console.log('onDragEnd!');
     const { destination, source, draggableId } = result;
-    console.log(destination);
     console.log(source);
+    console.log(destination);
     console.log(draggableId); // <-- listItem ID
 
-    // Item dropped onto planner
-    if (destination.droppableId.substring(0, 7) === 'planner') {
+    // dragging a ListItem to the Planner
+    if (
+      source.droppableId.substring(0, 4) === 'list' &&
+      destination.droppableId.substring(0, 7) === 'planner'
+    ) {
       const listItemID = draggableId; // listItemID
       const targetDate = destination.droppableId.slice(8); // day's date it's been dragged to - convert to 'timeless' ISO UTC date, ie. midnight of that date
       const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
@@ -64,6 +67,32 @@ function Home() {
       const listItem = listItems.find((e) => e.listItemID === listItemID);
       console.log(listItem, '<-- listItem to add this .date to');
       await handleEvents('create', newEventObj, listItem);
+    }
+
+    // dragging an event between days on the Planner
+    if (
+      source.droppableId.substring(0, 7) === 'planner' &&
+      destination.droppableId.substring(0, 7) === 'planner'
+    ) {
+      const targetDate = destination.droppableId.slice(8);
+      const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
+      const isoDateUTC = dateMidnight.toISOString();
+      const draggedEventID = draggableId;
+      // the event obj will ALWAYS be in 'events' state - you can't be DnDing it on the Planner if it's not!
+      const eventToUpdate = events.find((e) => e.eventID === draggedEventID);
+      const updatedEventObj = {
+        ...eventToUpdate,
+        startDateTime: isoDateUTC,
+      };
+      // the listItem obj? That WON'T always be in 'listItems' state. We could be moving an Event linked to a ListItem that's not being rendered in <List />
+      // So, get it using 'listItemIDForEvent'
+      const listItemIDForEvent = eventToUpdate.listItemID;
+      const listItemForEvent = await u.fetchListItemById(listItemIDForEvent);
+      const plusExplicitID = {
+        ...listItemForEvent,
+        listItemID: listItemIDForEvent,
+      };
+      await handleEvents('update', updatedEventObj, plusExplicitID);
     }
 
     // if (!destination) {
@@ -382,7 +411,8 @@ function Home() {
       const datesEventIDs = listItem.dates.map((date) => date.eventID);
       await u.patchMultipleEventsOnKey(datesEventIDs, userUID, 'title', value);
       // 🍰🎉 then, if any of these events are in 'events' state, update these event objs in state too (so Planner UI reflects changes)
-      const eventIDSet = new Set(datesEventIDs);
+      const eventsEventIDs = events.map((event) => event.eventID);
+      const eventIDSet = new Set(eventsEventIDs);
       // Filter the 'events' state array to only include objects with .eventID values in the eventIDSet
       const eventsToUpdate = events.filter((obj) =>
         eventIDSet.has(obj.eventID)

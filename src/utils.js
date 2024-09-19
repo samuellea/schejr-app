@@ -586,6 +586,28 @@ export const patchEventByID = async (userUID, eventID, eventData) => {
   }
 };
 
+// export const patchEventOnKey = async (eventID, userUID, key, newValue) => {
+//   const updates = {};
+
+//   // Prepare the update path for a single object
+//   updates[`/events/${userUID}/${eventID}/${key}`] = newValue;
+
+//   const dbRef = ref(database);
+
+//   try {
+//     // Perform the update
+//     await update(dbRef, updates);
+//     console.log(
+//       `Updated event with ID '${eventID}' on key '${key}' successfully`
+//     );
+//   } catch (error) {
+//     console.error(
+//       `Failed to update event with ID '${eventID}' on key '${key}':`,
+//       error
+//     );
+//   }
+// };
+
 export const patchMultipleEventsOnKey = async (
   eventIDs,
   userUID,
