@@ -53,6 +53,8 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
                 listItem={listItem}
                 handleEvents={handleEvents}
                 inFocus={true}
+                closeButton={true}
+                handleCancel={handleStopEditing}
               />
             </div>
           </div>

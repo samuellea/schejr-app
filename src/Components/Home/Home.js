@@ -479,6 +479,16 @@ function Home() {
     if (action === 'delete') {
       // 🌐🎉  FIRST delete existing EVENT /events
       await u.deleteEventByID(userUID, eventData.eventID);
+      // 🍰🎉then, if the EVENT we deleted is in 'events' state, remove that EVENT obj there too
+      const updatedEventInState = events.find(
+        (e) => e.eventID === eventData.eventID
+      );
+      if (updatedEventInState) {
+        const stateEventsMinusDeleted = events.filter(
+          (e) => e.eventID !== eventData.eventID
+        ); // eventData still has explicit eventID, as req'd in events state
+        setEvents(stateEventsMinusDeleted);
+      }
       // 🌐🧾 + 🍰🧾 THEN remove it from .dates on listItem, in state and on db
       const updatedDates = listItem.dates.filter(
         (e) => e.eventID !== eventData.eventID

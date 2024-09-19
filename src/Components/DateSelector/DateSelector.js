@@ -11,7 +11,15 @@ import PlusIcon from '../Icons/PlusIcon';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import DateIcon from '../Icons/DateIcon';
 
-function DateSelector({ type, date, listItem, handleEvents, inFocus = false }) {
+function DateSelector({
+  type,
+  date,
+  listItem,
+  handleEvents,
+  inFocus = false,
+  closeButton = false,
+  handleCancel = () => {},
+}) {
   const [startDateTime, setStartDateTime] = useState(
     date?.startDateTime ? new Date(date.startDateTime) : null
   );
@@ -184,65 +192,91 @@ function DateSelector({ type, date, listItem, handleEvents, inFocus = false }) {
           style={{
             top:
               type === 'standalone' ? '0px' : type === 'field' ? '35px' : null,
+            padding: closeButton ? '0px' : '8px',
           }}
         >
-          <DatePicker
-            selected={startDateTime}
-            onChange={(date) => handleChange(date)}
-            inline
-            calendarClassName={styles.rastaStripes}
-            dayClassName={(date) => (isPastDate(date) ? styles.pastDay : '')}
-          />
-          {startDateTime && (
-            <div className={styles.timeContainer}>
+          {' '}
+          {closeButton ? (
+            <div className={styles.closeButtonContainer}>
               <div
-                className={timeButtonCombined}
-                id="timeButton"
-                onClick={handleAddTime}
+                className={styles.closeButton}
+                role="button"
+                onClick={handleCancel}
               >
-                <ClockIcon
-                  width="18px"
-                  fill={startDateTime ? 'white' : '#7f7f7f'}
-                  margin="0px 3px 2px 0px"
-                />
-                <p className={styles.bottomButtonLabel}>
-                  {timeSet ? h.dateTimeTo12Hour(startDateTime) : 'Time'}
-                </p>
-                {timeSet ? (
-                  <div
-                    className={styles.clearTimeButton}
-                    role="button"
-                    onClick={(event) => handleClearTime(event)}
-                  >
-                    <CloseIcon width="14px" fill="white" />
+                <CloseIcon width="18px" fill="white" />
+              </div>
+            </div>
+          ) : // <div
+          //   className={styles.bottomButton}
+          //   onClick={(event) => handleClear(event)}
+          // >
+          //   <p className={styles.bottomButtonLabel}>Cancel</p>
+          // </div>
+          null}
+          <div
+            className={styles.pickerAndButtonsWrapper}
+            style={{
+              padding: closeButton ? '0px 8px 8px 8px' : '0px',
+            }}
+          >
+            <DatePicker
+              selected={startDateTime}
+              onChange={(date) => handleChange(date)}
+              inline
+              calendarClassName={styles.rastaStripes}
+              dayClassName={(date) => (isPastDate(date) ? styles.pastDay : '')}
+            />
+            {startDateTime && (
+              <div className={styles.timeContainer}>
+                <div
+                  className={timeButtonCombined}
+                  id="timeButton"
+                  onClick={handleAddTime}
+                >
+                  <ClockIcon
+                    width="18px"
+                    fill={startDateTime ? 'white' : '#7f7f7f'}
+                    margin="0px 3px 2px 0px"
+                  />
+                  <p className={styles.bottomButtonLabel}>
+                    {timeSet ? h.dateTimeTo12Hour(startDateTime) : 'Time'}
+                  </p>
+                  {timeSet ? (
+                    <div
+                      className={styles.clearTimeButton}
+                      role="button"
+                      onClick={(event) => handleClearTime(event)}
+                    >
+                      <CloseIcon width="14px" fill="white" />
+                    </div>
+                  ) : null}
+                </div>
+                {showTimeSelect ? (
+                  <div className={styles.timeInput}>
+                    <div className={styles.unitContainer}>
+                      {h.times.map((e) => (
+                        <div
+                          className={styles.unitBlock}
+                          onClick={() => handleTimeBlockClick(e)}
+                          key={e.display12}
+                        >
+                          {e.display12}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : null}
               </div>
-              {showTimeSelect ? (
-                <div className={styles.timeInput}>
-                  <div className={styles.unitContainer}>
-                    {h.times.map((e) => (
-                      <div
-                        className={styles.unitBlock}
-                        onClick={() => handleTimeBlockClick(e)}
-                        key={e.display12}
-                      >
-                        {e.display12}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-          {date ? (
-            <div
-              className={styles.bottomButton}
-              onClick={(event) => handleClear(event)}
-            >
-              <p className={styles.bottomButtonLabel}>Clear</p>
-            </div>
-          ) : null}
+            )}
+            {date ? (
+              <div
+                className={styles.bottomButton}
+                onClick={(event) => handleClear(event)}
+              >
+                <p className={styles.bottomButtonLabel}>Clear</p>
+              </div>
+            ) : null}
+          </div>
         </div>
       )}
       {showDeleteModal && (
