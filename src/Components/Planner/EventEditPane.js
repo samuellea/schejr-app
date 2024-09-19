@@ -12,7 +12,11 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
     const fetchListItem = async () => {
       try {
         const listItemForEvent = await u.fetchListItemById(event.listItemID);
-        setListItem(listItemForEvent);
+        const plusExplicitID = {
+          ...listItemForEvent,
+          listItemID: event.listItemID,
+        };
+        setListItem(plusExplicitID);
       } catch {
         // Handle error fetching listItem
       }

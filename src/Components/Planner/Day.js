@@ -158,10 +158,10 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
             );
           })}
 
-          <div className={styles.addEventButton}>
+          {/* <div className={styles.addEventButton}>
             <PlusIcon fill="inherit" width="16px" />
             <span>Add event</span>
-          </div>
+          </div> */}
           {provided.placeholder}
         </div>
       )}

@@ -51,6 +51,8 @@ function DateSelector({ type, date, listItem, handleEvents, inFocus = false }) {
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
+      console.log(listItem, ' <--- listItem');
+      console.log(updatedEventObj, ' <--- updatedEventObj');
       await handleEvents('update', updatedEventObj, listItem);
     }
     setIsInFocus(false);

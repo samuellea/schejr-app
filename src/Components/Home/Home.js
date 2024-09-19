@@ -451,9 +451,20 @@ function Home() {
       console.log(eventData);
       console.log(listItem);
       const { eventID, ...restOfEvent } = eventData;
-      const updatedEventObj = { ...restOfEvent };
+      const updatedEventDBObj = { ...restOfEvent };
       // 🌐🎉  FIRST update existing EVENT /events
-      await u.patchEventByID(userUID, eventData.eventID, updatedEventObj);
+      await u.patchEventByID(userUID, eventData.eventID, updatedEventDBObj);
+      // 🍰🎉then, if the EVENT we updated is in 'events' state, update that EVENT obj there too
+      const updatedEventInState = events.find(
+        (e) => e.eventID === eventData.eventID
+      );
+      if (updatedEventInState) {
+        const stateEventsMinusUpdated = events.filter(
+          (e) => e.eventID !== eventData.eventID
+        ); // eventData still has explicit eventID, as req'd in events state
+        const updatedStateEvents = [...stateEventsMinusUpdated, eventData];
+        setEvents(updatedStateEvents);
+      }
       // 🌐🧾 + 🍰🧾 THEN update it in .dates on listItem, in state and on db
       const updatedDates = listItem.dates
         .filter((e) => e.eventID !== eventData.eventID)
