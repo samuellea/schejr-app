@@ -586,6 +586,28 @@ export const patchEventByID = async (userUID, eventID, eventData) => {
   }
 };
 
+export const patchMultipleEventsOnKey = async (
+  eventIDs,
+  userUID,
+  key,
+  newValue
+) => {
+  const updates = {};
+  // Prepare the updates object
+  eventIDs.forEach((id) => {
+    updates[`/events/${userUID}/${id}/${key}`] = newValue; // Replace 'propertyName' with the actual property you want to update
+  });
+
+  const dbRef = ref(database);
+
+  try {
+    // Perform the update
+    await update(dbRef, updates);
+  } catch (error) {
+    console.error(`Failed to updated events on key '${key}':`, error);
+  }
+};
+
 export const deleteEventByID = async (userUID, eventID) => {
   try {
     const eventRef = ref(database, `events/${userUID}/${eventID}`);

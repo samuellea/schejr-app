@@ -370,6 +370,34 @@ function Home() {
     );
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
 
+    // if field === 'title' and listItem has .dates, we need to change the .title of any .dates objectscts
+    if (field === 'title' && listItem.dates?.length) {
+      const updatedDates = listItem.dates.map((date) => ({
+        ...date,
+        title: value,
+      }));
+      updatedListItem.dates = updatedDates;
+      // 🌐🧾 + 🍰🧾 <-- handled after this 'if' block
+      // 🌐🎉 and consqtly their associated /events objects on DB
+      const datesEventIDs = listItem.dates.map((date) => date.eventID);
+      await u.patchMultipleEventsOnKey(datesEventIDs, userUID, 'title', value);
+      // 🍰🎉 then, if any of these events are in 'events' state, update these event objs in state too (so Planner UI reflects changes)
+      const eventIDSet = new Set(datesEventIDs);
+      // Filter the 'events' state array to only include objects with .eventID values in the eventIDSet
+      const eventsToUpdate = events.filter((obj) =>
+        eventIDSet.has(obj.eventID)
+      );
+      const eventsUpdatedTitle = eventsToUpdate.map((e) => ({
+        ...e,
+        title: value,
+      }));
+      const otherEvents = events.filter((obj) => !eventIDSet.has(obj.eventID));
+      console.log(eventsUpdatedTitle);
+      console.log(otherEvents);
+      const updatedStateEvents = [...otherEvents, ...eventsUpdatedTitle];
+      setEvents(updatedStateEvents);
+    }
+
     const updatedListItems = [...listItems];
     updatedListItems[indexOfListItemInListItems] = updatedListItem;
 
