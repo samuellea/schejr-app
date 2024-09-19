@@ -108,8 +108,7 @@ function DateSelector({ type, date, listItem, handleEvents, inFocus = false }) {
 
   const handleConfirmDeleteDate = async () => {
     // FIRST delete EVENT obj
-    await u.deleteEventByID(userUID, date.eventID);
-    await handleEvents(listItem, 'delete', { eventID: date.eventID });
+    await handleEvents('delete', { eventID: date.eventID }, listItem);
     setShowDeleteModal(false);
     setTimeSet(false);
     setStartDateTime(null);

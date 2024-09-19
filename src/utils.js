@@ -568,6 +568,7 @@ export const createNewEvent = async (userUID, eventData) => {
     // Generate a new key under the 'events' endpoint
     const newEventRef = push(eventsRef);
     await set(newEventRef, eventData);
+    console.log(newEventRef.key);
     return newEventRef.key; // Return the unique ID of the newly created list
   } catch (error) {
     console.error('Error creating new event:', error);

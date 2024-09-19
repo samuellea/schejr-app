@@ -62,6 +62,7 @@ function Home() {
         title: listItems.find((e) => e.listItemID === listItemID).title,
       };
       const listItem = listItems.find((e) => e.listItemID === listItemID);
+      console.log(listItem, '<-- listItem to add this .date to');
       await handleEvents('create', newEventObj, listItem);
     }
 
@@ -431,6 +432,7 @@ function Home() {
         ...eventData,
         eventID: newEventID,
       };
+      console.log(newDateObj);
       const updatedDates = [...(listItem.dates || []), newDateObj];
       updateListItem(listItem, 'dates', updatedDates);
       const eventMonth = new Date(eventData.startDateTime).getMonth();
@@ -448,14 +450,14 @@ function Home() {
       console.log('update');
       console.log(eventData);
       console.log(listItem);
-      // 🌐🎉  FIRST update existing EVENT /events
-      await u.patchEventByID(userUID, eventData.eventID, eventData);
-      // 🌐🧾 + 🍰🧾 THEN update it in .dates on listItem, in state and on db
       const { eventID, ...restOfEvent } = eventData;
-      const updatedDateObj = { ...restOfEvent };
+      const updatedEventObj = { ...restOfEvent };
+      // 🌐🎉  FIRST update existing EVENT /events
+      await u.patchEventByID(userUID, eventData.eventID, updatedEventObj);
+      // 🌐🧾 + 🍰🧾 THEN update it in .dates on listItem, in state and on db
       const updatedDates = listItem.dates
         .filter((e) => e.eventID !== eventData.eventID)
-        .concat(updatedDateObj);
+        .concat(eventData);
       console.log(
         listItem,
         '<--- listItem in handleEvents just b4 updateListItem'
@@ -464,7 +466,9 @@ function Home() {
     }
     /* 🗑️ */
     if (action === 'delete') {
-      // THEN remove it from .dates on listItem, in state and on db
+      // 🌐🎉  FIRST delete existing EVENT /events
+      await u.deleteEventByID(userUID, eventData.eventID);
+      // 🌐🧾 + 🍰🧾 THEN remove it from .dates on listItem, in state and on db
       const updatedDates = listItem.dates.filter(
         (e) => e.eventID !== eventData.eventID
       );
