@@ -29,6 +29,7 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
   const handleClickOutside = (event) => {
     if (eventEditRef.current && !eventEditRef.current.contains(event.target)) {
       setTimeout(() => {
+        console.log('handleClickOutside EventEditPane');
         handleStopEditing();
       }, 250);
     }
@@ -44,7 +45,11 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
   return (
     <div className={styles.eventEditPaneBackground}>
       {listItem ? (
-        <div className={styles.eventEditPane} ref={eventEditRef}>
+        <div
+          className={styles.eventEditPane}
+          ref={eventEditRef}
+          key={`eventEditPane-${event.eventID}`}
+        >
           <div className={styles.fields}>
             <div className={styles.datepicker}>
               <DateSelector

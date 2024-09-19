@@ -427,6 +427,8 @@ function Home() {
       console.log('create');
       // 🌐🎉 FIRST create new EVENT /events
       const newEventID = await u.createNewEvent(userUID, eventData);
+      // 🍰🎉 then, if the EVENT has a startDateTime in the month in 'viewMonth' state, update 'events' state to include newly-created EVENT
+
       // 🌐🧾 + 🍰🧾  THEN add it to .dates on listItem, in state and on db
       const newDateObj = {
         ...eventData,
@@ -447,9 +449,9 @@ function Home() {
     }
     /* 📝 */
     if (action === 'update') {
-      console.log('update');
-      console.log(eventData);
+      console.log('UPDATE!');
       console.log(listItem);
+      console.log(eventData);
       const { eventID, ...restOfEvent } = eventData;
       const updatedEventDBObj = { ...restOfEvent };
       // 🌐🎉  FIRST update existing EVENT /events
@@ -469,10 +471,7 @@ function Home() {
       const updatedDates = listItem.dates
         .filter((e) => e.eventID !== eventData.eventID)
         .concat(eventData);
-      console.log(
-        listItem,
-        '<--- listItem in handleEvents just b4 updateListItem'
-      );
+
       updateListItem(listItem, 'dates', updatedDates);
     }
     /* 🗑️ */

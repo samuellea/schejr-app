@@ -37,11 +37,14 @@ function DateSelector({
     // console.log('startDateTime: ', startDateTime);
     // console.log('date: ', date);
     // console.log(listItem);
-    if (!startDateTime) return setIsInFocus(false);
+    if (!startDateTime) {
+      console.log('BLINI');
+      return setIsInFocus(false);
+    }
     // handle if no date has actually been selected - don't want to update ANYTHING
     const isoDateUTC = startDateTime?.toISOString();
     if (!date) {
-      console.log('create');
+      // console.log('create');
       // FIRST create new EVENT obj
       const newEventObj = {
         createdBy: userUID,
@@ -67,6 +70,7 @@ function DateSelector({
   };
 
   const handleClickOutside = (event) => {
+    console.log('handleClickOutside DateSelector');
     if (
       containerRef.current &&
       !containerRef.current.contains(event.target) &&
@@ -78,6 +82,16 @@ function DateSelector({
   };
 
   useEffect(() => {
+    console.log(date, ' <-- date');
+  }, []);
+
+  useEffect(() => {
+    console.log('Dependencies changed:', {
+      date,
+      startDateTime,
+      timeSet,
+      listItem,
+    });
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -137,6 +151,11 @@ function DateSelector({
     startDateTime ? styles.timeButtonExistingDate : ''
   } ${timeSet ? styles.timeButtonExistingTime : ''} ${styles.bottomButton}`;
 
+  const handleInternalClick = (event) => {
+    event.stopPropagation(); // Prevent event from bubbling up to other listeners
+    // Additional logic for clicks inside, if needed
+  };
+
   return (
     <div
       className={styles.container}
@@ -145,6 +164,7 @@ function DateSelector({
         height:
           type === 'standalone' ? '0px' : type === 'field' ? '40px' : null,
       }}
+      onClick={handleInternalClick} // Prevents clicks inside from triggering outside logic
     >
       {type === 'field' ? (
         <div

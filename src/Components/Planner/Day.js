@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import styles from './Day.module.css';
 import PlusIcon from '../Icons/PlusIcon';
 import * as h from '../../helpers';
+import * as u from '../../utils';
 import { isToday, parseISO } from 'date-fns';
 import { Droppable } from '@hello-pangea/dnd';
 import ClockIcon from '../Icons/ClockIcon';
@@ -10,6 +11,8 @@ import EditIcon from '../Icons/EditIcon';
 import EllipsisIcon from '../Icons/EllipsisIcon';
 import DuplicateIcon from '../Icons/DuplicateIcon';
 import EventEditPane from './EventEditPane';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
+import EventOptions from './EventOptions';
 
 // Using forwardRef to pass the ref down the tree
 const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
@@ -17,10 +20,10 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
   const [eventEditID, setEventEditID] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [editEvent, setEditEvent] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
 
   const dateIsToday = isToday(parseISO(date.date));
   const todayRef = useRef(null);
-  const optionsRef = useRef(null);
 
   useEffect(() => {
     const eventsForThisDate = h.getEventsForDate(date.date, events);
@@ -36,21 +39,6 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
     return () => clearTimeout(timer);
   }, [viewMonth, dateIsToday]);
 
-  // const optionsRef = useRef(null);
-
-  const handleClickOutside = (event) => {
-    if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-      setShowOptions(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const handleOptions = (eventID) => {
     setShowOptions(true);
     setEventEditID(eventID);
@@ -61,7 +49,20 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
     setEditEvent(true);
   };
 
-  const handleDuplicate = () => {};
+  const handleDuplicate = async () => {
+    setShowOptions(false);
+    const event = dateEvents.find((e) => e.eventID === eventEditID);
+    const listItemForEvent = await u.fetchListItemById(event.listItemID);
+    const plusExplicitID = {
+      ...listItemForEvent,
+      listItemID: event.listItemID,
+    };
+    const { eventID, ...restOfEvent } = event;
+    const duplicateEventObj = { ...restOfEvent };
+    console.log(duplicateEventObj);
+    console.log(plusExplicitID);
+    await handleEvents('create', duplicateEventObj, plusExplicitID);
+  };
 
   const handleStopEditing = () => {
     setEditEvent(false);
@@ -106,23 +107,13 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
             const { timeSet, title, startDateTime } = event;
             return (
               <div className={styles.event} key={`event-${event.eventID}`}>
-                {showOptions ? (
-                  <div className={styles.eventOptionsMenu} ref={optionsRef}>
-                    <div
-                      className={styles.eventOptionsMenuButton}
-                      onClick={handleEdit}
-                    >
-                      <EditIcon fill="white" width="16px" marginTop="0px" />
-                      <span>Edit</span>
-                    </div>
-                    <div
-                      className={styles.eventOptionsMenuButton}
-                      onClick={handleDuplicate}
-                    >
-                      <DuplicateIcon fill="white" width="16px" />
-                      <span>Duplicate</span>
-                    </div>
-                  </div>
+                {showOptions && event.eventID === eventEditID ? (
+                  <EventOptions
+                    handleEdit={handleEdit}
+                    handleDuplicate={handleDuplicate}
+                    setShowOptions={setShowOptions}
+                    key={`eventOptions-${event.eventID}`}
+                  />
                 ) : null}
                 <div className={styles.eventGrabContainer}>
                   <div className={styles.listItemDragHandle}>
@@ -147,17 +138,17 @@ const Day = forwardRef(({ date, viewMonth, events, handleEvents }, ref) => {
                     </div>
                   ) : null}
                 </div>
-                {editEvent && eventEditID ? (
+                {editEvent && event.eventID === eventEditID ? (
                   <EventEditPane
-                    event={dateEvents.find((e) => e.eventID === eventEditID)}
+                    event={event}
                     handleStopEditing={handleStopEditing}
                     handleEvents={handleEvents}
+                    key={event.eventID}
                   />
                 ) : null}
               </div>
             );
           })}
-
           {/* <div className={styles.addEventButton}>
             <PlusIcon fill="inherit" width="16px" />
             <span>Add event</span>

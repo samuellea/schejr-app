@@ -31,8 +31,15 @@ function ConfirmDeleteModal({
     };
   }, []);
 
+  const handleBackgroundClick = (event) => {
+    event.stopPropagation(); // Stop the event from reaching elements underneath
+  };
+
   return (
-    <div className={styles.deleteModalBackground}>
+    <div
+      className={styles.deleteModalBackground}
+      onClick={handleBackgroundClick}
+    >
       <div className={styles.deleteModal}>
         <p styles={styles.deleteModalP}>{message}</p>
         <button className={confirmDeleteCombined} onClick={handleConfirm}>

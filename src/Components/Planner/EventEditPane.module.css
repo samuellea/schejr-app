@@ -30,6 +30,7 @@
   line-height: 1.5;
   color: white;
   pointer-events: auto;
+  border: 3px solid red;
 }
 
 .topButtons {
