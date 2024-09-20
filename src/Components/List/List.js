@@ -131,7 +131,7 @@ function List({
         display: showPlanner ? null : 'flex',
       }}
     >
-      <Droppable droppableId={`list-${selectedList.listID}`}>
+      <Droppable droppableId={`list-${selectedList.listID}`} type="list-item">
         {(provided) => (
           <div
             className={styles.container}
@@ -165,8 +165,8 @@ function List({
                 <Draggable
                   key={`draggable-${listItem.listItemID}`}
                   draggableId={listItem.listItemID}
-                  index={index}
                   type="list-item"
+                  index={index}
                 >
                   {(provided) => (
                     <div

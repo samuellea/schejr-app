@@ -42,6 +42,20 @@ export const patchList = async (listID, newData) => {
   }
 };
 
+export const patchMultipleLists = async (updates) => {
+  try {
+    const updatePromises = updates.map((update) => {
+      const { listID: unneededListID, ...rest } = update;
+      const updatedList = { ...rest };
+      return patchList(unneededListID, updatedList);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.error('Error updating one or more list db objects:', error);
+    return error;
+  }
+};
+
 export const patchListItem = async (listItemID, newData) => {
   try {
     const listItemRef = ref(database, `listItems/${listItemID}`);
@@ -269,10 +283,10 @@ export const getMaxManualOrderByParentID = async (parentID) => {
       });
 
       if (highestItem) {
-        console.log(
-          'Object with the highest manualOrder and matching parentID:',
-          highestItem
-        );
+        // console.log(
+        //   'Object with the highest manualOrder and matching parentID:',
+        //   highestItem
+        // );
         const maxManualOrderForList = highestItem.manualOrder;
 
         return maxManualOrderForList;
@@ -570,7 +584,6 @@ export const createNewEvent = async (userUID, eventData) => {
     // Generate a new key under the 'events' endpoint
     const newEventRef = push(eventsRef);
     await set(newEventRef, eventData);
-    console.log(newEventRef.key);
     return newEventRef.key; // Return the unique ID of the newly created list
   } catch (error) {
     console.error('Error creating new event:', error);
@@ -677,11 +690,8 @@ export const deleteEventsByListItemID = async (userUID, listItemID) => {
 };
 
 export const fetchUserEventsByMonth = async (userUID, month, year) => {
-  console.log('month: ', month);
-  console.log('year: ', year);
   const date = new Date(year, month, 1);
   const lastDay = lastDayOfMonth(date).getDate();
-  console.log('lastDay: ', lastDay);
   const startOfMonthLocal = new Date(year, month, 1, 0, 0, 0, 0); // 1st September 2024, 00:00:00 local time
   // User's local time for the end of September 30th, 23:59:59.999 (user's local time zone)
   const endOfMonthLocal = new Date(year, month, lastDay, 23, 59, 59, 999); // 30th September 2024, 23:59:59.999 local time
@@ -704,7 +714,6 @@ export const fetchUserEventsByMonth = async (userUID, month, year) => {
     const snapshot = await get(monthQuery);
     const events = snapshot.val();
     if (events) {
-      console.log('Fetched events:', events);
       const eventsAsArr = Object.entries(events).map(([key, value]) => ({
         eventID: key,
         ...value,

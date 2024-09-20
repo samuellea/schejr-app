@@ -24,17 +24,16 @@ function Sidebar({
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const createList = async () => {
-    // length of 'lists' in state - 1
     const newListData = {
       title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
       createdAt: Date.now(),
       createdBy: userUID,
       sortOn: 'manualOrder',
       order: 'ascending',
-      sidebarIndex: lists.length,
     };
     try {
       const listID = await u.createNewList(newListData);
+
       const newListDataPlusID = { ...newListData, listID: listID };
       const updatedLists = [...lists, newListDataPlusID];
       setLists(updatedLists);
@@ -67,8 +66,9 @@ function Sidebar({
           <EditIcon fill="white" width="16px" />
         </div>
       </div>
-      {/* Sidebar Droppable */}
-      <Droppable droppableId="sidebar" isCombineEnabled={true}>
+
+      {/* Droppable area for reordering ListButtons */}
+      <Droppable droppableId="sidebar">
         {(provided) => (
           <div
             className={styles.listContainer}
@@ -76,12 +76,12 @@ function Sidebar({
             {...provided.droppableProps}
           >
             {lists
-              ?.sort((a, b) => a.sidebarIndex - b.sidebarIndex)
+              ?.sort((a, b) => a.createdAt - b.createdAt)
               .map((list, index) => (
                 <Draggable
-                  draggableId={`draggableListButton-${list.listID}`}
+                  draggableId={`draggableList-${list.listID}`}
                   index={index}
-                  key={`keyDraggableListButton-${list.listID}`}
+                  key={`keyDraggableListKey-${list.listID}`}
                 >
                   {(draggableProvided) => (
                     <div
@@ -89,14 +89,17 @@ function Sidebar({
                       {...draggableProvided.draggableProps}
                       {...draggableProvided.dragHandleProps}
                     >
-                      {/* Droppable for handling external drops */}
+                      {/* Droppable for handling external drops without rendering a placeholder */}
                       <Droppable
-                        droppableId={`droppableListButton-${list.listID}`}
+                        droppableId={`droppableList-${list.listID}`}
+                        // type="external-drop"
                         direction="horizontal"
-                        key={`keyDroppableListButton-${list.listID}`}
-                        type="list-item"
+                        key={`keyDroppableList-${list.listID}`}
                       >
-                        {(droppableProvided, snapshot) => (
+                        {(
+                          droppableProvided,
+                          snapshot // Adding snapshot to detect drag over state
+                        ) => (
                           <div
                             className={`${styles.listButton} ${
                               snapshot.isDraggingOver ? styles.dragOver : ''
@@ -112,10 +115,7 @@ function Sidebar({
                               selected={list.listID === selectedListID}
                               handleDeleteList={handleDeleteList}
                             />
-                            {/* Render the placeholder here */}
-                            <div className={styles.hiddenPlaceholder}>
-                              {droppableProvided.placeholder}
-                            </div>
+                            {/* No rendering of provided.placeholder here */}
                           </div>
                         )}
                       </Droppable>
@@ -123,10 +123,7 @@ function Sidebar({
                   )}
                 </Draggable>
               ))}
-            {/* Render the placeholder for the outer droppable */}
-            <div className={styles.hiddenPlaceholder}>
-              {provided.placeholder}
-            </div>
+            {/* {provided.placeholder} */}
           </div>
         )}
       </Droppable>

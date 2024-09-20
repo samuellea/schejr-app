@@ -36,8 +36,7 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
     };
     const { eventID, ...restOfEvent } = event;
     const duplicateEventObj = { ...restOfEvent };
-    console.log(duplicateEventObj);
-    console.log(plusExplicitID);
+
     await handleEvents('create', duplicateEventObj, plusExplicitID);
   };
 

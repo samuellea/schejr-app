@@ -29,7 +29,6 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
   const handleClickOutside = (event) => {
     if (eventEditRef.current && !eventEditRef.current.contains(event.target)) {
       setTimeout(() => {
-        console.log('handleClickOutside EventEditPane');
         handleStopEditing();
       }, 250);
     }

@@ -34,17 +34,16 @@ function DateSelector({
   const userUID = localStorage.getItem('firebaseID');
 
   const handleClickOff = async () => {
-    // console.log('startDateTime: ', startDateTime);
-    // console.log('date: ', date);
-    // console.log(listItem);
+    //
+    //
+    //
     if (!startDateTime) {
-      console.log('BLINI');
       return setIsInFocus(false);
     }
     // handle if no date has actually been selected - don't want to update ANYTHING
     const isoDateUTC = startDateTime?.toISOString();
     if (!date) {
-      // console.log('create');
+      //
       // FIRST create new EVENT obj
       const newEventObj = {
         createdBy: userUID,
@@ -56,21 +55,19 @@ function DateSelector({
       await handleEvents('create', newEventObj, listItem);
     } else {
       // FIRST update the EVENT obj
-      console.log('update');
+
       const updatedEventObj = {
         ...date,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-      console.log(listItem, ' <--- listItem');
-      console.log(updatedEventObj, ' <--- updatedEventObj');
+
       await handleEvents('update', updatedEventObj, listItem);
     }
     setIsInFocus(false);
   };
 
   const handleClickOutside = (event) => {
-    console.log('handleClickOutside DateSelector');
     if (
       containerRef.current &&
       !containerRef.current.contains(event.target) &&
@@ -81,17 +78,9 @@ function DateSelector({
     }
   };
 
-  useEffect(() => {
-    console.log(date, ' <-- date');
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
-    console.log('Dependencies changed:', {
-      date,
-      startDateTime,
-      timeSet,
-      listItem,
-    });
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

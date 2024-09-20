@@ -108,3 +108,12 @@
   width: 100%;
   margin-bottom: 18px;
 }
+
+.dragOver {
+  background: white !important;
+  border: 3px solid blue;
+}
+
+.hiddenPlaceholder {
+  display: none;
+}

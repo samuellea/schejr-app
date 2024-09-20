@@ -406,7 +406,7 @@ export const generateMonthlyDays = (dateObj) => {
     // Create an object with the formatted date and an empty events array
     daysArray.push({ date: formattedDate });
   }
-  // console.log(daysArray);
+  //
   return daysArray;
 };
 
