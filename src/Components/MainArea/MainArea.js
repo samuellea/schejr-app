@@ -114,6 +114,7 @@ function MainArea({
           existingTags={existingTags}
           showPlanner={showPlanner}
           togglePlanner={togglePlanner}
+          handleEvents={handleEvents}
         />
       ) : (
         <div className={styles.emptyMessage}>

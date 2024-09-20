@@ -132,7 +132,7 @@ function DateSelector({
 
   const handleConfirmDeleteDate = async () => {
     // FIRST delete EVENT obj
-    await handleEvents('delete', { eventID: date.eventID }, listItem);
+    await handleEvents('deleteOne', [{ eventID: date.eventID }], listItem);
     setShowDeleteModal(false);
     setTimeSet(false);
     setStartDateTime(null);

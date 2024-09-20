@@ -530,27 +530,52 @@ function Home() {
         .filter((e) => e.eventID !== eventData.eventID)
         .concat(eventData);
 
-      updateListItem(listItem, 'dates', updatedDates);
+      return updateListItem(listItem, 'dates', updatedDates);
     }
     /* 🗑️ */
-    if (action === 'delete') {
+    if (action === 'deleteOne' || action === 'deleteAll') {
+      // in 'delete' case, eventData should ALWAYS be an ARRAY of eventData objects (to handle both deleting one event and multiple events)
+      if (!Array.isArray(eventData)) {
+        return console.log(
+          "EventData passed to 'handleEvents' with action 'delete' is NOT an array!"
+        );
+      }
       // 🌐🎉  FIRST delete existing EVENT /events
-      await u.deleteEventByID(userUID, eventData.eventID);
-      // 🍰🎉then, if the EVENT we deleted is in 'events' state, remove that EVENT obj there too
-      const updatedEventInState = events.find(
-        (e) => e.eventID === eventData.eventID
-      );
-      if (updatedEventInState) {
+      const deletePromises = eventData.map((eventObj) => {
+        return u.deleteEventByID(userUID, eventObj.eventID);
+      });
+      await Promise.all(deletePromises);
+      // 🍰🎉then, if the EVENT/(S) we deleted is in 'events' state, remove that/those EVENT/(S) obj there too
+      const eventIDsSet = new Set(eventData.map((e) => e.eventID));
+
+      const findMatchingEventIDs = (eventData, events) => {
+        // Create a set of eventID values from the eventData array
+        // Find matching eventID values from the events array
+        const matchingEventIDs = events
+          .filter((event) => eventIDsSet.has(event.eventID))
+          .map((event) => event.eventID);
+        // Return the array of matching eventID values
+        return matchingEventIDs;
+      };
+      const matchingEventIDs = findMatchingEventIDs(eventData, events);
+
+      if (matchingEventIDs) {
         const stateEventsMinusDeleted = events.filter(
-          (e) => e.eventID !== eventData.eventID
-        ); // eventData still has explicit eventID, as req'd in events state
+          (event) => !eventIDsSet.has(event.eventID)
+        );
+        // eventData still has explicit eventID, as req'd in events state
         setEvents(stateEventsMinusDeleted);
       }
-      // 🌐🧾 + 🍰🧾 THEN remove it from .dates on listItem, in state and on db
-      const updatedDates = listItem.dates.filter(
-        (e) => e.eventID !== eventData.eventID
-      );
-      updateListItem(listItem, 'dates', updatedDates);
+      if (action === 'deleteAll') return;
+      if (action === 'deleteOne') {
+        const singleEventDeleted = eventData[0];
+        // 🌐🧾 + 🍰🧾 THEN remove it from .dates on listItem, in state and on db
+        // we don't want to do this if we call 'deleteAll', which is only for when a ListItem is being DELETED (so no need to update the list item - it's been deleted!)
+        const updatedDates = listItem.dates.filter(
+          (e) => e.eventID !== singleEventDeleted.eventID
+        );
+        return updateListItem(listItem, 'dates', updatedDates);
+      }
     }
   };
 

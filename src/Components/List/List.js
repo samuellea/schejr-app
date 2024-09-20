@@ -20,6 +20,7 @@ function List({
   existingTags,
   showPlanner,
   togglePlanner,
+  handleEvents,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
@@ -83,24 +84,33 @@ function List({
 
     setListItems(listItemsMinusDeleted); // <<<<< these won't have tidied .manualOrders, but removes deleted item from state/UI...
     try {
-      //   // then actually delete the listItem on db
+      // then actually delete the listItem on db
       await u.deleteListItemByID(listItemToDelete.listItemID);
-      //   // then create a tidied copy of new listItems in state (which now don't have the deleted one)
+      // then create a tidied copy of new listItems in state (which now don't have the deleted one)
       const updatedManualOrders = listItemsMinusDeleted.map((e, i) => ({
         ...e,
         manualOrder: i + 1,
       }));
-
-      //   // update the list items in state to have tidied .manualOrders
-
+      // update the list items in state to have tidied .manualOrders
       setListItems(updatedManualOrders);
-      // // then patch these tidied objects to their corresponding objs on db
+      // then patch these tidied objects to their corresponding objs on db
       try {
         const multipleListItemsPatched = await u.patchMultipleListItems(
           updatedManualOrders
         );
-        // then as a final step, delete the gcal event for this listItem if it had one
-        await u.removeGCalEventByListItemID(listItemToDelete.listItemID);
+        try {
+          // then delete any events on /events that have .listItemID === listItemToDelete.listItemID
+          // call handleEvents with action 'delete' to delete any /events objs on DB AND to remove any of these event objs if they are currently in 'events' state
+          await handleEvents('deleteAll', listItem.dates, listItem);
+          try {
+            // then as a final step, delete the gcal event for this listItem if it had one
+            await u.removeGCalEventByListItemID(listItemToDelete.listItemID);
+          } catch (error) {
+            console.error(error);
+          }
+        } catch (error) {
+          console.error(error);
+        }
       } catch (error) {
         console.error(error);
       }

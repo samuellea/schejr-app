@@ -8,12 +8,14 @@ import EventOptions from './EventOptions';
 import * as h from '../../helpers';
 import * as u from '../../utils';
 import { Draggable } from '@hello-pangea/dnd';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
 function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
   const { timeSet, title, startDateTime } = event;
 
   const [showOptions, setShowOptions] = useState(false);
   const [eventEditID, setEventEditID] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleOptions = (eventID) => {
     setShowOptions(true);
@@ -39,6 +41,25 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
     await handleEvents('create', duplicateEventObj, plusExplicitID);
   };
 
+  const handleStartDelete = () => {
+    setShowOptions(false);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const listItemForEvent = await u.fetchListItemById(event.listItemID);
+    const plusExplicitID = {
+      ...listItemForEvent,
+      listItemID: event.listItemID,
+    };
+    await handleEvents('deleteOne', [event], plusExplicitID);
+    setShowDeleteModal(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
   const handleStopEditing = () => {
     setEditEvent(false);
     setEventEditID(null);
@@ -58,6 +79,7 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
             <EventOptions
               handleEdit={handleEdit}
               handleDuplicate={handleDuplicate}
+              handleStartDelete={handleStartDelete}
               setShowOptions={setShowOptions}
               key={`eventOptions-${event.eventID}`}
             />
@@ -91,6 +113,13 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
               handleStopEditing={handleStopEditing}
               handleEvents={handleEvents}
               key={event.eventID}
+            />
+          ) : null}
+          {showDeleteModal ? (
+            <ConfirmDeleteModal
+              message="Delete this event?"
+              handleConfirm={handleConfirmDelete}
+              handleCancel={handleCancelDelete}
             />
           ) : null}
         </div>

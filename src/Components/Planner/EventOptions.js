@@ -2,8 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import styles from './EventOptions.module.css';
 import EditIcon from '../Icons/EditIcon';
 import DuplicateIcon from '../Icons/DuplicateIcon';
+import TrashIcon from '../Icons/TrashIcon';
 
-function EventOptions({ handleEdit, handleDuplicate, setShowOptions }) {
+function EventOptions({
+  handleEdit,
+  handleDuplicate,
+  handleStartDelete,
+  setShowOptions,
+}) {
   const optionsRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -28,6 +34,13 @@ function EventOptions({ handleEdit, handleDuplicate, setShowOptions }) {
       <div className={styles.eventOptionsMenuButton} onClick={handleDuplicate}>
         <DuplicateIcon fill="white" width="16px" />
         <span>Duplicate</span>
+      </div>
+      <div
+        className={styles.eventOptionsMenuButton}
+        onClick={handleStartDelete}
+      >
+        <TrashIcon fill="white" width="16px" />
+        <span>Delete</span>
       </div>
     </div>
   );

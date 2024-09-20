@@ -640,6 +640,40 @@ export const deleteEventByID = async (userUID, eventID) => {
   }
 };
 
+export const deleteEventsByListItemID = async (userUID, listItemID) => {
+  try {
+    // Reference to the events for the user
+    const eventsRef = ref(database, `events/${userUID}`);
+
+    // Create a query to find events where listItemID matches the given value
+    const eventsQuery = query(
+      eventsRef,
+      orderByChild('listItemID'),
+      equalTo(listItemID)
+    );
+
+    // Retrieve all events matching the query
+    const snapshot = await get(eventsQuery);
+
+    if (snapshot.exists()) {
+      const updates = {};
+      snapshot.forEach((childSnapshot) => {
+        const eventID = childSnapshot.key;
+        updates[`events/${userUID}/${eventID}`] = null; // Mark the event for deletion
+      });
+
+      // Perform the batch delete
+      await update(ref(database), updates);
+      console.log('Deleted events with listItemID:', listItemID);
+    } else {
+      console.log('No events found with listItemID:', listItemID);
+    }
+  } catch (error) {
+    console.error('Error deleting events:', error);
+    throw error;
+  }
+};
+
 export const fetchUserEventsByMonth = async (userUID, month, year) => {
   console.log('month: ', month);
   console.log('year: ', year);
