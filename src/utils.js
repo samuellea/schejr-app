@@ -398,7 +398,7 @@ export const addAListItemToGCal = async (listItem) => {
       resource: event,
     });
   } catch (error) {
-    console.error('Error creating event:', error);
+    console.error('Error creating GCal event:', error);
   }
 };
 
@@ -420,7 +420,7 @@ export const removeListItemFromGCal = async (event) => {
       eventId: event.id,
     });
   } catch (error) {
-    console.error(`Failed to delete event ${event.summary}:`, error);
+    console.error(`Failed to delete GCal event ${event.summary}:`, error);
   }
 };
 
@@ -439,11 +439,11 @@ export const removeGCalEventByListItemID = async (listItemID) => {
           eventId: eventId,
         });
       } catch (error) {
-        console.error('Failed to delete event:', error);
+        console.error('Failed to delete GCal event:', error);
       }
     } else {
       console.log(
-        'No event found with the listItemID extended property ',
+        'No GCal event found with the listItemID extended property ',
         listItemID
       );
     }
@@ -497,7 +497,7 @@ export const changeListItemOnGCalByIDOrCreate = async (
     // Check if any event matches the specified id
     if (events.length === 0) {
       console.log(
-        `No events found with extendedProperty 'listItemID': ${listItem.listItemID}`
+        `No GCal events found with extendedProperty 'listItemID': ${listItem.listItemID}`
       );
 
       await addAListItemToGCal(listItem);
@@ -558,7 +558,9 @@ export const removeAllListItemsFromGCal = async () => {
       return removeListItemFromGCal(event);
     });
     return await Promise.all(updatePromises);
-  } catch (error) {}
+  } catch (error) {
+    console.log('error removing all list items from GCal');
+  }
 };
 
 export const createNewEvent = async (userUID, eventData) => {

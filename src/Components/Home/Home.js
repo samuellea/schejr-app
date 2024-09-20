@@ -548,18 +548,11 @@ function Home() {
       // 🍰🎉then, if the EVENT/(S) we deleted is in 'events' state, remove that/those EVENT/(S) obj there too
       const eventIDsSet = new Set(eventData.map((e) => e.eventID));
 
-      const findMatchingEventIDs = (eventData, events) => {
-        // Create a set of eventID values from the eventData array
-        // Find matching eventID values from the events array
-        const matchingEventIDs = events
-          .filter((event) => eventIDsSet.has(event.eventID))
-          .map((event) => event.eventID);
-        // Return the array of matching eventID values
-        return matchingEventIDs;
-      };
-      const matchingEventIDs = findMatchingEventIDs(eventData, events);
+      const matchingEventIDs = events
+        .filter((event) => eventIDsSet.has(event.eventID))
+        .map((event) => event.eventID);
 
-      if (matchingEventIDs) {
+      if (matchingEventIDs.length) {
         const stateEventsMinusDeleted = events.filter(
           (event) => !eventIDsSet.has(event.eventID)
         );
@@ -602,8 +595,13 @@ function Home() {
       const listItemsMinusDeletedChildren = listItems.filter(
         (e) => e.parentID !== listID
       );
-
       setListItems(listItemsMinusDeletedChildren);
+      // AND delete any /events objects associated with the listItems we've just deleted for this this deleted List
+      const childEvents = listItems
+        .map((listItem) => listItem.dates)
+        .filter((dates) => Array.isArray(dates) && dates.length > 0)
+        .flat();
+      await handleEvents('deleteAll', childEvents);
       // AND delete any Gcal events for those delete child listItems!
       const deletedListItemIDs = childListItems.map((e) => e.listItemID);
 
