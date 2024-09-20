@@ -48,10 +48,15 @@ function Home() {
     console.log(destination);
     console.log(draggableId); // <-- listItem ID
 
+    if (!destination) {
+      // Item was dropped outside a droppable area
+      return;
+    }
+
     // dragging a ListItem to the Planner
     if (
       source.droppableId.substring(0, 4) === 'list' &&
-      destination.droppableId.substring(0, 7) === 'planner'
+      destination?.droppableId.substring(0, 7) === 'planner'
     ) {
       const listItemID = draggableId; // listItemID
       const targetDate = destination.droppableId.slice(8); // day's date it's been dragged to - convert to 'timeless' ISO UTC date, ie. midnight of that date
@@ -72,7 +77,7 @@ function Home() {
     // dragging an event between days on the Planner
     if (
       source.droppableId.substring(0, 7) === 'planner' &&
-      destination.droppableId.substring(0, 7) === 'planner'
+      destination?.droppableId.substring(0, 7) === 'planner'
     ) {
       const targetDate = destination.droppableId.slice(8);
       const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
@@ -95,70 +100,72 @@ function Home() {
       await handleEvents('update', updatedEventObj, plusExplicitID);
     }
 
-    // if (!destination) {
-    //   // Item was dropped outside a droppable area
-
-    //   return;
-    // }
-
     // // ⭐ MOVE TO DIFFERENT LIST
-    // if (
-    //   destination.droppableId.substring(0, 7) !== 'planner' &&
-    //   destination.droppableId.substring(0, 4) !== 'list' &&
-    //   destination.droppableId !== 'main-area'
-    // ) {
-    //   const listItemID = draggableId;
-    //   const destinationListID = destination.droppableId; // id of the List you're moving it to
-    //   const listItemMoved = listItems.find((e) => e.listItemID === draggableId);
-    //   const destinationList = lists.find((e) => e.listID === destinationListID);
-
-    //   // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
-    //   // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
-    //   // which may be determined by other sort options (title, date, tags etc.)
-    //   const listItemsSortedByOriginalManualOrders = h.sortItems(
-    //     listItems,
-    //     'manualOrder',
-    //     'ascending'
-    //   );
-    //   const newMOrders = h.updatedManualOrdersOnSourceList(
-    //     // listItems,
-    //     listItemsSortedByOriginalManualOrders,
-    //     listItemID
-    //   );
-
-    //   // update listItems in state
-
-    //   setListItems(newMOrders);
-
-    //   // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
-    //   // fetch the highest manual order value present on this List
-    //   try {
-    //     const maxManualOrderOnDestinationList =
-    //       await u.getMaxManualOrderByParentID(destinationListID);
-    //     const updates = {
-    //       parentID: `parentListID-${destinationListID}`,
-    //       manualOrder: maxManualOrderOnDestinationList + 1,
-    //     };
-
-    //     try {
-    //       // 🌐 update that item being moved accordingly
-    //       const updatedListItem = await u.patchListItem(listItemID, updates);
-
-    //       // now update remaining list items on db
-    //       try {
-    //         // 🌐
-    //         const multipleListItemsPatched = await u.patchMultipleListItems(
-    //           newMOrders
-    //         );
-    //         toast(`Moved ${listItemMoved.title} to ${destinationList.title}`, {
-    //           duration: 2000,
-    //         });
-    //       } catch (error) {
-    //         console.error(error);
-    //       }
-    //     } catch (error) {}
-    //   } catch (error) {}
-    // }
+    if (
+      destination?.droppableId.substring(0, 7) !== 'planner' &&
+      destination?.droppableId.substring(0, 4) !== 'list' &&
+      destination?.droppableId !== 'main-area'
+    ) {
+      console.log('⭐ MOVE TO DIFFERENT LIST');
+      const sourceListID = source.droppableId.substring(5);
+      console.log(sourceListID);
+      const destinationListID = destination.droppableId; // id of the List you're moving it to
+      console.log(destinationListID);
+      // check that not trying to drag a list item to the list it's already on
+      if (sourceListID !== destinationListID) {
+        const listItemID = draggableId;
+        const listItemMoved = listItems.find(
+          (e) => e.listItemID === draggableId
+        );
+        const destinationList = lists.find(
+          (e) => e.listID === destinationListID
+        );
+        // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
+        // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+        // which may be determined by other sort options (title, date, tags etc.)
+        const listItemsSortedByOriginalManualOrders = h.sortItems(
+          listItems,
+          'manualOrder',
+          'ascending'
+        );
+        const newMOrders = h.updatedManualOrdersOnSourceList(
+          // listItems,
+          listItemsSortedByOriginalManualOrders,
+          listItemID
+        );
+        // update listItems in state
+        setListItems(newMOrders);
+        // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
+        // fetch the highest manual order value present on this List
+        try {
+          const maxManualOrderOnDestinationList =
+            await u.getMaxManualOrderByParentID(destinationListID);
+          const updates = {
+            parentID: destinationListID,
+            manualOrder: maxManualOrderOnDestinationList + 1,
+          };
+          try {
+            // 🌐 update that item being moved accordingly
+            const updatedListItem = await u.patchListItem(listItemID, updates);
+            // now update remaining list items on db
+            try {
+              // 🌐
+              const multipleListItemsPatched = await u.patchMultipleListItems(
+                newMOrders
+              );
+              toast(
+                `Moved ${listItemMoved.title} to ${destinationList.title}`,
+                {
+                  duration: 2000,
+                }
+              );
+            } catch (error) {
+              console.error(error);
+            }
+          } catch (error) {}
+        } catch (error) {}
+      }
+    }
 
     // // ⭐ MOVE WITHIN A LIST
 
