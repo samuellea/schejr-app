@@ -290,7 +290,7 @@ function DateSelector({
       )}
       {showDeleteModal && (
         <ConfirmDeleteModal
-          message="Are you sure you want to delete this date / time?"
+          message="Delete this date / time?"
           handleCancel={handleCancelDeleteDate}
           handleConfirm={handleConfirmDeleteDate}
         />

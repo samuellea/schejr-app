@@ -85,21 +85,21 @@ function Home() {
       destination.droppableId.substring(0, 8) === 'planner-'
     ) {
       console.log('📋 MOVE FROM LIST TO PLANNER');
-      // const listItemID = draggableId; // listItemID
-      // const targetDate = destination.droppableId.slice(8); // day's date it's been dragged to - convert to 'timeless' ISO UTC date, ie. midnight of that date
-      // const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
-      // const isoDateUTC = dateMidnight.toISOString();
-      // const newEventObj = {
-      //   createdBy: userUID,
-      //   listItemID: listItemID,
-      //   startDateTime: isoDateUTC, // ISO 8601 UTC format
-      //   timeSet: false,
-      //   title: listItems.find((e) => e.listItemID === listItemID).title,
-      // };
-      // const listItem = listItems.find((e) => e.listItemID === listItemID);
-      // console.log(listItem, '<-- listItem to add this .date to');
-      // await handleEvents('create', newEventObj, listItem);
-      // return;
+      const listItemID = draggableId; // listItemID
+      const targetDate = destination.droppableId.slice(8); // day's date it's been dragged to - convert to 'timeless' ISO UTC date, ie. midnight of that date
+      const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
+      const isoDateUTC = dateMidnight.toISOString();
+      const newEventObj = {
+        createdBy: userUID,
+        listItemID: listItemID,
+        startDateTime: isoDateUTC, // ISO 8601 UTC format
+        timeSet: false,
+        title: listItems.find((e) => e.listItemID === listItemID).title,
+      };
+      const listItem = listItems.find((e) => e.listItemID === listItemID);
+      console.log(listItem, '<-- listItem to add this .date to');
+      await handleEvents('create', newEventObj, listItem);
+      return;
     }
 
     // dragging an event between days on the Planner
@@ -108,26 +108,26 @@ function Home() {
       destination.droppableId.substring(0, 8) === 'planner-'
     ) {
       console.log('📅 MOVE BETWEEN DAYS ON PLANNER');
-      // const targetDate = destination.droppableId.slice(8);
-      // const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
-      // const isoDateUTC = dateMidnight.toISOString();
-      // const draggedEventID = draggableId;
-      // // the event obj will ALWAYS be in 'events' state - you can't be DnDing it on the Planner if it's not!
-      // const eventToUpdate = events.find((e) => e.eventID === draggedEventID);
-      // const updatedEventObj = {
-      //   ...eventToUpdate,
-      //   startDateTime: isoDateUTC,
-      // };
-      // // the listItem obj? That WON'T always be in 'listItems' state. We could be moving an Event linked to a ListItem that's not being rendered in <List />
-      // // So, get it using 'listItemIDForEvent'
-      // const listItemIDForEvent = eventToUpdate.listItemID;
-      // const listItemForEvent = await u.fetchListItemById(listItemIDForEvent);
-      // const plusExplicitID = {
-      //   ...listItemForEvent,
-      //   listItemID: listItemIDForEvent,
-      // };
-      // await handleEvents('update', updatedEventObj, plusExplicitID);
-      // return;
+      const targetDate = destination.droppableId.slice(8);
+      const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
+      const isoDateUTC = dateMidnight.toISOString();
+      const draggedEventID = draggableId;
+      // the event obj will ALWAYS be in 'events' state - you can't be DnDing it on the Planner if it's not!
+      const eventToUpdate = events.find((e) => e.eventID === draggedEventID);
+      const updatedEventObj = {
+        ...eventToUpdate,
+        startDateTime: isoDateUTC,
+      };
+      // the listItem obj? That WON'T always be in 'listItems' state. We could be moving an Event linked to a ListItem that's not being rendered in <List />
+      // So, get it using 'listItemIDForEvent'
+      const listItemIDForEvent = eventToUpdate.listItemID;
+      const listItemForEvent = await u.fetchListItemById(listItemIDForEvent);
+      const plusExplicitID = {
+        ...listItemForEvent,
+        listItemID: listItemIDForEvent,
+      };
+      await handleEvents('update', updatedEventObj, plusExplicitID);
+      return;
     }
 
     // // ⭐ MOVE TO DIFFERENT LIST
@@ -136,65 +136,65 @@ function Home() {
       destination.droppableId.substring(0, 20) === 'droppableListButton-'
     ) {
       console.log('⭐ MOVE TO DIFFERENT LIST');
-      // const sourceListID = source.droppableId.substring(5);
-      // console.log(sourceListID);
-      // const destinationListID = destination.droppableId; // id of the List you're moving it to
-      // console.log(destinationListID);
-      // // check that not trying to drag a list item to the list it's already on
-      // if (sourceListID !== destinationListID) {
-      //   const listItemID = draggableId;
-      //   const listItemMoved = listItems.find(
-      //     (e) => e.listItemID === draggableId
-      //   );
-      //   const destinationList = lists.find(
-      //     (e) => e.listID === destinationListID
-      //   );
-      //   // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
-      //   // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
-      //   // which may be determined by other sort options (title, date, tags etc.)
-      //   const listItemsSortedByOriginalManualOrders = h.sortItems(
-      //     listItems,
-      //     'manualOrder',
-      //     'ascending'
-      //   );
-      //   const newMOrders = h.updatedManualOrdersOnSourceList(
-      //     // listItems,
-      //     listItemsSortedByOriginalManualOrders,
-      //     listItemID
-      //   );
-      //   // update listItems in state
-      //   setListItems(newMOrders);
-      //   // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
-      //   // fetch the highest manual order value present on this List
-      //   try {
-      //     const maxManualOrderOnDestinationList =
-      //       await u.getMaxManualOrderByParentID(destinationListID);
-      //     const updates = {
-      //       parentID: destinationListID,
-      //       manualOrder: maxManualOrderOnDestinationList + 1,
-      //     };
-      //     try {
-      //       // 🌐 update that item being moved accordingly
-      //       const updatedListItem = await u.patchListItem(listItemID, updates);
-      //       // now update remaining list items on db
-      //       try {
-      //         // 🌐
-      //         const multipleListItemsPatched = await u.patchMultipleListItems(
-      //           newMOrders
-      //         );
-      //         toast(
-      //           `Moved ${listItemMoved.title} to ${destinationList.title}`,
-      //           {
-      //             duration: 2000,
-      //           }
-      //         );
-      //         return;
-      //       } catch (error) {
-      //         console.error(error);
-      //       }
-      //     } catch (error) {}
-      //   } catch (error) {}
-      // }
+      const sourceListID = source.droppableId.substring(5);
+      console.log(sourceListID);
+      const destinationListID = destination.droppableId; // id of the List you're moving it to
+      console.log(destinationListID);
+      // check that not trying to drag a list item to the list it's already on
+      if (sourceListID !== destinationListID) {
+        const listItemID = draggableId;
+        const listItemMoved = listItems.find(
+          (e) => e.listItemID === draggableId
+        );
+        const destinationList = lists.find(
+          (e) => e.listID === destinationListID
+        );
+        // Remove item being moved and reset the .manualOrders of all remaning items on the list it's being moved FROM
+        // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+        // which may be determined by other sort options (title, date, tags etc.)
+        const listItemsSortedByOriginalManualOrders = h.sortItems(
+          listItems,
+          'manualOrder',
+          'ascending'
+        );
+        const newMOrders = h.updatedManualOrdersOnSourceList(
+          // listItems,
+          listItemsSortedByOriginalManualOrders,
+          listItemID
+        );
+        // update listItems in state
+        setListItems(newMOrders);
+        // then set .manualOrder on item being moved to new list as the HIGHEST on the destination list -
+        // fetch the highest manual order value present on this List
+        try {
+          const maxManualOrderOnDestinationList =
+            await u.getMaxManualOrderByParentID(destinationListID);
+          const updates = {
+            parentID: destinationListID,
+            manualOrder: maxManualOrderOnDestinationList + 1,
+          };
+          try {
+            // 🌐 update that item being moved accordingly
+            const updatedListItem = await u.patchListItem(listItemID, updates);
+            // now update remaining list items on db
+            try {
+              // 🌐
+              const multipleListItemsPatched = await u.patchMultipleListItems(
+                newMOrders
+              );
+              toast(
+                `Moved ${listItemMoved.title} to ${destinationList.title}`,
+                {
+                  duration: 2000,
+                }
+              );
+              return;
+            } catch (error) {
+              console.error(error);
+            }
+          } catch (error) {}
+        } catch (error) {}
+      }
     }
 
     // // 🌲 MOVE WITHIN A LIST
@@ -204,79 +204,79 @@ function Home() {
       destination.droppableId.substring(0, 5) === 'list-'
     ) {
       console.log('🌲 MOVE WITHIN A LIST');
-      //   const listID = destination.droppableId.substring(5);
-      //   const possibleSort = lists.find((e) => e.listID === listID).sortOn;
+      const listID = destination.droppableId.substring(5);
+      const possibleSort = lists.find((e) => e.listID === listID).sortOn;
 
-      //   const listItemID = draggableId;
-      //   const startIndex = source.index; // NO - if a filter's been applied it SHOULDN'T be this, should be the dragged obj's original .manualOrder value
-      //   const destinationIndex = destination.index;
+      const listItemID = draggableId;
+      const startIndex = source.index; // NO - if a filter's been applied it SHOULDN'T be this, should be the dragged obj's original .manualOrder value
+      const destinationIndex = destination.index;
 
-      //   // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
-      //   // which may be determined by other sort options (title, date, tags etc.)
+      // First making sure to re-sort listItems based on manualOrders, so you dont reassign manualOrders based on their index positions
+      // which may be determined by other sort options (title, date, tags etc.)
 
-      //   if (possibleSort !== 'manualOrder') {
-      //     // if a sort is present on the List object, could intervene here -
-      //     // eslint-disable-next-line no-restricted-globals
-      //     const userResponse = confirm('Do you want to remove sorting?');
-      //     // Check the user's response
-      //     if (userResponse) {
-      //       // update list obj in state to have .sortOn = 'manualOrder' and .order = 'ascending'
-      //       const selectedList = lists.find((e) => e.listID === selectedListID);
-      //       const indexOfListInLists = lists.findIndex(
-      //         (e) => e.listID === selectedListID
-      //       );
-      //       const updatedLists = [...lists];
-      //       const updatedList = {
-      //         ...selectedList,
-      //         sortOn: 'manualOrder',
-      //         order: 'ascending',
-      //       };
-      //       updatedLists.splice(indexOfListInLists, 1, updatedList);
-      //       setLists(updatedLists);
-      //       // then reset listItems in state to be sorted in that way
-      //       const listItemsSortedByOriginalManualOrders = h.sortItems(
-      //         listItems,
-      //         'manualOrder',
-      //         'ascending'
-      //       );
+      if (possibleSort !== 'manualOrder') {
+        // if a sort is present on the List object, could intervene here -
+        // eslint-disable-next-line no-restricted-globals
+        const userResponse = confirm('Do you want to remove sorting?');
+        // Check the user's response
+        if (userResponse) {
+          // update list obj in state to have .sortOn = 'manualOrder' and .order = 'ascending'
+          const selectedList = lists.find((e) => e.listID === selectedListID);
+          const indexOfListInLists = lists.findIndex(
+            (e) => e.listID === selectedListID
+          );
+          const updatedLists = [...lists];
+          const updatedList = {
+            ...selectedList,
+            sortOn: 'manualOrder',
+            order: 'ascending',
+          };
+          updatedLists.splice(indexOfListInLists, 1, updatedList);
+          setLists(updatedLists);
+          // then reset listItems in state to be sorted in that way
+          const listItemsSortedByOriginalManualOrders = h.sortItems(
+            listItems,
+            'manualOrder',
+            'ascending'
+          );
 
-      //       setListItems(listItemsSortedByOriginalManualOrders);
-      //       // then update the list obj on the database with these reset .sortOn and .order values. AND STOP THERE!
-      //       try {
-      //         // 🌐 then update List on database with default sortOn and order
-      //         const { listID: unneededListID, ...rest } = selectedList;
-      //         const updatedList = {
-      //           ...rest,
-      //           sortOn: 'manualOrder',
-      //           order: 'ascending',
-      //         };
-      //         // setLists with updated List object on front-end!
-      //         return await u.patchList(selectedList.listID, updatedList);
-      //       } catch (error) {
-      //         console.error(error);
-      //       }
-      //     } else {
-      //       return;
-      //     }
-      //   } else {
-      //     // no custom sort is applied, allow dragging and dropping of listItems within a list to change their .manualOrder
-      //     const { newMOrders, onlyChanged } = h.updatedManualOrders(
-      //       listItems,
-      //       startIndex,
-      //       destinationIndex
-      //     );
-      //     // update listItems in state
+          setListItems(listItemsSortedByOriginalManualOrders);
+          // then update the list obj on the database with these reset .sortOn and .order values. AND STOP THERE!
+          try {
+            // 🌐 then update List on database with default sortOn and order
+            const { listID: unneededListID, ...rest } = selectedList;
+            const updatedList = {
+              ...rest,
+              sortOn: 'manualOrder',
+              order: 'ascending',
+            };
+            // setLists with updated List object on front-end!
+            return await u.patchList(selectedList.listID, updatedList);
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          return;
+        }
+      } else {
+        // no custom sort is applied, allow dragging and dropping of listItems within a list to change their .manualOrder
+        const { newMOrders, onlyChanged } = h.updatedManualOrders(
+          listItems,
+          startIndex,
+          destinationIndex
+        );
+        // update listItems in state
 
-      //     setListItems(newMOrders);
-      //     try {
-      //       // 🌐 then update database
-      //       const multipleListItemsPatched = await u.patchMultipleListItems(
-      //         onlyChanged
-      //       );
-      //     } catch (error) {
-      //       console.error(error);
-      //     }
-      //   }
+        setListItems(newMOrders);
+        try {
+          // 🌐 then update database
+          const multipleListItemsPatched = await u.patchMultipleListItems(
+            onlyChanged
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
 
     if (

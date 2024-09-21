@@ -51,7 +51,7 @@ function ListButton({
       </div>
       {showDeleteModal ? (
         <ConfirmDeleteModal
-          message="Are you sure you want to delete this list?"
+          message="Delete this list?"
           handleConfirm={() => handleConfirmDeleteList()}
           handleCancel={() => setShowDeleteModal(false)}
           confirmLabel="Delete"

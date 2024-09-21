@@ -136,7 +136,14 @@ function TagOptions({
       ))}
       {showDeleteModal ? (
         <ConfirmDeleteModal
-          message={`Are you sure you want to delete this tag? \n It will be removed from all lists & items that use it.`}
+          message={
+            <span style={{ display: 'flex', flexDirection: 'column' }}>
+              <span>Delete this tag?</span>
+              <span>
+                It will be removed from all lists, items & events that use it.
+              </span>
+            </span>
+          }
           handleConfirm={() => handleDeleteTag(tag.tagID)}
           handleCancel={() => setShowDeleteModal(false)}
           confirmLabel="Delete"
