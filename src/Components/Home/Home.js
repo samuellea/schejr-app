@@ -95,6 +95,7 @@ function Home() {
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: false,
         title: listItems.find((e) => e.listItemID === listItemID).title,
+        tags: listItems.find((e) => e.listItemID === listItemID).tags,
       };
       const listItem = listItems.find((e) => e.listItemID === listItemID);
       console.log(listItem, '<-- listItem to add this .date to');
@@ -458,23 +459,31 @@ function Home() {
   */
 
   const updateListItem = async (listItem, field, value) => {
-    // update the List Item in state first 🍰🧾
+    console.log('ULI');
     const indexOfListItemInListItems = listItems.findIndex(
       (item) => item.listItemID === listItem.listItemID
     );
     const updatedListItem = { ...listItem, [field]: value }; // we're spreading in a passed-in listItemID coming in as listItem, not the intended listITem object
 
-    // if field === 'title' and listItem has .dates, we need to change the .title of any .dates objectscts
-    if (field === 'title' && listItem.dates?.length) {
+    // update the List Item in state first 🍰🧾 IF IT EXISTS in state
+    if (indexOfListItemInListItems !== -1) {
+      console.log('🍰🧾');
+      const updatedListItems = [...listItems];
+      updatedListItems[indexOfListItemInListItems] = updatedListItem;
+      setListItems(updatedListItems);
+    }
+
+    // if field === 'title' and listItem has .dates, we need to change the .title of any .dates objects AND events db and state objects
+    if ((field === 'title' || field === 'tags') && listItem.dates?.length) {
       const updatedDates = listItem.dates.map((date) => ({
         ...date,
-        title: value,
+        [field]: value,
       }));
       updatedListItem.dates = updatedDates;
       // 🌐🧾 + 🍰🧾 <-- handled after this 'if' block
       // 🌐🎉 and consqtly their associated /events objects on DB
       const datesEventIDs = listItem.dates.map((date) => date.eventID);
-      await u.patchMultipleEventsOnKey(datesEventIDs, userUID, 'title', value);
+      await u.patchMultipleEventsOnKey(datesEventIDs, userUID, field, value);
       // 🍰🎉 then, if any of these events are in 'events' state, update these event objs in state too (so Planner UI reflects changes)
       const eventsEventIDs = events.map((event) => event.eventID);
       const eventIDSet = new Set(eventsEventIDs);
@@ -484,18 +493,13 @@ function Home() {
       );
       const eventsUpdatedTitle = eventsToUpdate.map((e) => ({
         ...e,
-        title: value,
+        [field]: value,
       }));
       const otherEvents = events.filter((obj) => !eventIDSet.has(obj.eventID));
-
       const updatedStateEvents = [...otherEvents, ...eventsUpdatedTitle];
       setEvents(updatedStateEvents);
     }
 
-    const updatedListItems = [...listItems];
-    updatedListItems[indexOfListItemInListItems] = updatedListItem;
-
-    setListItems(updatedListItems);
     // then, remove the listItemID prior to patching the List Item on the db 🌐🧾
     const { listItemID: unneededListItemID, ...rest } = updatedListItem;
     const updatedListItemMinusExplicitID = { ...rest };
@@ -540,6 +544,30 @@ function Home() {
       }
     } catch (error) {
       console.error('Failed to update list item:', error);
+    }
+  };
+
+  const handleOtherEventFields = async (field, eventData, listItem) => {
+    const { eventID, ...restOfEvent } = eventData;
+    const updatedEventDBObj = { ...restOfEvent };
+    // 🌐🎉  FIRST update existing EVENT /events
+    await u.patchEventByID(userUID, eventData.eventID, updatedEventDBObj);
+    // 🍰🎉then, if the EVENT we updated is in 'events' state, update that EVENT obj there too
+    const updatedEventInState = events.find(
+      (e) => e.eventID === eventData.eventID
+    );
+    if (updatedEventInState) {
+      const stateEventsMinusUpdated = events.filter(
+        (e) => e.eventID !== eventData.eventID
+      ); // eventData still has explicit eventID, as req'd in events state
+      const updatedStateEvents = [...stateEventsMinusUpdated, eventData];
+      setEvents(updatedStateEvents);
+    }
+
+    if (field === 'tags') {
+      // update listItem's .tags in state
+      // update listItem's .tags on DB
+      updateListItem(listItem, 'tags', eventData.tags);
     }
   };
 
@@ -695,6 +723,7 @@ function Home() {
           viewMonth={viewMonth}
           setViewMonth={setViewMonth}
           handleEvents={handleEvents}
+          handleOtherEventFields={handleOtherEventFields}
         />
         <Sidebar
           userUID={userUID}

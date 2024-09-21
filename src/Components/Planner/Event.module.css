@@ -158,3 +158,33 @@
   margin-left: 2px;
   color: rgb(190, 190, 190);
 }
+
+.tagsContainer {
+  /* border: 1px solid cyan; */
+  min-width: 0; /* Prevent from growing beyond available space */
+  /* background-color: blue; */
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  /* padding: 0px 6px; */
+  /* margin-right: 8px; */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  margin-bottom: 4px;
+}
+
+.tag {
+  color: white;
+  padding: 0px 6px;
+  margin: 0px 6px 0px 0px;
+  border-radius: 3px;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}

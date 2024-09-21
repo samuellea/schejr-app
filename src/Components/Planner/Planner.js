@@ -15,6 +15,9 @@ function Planner({
   viewMonth,
   setViewMonth,
   handleEvents,
+  existingTags,
+  setExistingTags,
+  handleOtherEventFields,
 }) {
   const [dates, setDates] = useState([]);
 
@@ -112,6 +115,9 @@ function Planner({
                     key={`day-${date.date}`}
                     events={events}
                     handleEvents={handleEvents}
+                    existingTags={existingTags}
+                    setExistingTags={setExistingTags}
+                    handleOtherEventFields={handleOtherEventFields}
                   />
                 );
               })}

@@ -4,9 +4,21 @@ import CloseIcon from '../Icons/CloseIcon';
 import TrashIcon from '../Icons/TrashIcon';
 import DateSelector from '../DateSelector/DateSelector';
 import * as u from '../../utils';
+import TagSelector from '../TagSelector/TagSelector';
+import EventTagSelector from '../TagSelector/EventTagSelector';
 
-function EventEditPane({ event, handleStopEditing, handleEvents }) {
+function EventEditPane({
+  event,
+  handleStopEditing,
+  handleEvents,
+  handleOtherEventFields,
+  existingTags,
+  setExistingTags,
+}) {
   const [listItem, setListItem] = useState(null);
+  const [eventTitle, setEventTitle] = useState(event.title);
+
+  const userUID = localStorage.getItem('firebaseID');
 
   useEffect(() => {
     const fetchListItem = async () => {
@@ -41,6 +53,10 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
     };
   }, []);
 
+  const handleTitleChange = (e) => {
+    setEventTitle(e.target.value);
+  };
+
   return (
     <div className={styles.eventEditPaneBackground}>
       {listItem ? (
@@ -49,8 +65,31 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
           ref={eventEditRef}
           key={`eventEditPane-${event.eventID}`}
         >
-          <div className={styles.fields}>
-            <div className={styles.datepicker}>
+          <div className={styles.field}>
+            <div className={styles.eventTitle}>
+              <input
+                type="text"
+                placeholder={event.title}
+                value={eventTitle}
+                onChange={(e) => handleTitleChange(e)}
+              />
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <div className={styles.eventTags}>
+              <EventTagSelector
+                userUID={userUID}
+                listItem={listItem}
+                event={event}
+                handleOtherEventFields={handleOtherEventFields}
+                existingTags={existingTags}
+                setExistingTags={setExistingTags}
+              />
+            </div>
+          </div>
+
+          {/* <div className={styles.datepicker}>
               <DateSelector
                 type="standalone"
                 date={listItem.dates.find((e) => e.eventID === event.eventID)}
@@ -60,8 +99,7 @@ function EventEditPane({ event, handleStopEditing, handleEvents }) {
                 closeButton={true}
                 handleCancel={handleStopEditing}
               />
-            </div>
-          </div>
+            </div> */}
         </div>
       ) : (
         <h4>Loading...</h4>

@@ -24,6 +24,7 @@ function MainArea({
   setEvents,
   viewMonth,
   setViewMonth,
+  handleOtherEventFields,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -153,6 +154,9 @@ function MainArea({
         viewMonth={viewMonth}
         setViewMonth={setViewMonth}
         handleEvents={handleEvents}
+        existingTags={existingTags}
+        setExistingTags={setExistingTags}
+        handleOtherEventFields={handleOtherEventFields}
       />
       {/* ) : null} */}
     </div>

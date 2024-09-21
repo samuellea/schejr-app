@@ -15,16 +15,17 @@
 
 .eventEditPane {
   /* box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12); */
-  /* background-color: rgb(38, 38, 38); */
-  background: none;
+  background-color: rgb(38, 38, 38);
+  /* background: none; */
   border-radius: 6px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 258px;
-  height: 320px;
+  width: 75%;
+  min-width: 400px;
+  /* height: 320px; */
   /* padding: 10px 0px 12px 0px; */
   font-size: 16px;
   line-height: 1.5;
@@ -67,11 +68,14 @@
 .trashButton {
 }
 
-.fields {
+.field {
   padding: 12px 18px 8px 18px;
   width: 100%;
   box-sizing: border-box;
-  /* border: 1px solid red; */
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 .title {

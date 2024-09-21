@@ -10,7 +10,16 @@ import * as u from '../../utils';
 import { Draggable } from '@hello-pangea/dnd';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
-function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
+function Event({
+  event,
+  editEvent,
+  setEditEvent,
+  handleEvents,
+  index,
+  existingTags,
+  setExistingTags,
+  handleOtherEventFields,
+}) {
   const { timeSet, title, startDateTime } = event;
 
   const [showOptions, setShowOptions] = useState(false);
@@ -99,6 +108,24 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
                 <EllipsisIcon fill="#9b9b9b" width="16px" />
               </div>
             </div>
+            <div className={styles.tagsContainer} id="flexidiv">
+              {event.tags?.length
+                ? event.tags?.map((tag) => {
+                    const matchingTag = existingTags?.find(
+                      (existingTag) => existingTag.tagID === tag
+                    );
+                    return (
+                      <div
+                        className={styles.tag}
+                        key={`list-item-inner-${tag}`}
+                        style={{ backgroundColor: matchingTag?.color }}
+                      >
+                        {matchingTag?.name}
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
             {timeSet ? (
               <div className={styles.eventTime}>
                 <ClockIcon width="16px" fill="white" />
@@ -112,6 +139,9 @@ function Event({ event, editEvent, setEditEvent, handleEvents, index }) {
               handleStopEditing={handleStopEditing}
               handleEvents={handleEvents}
               key={event.eventID}
+              handleOtherEventFields={handleOtherEventFields}
+              existingTags={existingTags}
+              setExistingTags={setExistingTags}
             />
           ) : null}
           {showDeleteModal ? (

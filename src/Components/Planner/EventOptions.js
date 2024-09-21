@@ -29,7 +29,7 @@ function EventOptions({
     <div className={styles.eventOptionsMenu} ref={optionsRef}>
       <div className={styles.eventOptionsMenuButton} onClick={handleEdit}>
         <EditIcon fill="white" width="16px" marginTop="0px" />
-        <span>Change Date / Time</span>
+        <span>Edit</span>
       </div>
       <div className={styles.eventOptionsMenuButton} onClick={handleDuplicate}>
         <DuplicateIcon fill="white" width="16px" />
