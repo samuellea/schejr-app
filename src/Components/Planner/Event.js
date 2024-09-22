@@ -46,7 +46,9 @@ function Event({
     // const { eventID, ...restOfEvent } = event;
     // const duplicateEventObj = { ...restOfEvent };
     // await handleEvents('create', duplicateEventObj, plusExplicitID);
-    await handleEntities.createDateAndEvent(event);
+    const { eventID, ...rest } = event;
+    const eventMinusExplicit = { ...rest };
+    await handleEntities.createDateAndEvent(eventMinusExplicit);
   };
 
   const handleStartDelete = () => {

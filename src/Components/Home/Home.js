@@ -41,6 +41,56 @@ function Home() {
     } catch (error) {}
   };
 
+  const createDateAndEvent = async (newEventData) => {
+    console.log(newEventData);
+    // find list item if in state, or fetch from DB if not
+    let parentListItem;
+    const listItemInState = listItems.find(
+      (e) => e.listItemID === newEventData?.listItemID
+    );
+    // console.log(listItemInState);
+    if (listItemInState) {
+      parentListItem = listItemInState;
+    } else {
+      parentListItem = await u.fetchListItemById(newEventData.listItemID);
+    }
+    // create new event on db
+    const newEventID = await u.createNewEvent(userUID, newEventData);
+    // add new event to state (if it should be in state, ie. Planner open ie. if viewMonth is same month as event) - add .eventID key
+    const eventMonth = new Date(newEventData.startDateTime).getMonth();
+    const eventYear = new Date(newEventData.startDateTime).getFullYear();
+    const plannerMonth = viewMonth.getMonth();
+    const plannerYear = viewMonth.getFullYear();
+    const plannerOpenOnEventYearMonth =
+      eventMonth === plannerMonth && eventYear === plannerYear;
+    const newEventPlusExplicit = { ...newEventData, eventID: newEventID };
+    if (plannerOpenOnEventYearMonth) {
+      const updatedEvents = [...(events || []), newEventPlusExplicit];
+      setEvents(updatedEvents);
+    }
+    // add date obj to listItem .dates - with added .eventID key
+    const updatedListItem = {
+      ...parentListItem,
+      dates: [...parentListItem.dates, newEventPlusExplicit],
+    };
+    // update the list item in state (if in state)
+    if (listItemInState) {
+      const listItemsMinusUpdated = listItems.filter(
+        (e) => e.listItemID !== updatedListItem.listItemID
+      );
+      const updatedListItems = [...listItemsMinusUpdated, updatedListItem];
+      setListItems(updatedListItems);
+    }
+    // update the list item on db (remove explicit listItemID)
+    const { listItemID, ...rest } = updatedListItem;
+    const listItemMinusExplicit = { ...rest };
+    await u.patchListItem(updatedListItem.listItemID, listItemMinusExplicit);
+  };
+
+  const handleEntities = {
+    createDateAndEvent,
+  };
+
   const onDragEnd = async (result) => {
     // console.log('onDragEnd!');
     const { destination, source, draggableId, droppableId } = result;
@@ -469,50 +519,6 @@ function Home() {
  handleEntities.delete.event()
  
   */
-
-  const createDateAndEvent = async (newEventData) => {
-    // find list item if in state, or fetch from DB if not
-    let parentListItem;
-    const listItemInState = listItems.find(
-      (e) => e.listItemID === newEventData?.listItemID
-    );
-    // console.log(listItemInState);
-    if (listItemInState) {
-      parentListItem = listItemInState;
-    } else {
-      parentListItem = await u.fetchListItemById(newEventData.listItemID);
-    }
-    // create new event on db
-    const newEventID = await u.createNewEvent(userUID, newEventData);
-    // add new event to state (if it should be in state, ie. Planner open ie. if viewMonth is same month as event) (remove explicit eventID)
-    const eventMonth = new Date(newEventData.startDateTime).getMonth();
-    if (eventMonth === viewMonth) {
-      const updatedEvents = [...(events || []), newEventData];
-      setEvents(updatedEvents);
-    }
-    // add date obj to listItem .dates - add .eventID key
-    const newEventDataPlusExplicit = { ...newEventData, eventID: newEventID };
-    const updatedListItem = {
-      ...parentListItem,
-      dates: [...parentListItem.dates, newEventDataPlusExplicit],
-    };
-    // update the list item in state (if in state)
-    if (listItemInState) {
-      const listItemsMinusUpdated = listItems.filter(
-        (e) => e.listItemID !== updatedListItem.listItemID
-      );
-      const updatedListItems = [...listItemsMinusUpdated, updatedListItem];
-      setListItems(updatedListItems);
-    }
-    // update the list item on db (remove explicit listItemID)
-    const { listItemID, ...rest } = updatedListItem;
-    const listItemMinusExplicit = { ...rest };
-    await u.patchListItem(updatedListItem.listItemID, listItemMinusExplicit);
-  };
-
-  const handleEntities = {
-    createDateAndEvent,
-  };
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);

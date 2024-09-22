@@ -20,7 +20,7 @@ const Day = forwardRef(
       handleEvents,
       existingTags,
       setExistingTags,
-      handleOtherEventFields,
+      handleEntities,
     },
     ref
   ) => {
@@ -96,7 +96,7 @@ const Day = forwardRef(
                   index={i}
                   existingTags={existingTags}
                   setExistingTags={setExistingTags}
-                  handleOtherEventFields={handleOtherEventFields}
+                  handleEntities={handleEntities}
                 />
               );
             })}
