@@ -17,7 +17,7 @@ function Planner({
   handleEvents,
   existingTags,
   setExistingTags,
-  handleOtherEventFields,
+  handleEntities,
 }) {
   const [dates, setDates] = useState([]);
 
@@ -117,7 +117,7 @@ function Planner({
                     handleEvents={handleEvents}
                     existingTags={existingTags}
                     setExistingTags={setExistingTags}
-                    handleOtherEventFields={handleOtherEventFields}
+                    handleEntities={handleEntities}
                   />
                 );
               })}

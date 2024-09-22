@@ -15,6 +15,7 @@ function ListItem({
   existingTags,
   deleteListItem,
   updateListItem,
+  handleEntities,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -25,7 +26,8 @@ function ListItem({
   };
 
   const handleTitleOnBlur = () => {
-    updateListItem(listItem, 'title', listItemRenameText);
+    // updateListItem(listItem, 'title', listItemRenameText);
+    handleEntities(listItem, 'title', listItemRenameText);
   };
 
   useEffect(() => {

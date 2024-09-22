@@ -11,8 +11,9 @@ function MainArea({
   showSidebar,
   selectedList,
   updateList,
-  updateListItem,
-  handleEvents,
+  handleEntities,
+  // updateListItem,
+  // handleEvents,
   userUID,
   listItems,
   setListItems,
@@ -24,7 +25,7 @@ function MainArea({
   setEvents,
   viewMonth,
   setViewMonth,
-  handleOtherEventFields,
+  // handleOtherEventFields,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -107,7 +108,7 @@ function MainArea({
         <List
           selectedList={selectedList}
           updateList={updateList}
-          updateListItem={updateListItem}
+          // updateListItem={updateListItem}
           userUID={userUID}
           listItems={listItems}
           setListItems={setListItems}
@@ -115,7 +116,8 @@ function MainArea({
           existingTags={existingTags}
           showPlanner={showPlanner}
           togglePlanner={togglePlanner}
-          handleEvents={handleEvents}
+          // handleEvents={handleEvents}
+          handleEntities={handleEntities}
         />
       ) : (
         <div className={styles.emptyMessage}>
@@ -134,13 +136,14 @@ function MainArea({
           setListItems={setListItems}
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
-          updateListItem={updateListItem}
-          handleEvents={handleEvents}
+          // updateListItem={updateListItem}
+          // handleEvents={handleEvents}
           // fetchTags={fetchTags}
           existingTags={existingTags}
           setExistingTags={setExistingTags}
           syncWithGCal={syncWithGCal}
           handleSetSyncWithGCal={handleSetSyncWithGCal}
+          handleEntities={handleEntities}
         />
       ) : null}
       {/* {showPlanner ? ( */}
@@ -153,10 +156,11 @@ function MainArea({
         setEvents={setEvents}
         viewMonth={viewMonth}
         setViewMonth={setViewMonth}
-        handleEvents={handleEvents}
+        // handleEvents={handleEvents}
         existingTags={existingTags}
         setExistingTags={setExistingTags}
-        handleOtherEventFields={handleOtherEventFields}
+        // handleOtherEventFields={handleOtherEventFields}
+        handleEntities={handleEntities}
       />
       {/* ) : null} */}
     </div>

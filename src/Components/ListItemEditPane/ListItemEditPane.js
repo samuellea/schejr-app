@@ -15,13 +15,13 @@ function ListItemEditPane({
   setListItems,
   handleCloseEditPane,
   userUID,
-  updateListItem,
-  handleEvents,
+  // updateListItem,
   // fetchTags,
   existingTags,
   setExistingTags,
   syncWithGCal,
   handleSetSyncWithGCal,
+  handleEntities,
 }) {
   // title is locked in here - so DateSelector wont recieve
   const [listItem, setListItem] = useState(
@@ -36,11 +36,11 @@ function ListItemEditPane({
   };
 
   const handleTitleOnBlur = () => {
-    updateListItem(listItem, 'title', listItemRenameText);
+    // updateListItem(listItem, 'title', listItemRenameText);
   };
 
   const handleNotesOnBlur = () => {
-    updateListItem(listItem, 'notes', notesText);
+    // updateListItem(listItem, 'notes', notesText);
   };
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function ListItemEditPane({
         <TagSelector
           userUID={userUID}
           listItem={listItem}
-          updateListItem={updateListItem}
+          // updateListItem={updateListItem}
           // fetchTags={fetchTags}
           existingTags={existingTags}
           setExistingTags={setExistingTags}
@@ -140,7 +140,7 @@ function ListItemEditPane({
                   type="field"
                   date={date}
                   listItem={listItem}
-                  handleEvents={handleEvents}
+                  handleEntities={handleEntities}
                 />
               </div>
             ))}
@@ -160,7 +160,7 @@ function ListItemEditPane({
         <DateSelector
           type="field"
           listItem={listItem}
-          handleEvents={handleEvents}
+          handleEntities={handleEntities}
         />
       </div>
 

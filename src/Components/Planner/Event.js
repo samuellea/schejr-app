@@ -18,7 +18,7 @@ function Event({
   index,
   existingTags,
   setExistingTags,
-  handleOtherEventFields,
+  handleEntities,
 }) {
   const { timeSet, title, startDateTime } = event;
 
@@ -38,15 +38,15 @@ function Event({
 
   const handleDuplicate = async () => {
     setShowOptions(false);
-    const listItemForEvent = await u.fetchListItemById(event.listItemID);
-    const plusExplicitID = {
-      ...listItemForEvent,
-      listItemID: event.listItemID,
-    };
-    const { eventID, ...restOfEvent } = event;
-    const duplicateEventObj = { ...restOfEvent };
-
-    await handleEvents('create', duplicateEventObj, plusExplicitID);
+    // const listItemForEvent = await u.fetchListItemById(event.listItemID);
+    // const plusExplicitID = {
+    //   ...listItemForEvent,
+    //   listItemID: event.listItemID,
+    // };
+    // const { eventID, ...restOfEvent } = event;
+    // const duplicateEventObj = { ...restOfEvent };
+    // await handleEvents('create', duplicateEventObj, plusExplicitID);
+    await handleEntities.createDateAndEvent(event);
   };
 
   const handleStartDelete = () => {
@@ -139,7 +139,7 @@ function Event({
               handleStopEditing={handleStopEditing}
               handleEvents={handleEvents}
               key={event.eventID}
-              handleOtherEventFields={handleOtherEventFields}
+              // handleOtherEventFields={handleOtherEventFields}
               existingTags={existingTags}
               setExistingTags={setExistingTags}
             />

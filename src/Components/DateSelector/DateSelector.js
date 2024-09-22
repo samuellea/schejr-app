@@ -15,7 +15,7 @@ function DateSelector({
   type,
   date,
   listItem,
-  handleEvents,
+  handleEntities,
   inFocus = false,
   closeButton = false,
   handleCancel = () => {},
@@ -53,7 +53,8 @@ function DateSelector({
         title: listItem.title,
         tags: listItem.tags,
       };
-      await handleEvents('create', newEventObj, listItem);
+      // await handleEvents('create', newEventObj, listItem);
+      await handleEntities.createDateAndEvent(newEventObj);
     } else {
       // FIRST update the EVENT obj
 
@@ -63,7 +64,7 @@ function DateSelector({
         timeSet: timeSet,
       };
 
-      await handleEvents('update', updatedEventObj, listItem);
+      // await handleEvents('update', updatedEventObj, listItem);
     }
     setIsInFocus(false);
   };
@@ -122,7 +123,7 @@ function DateSelector({
 
   const handleConfirmDeleteDate = async () => {
     // FIRST delete EVENT obj
-    await handleEvents('deleteOne', [{ eventID: date.eventID }], listItem);
+    // await handleEvents('deleteOne', [{ eventID: date.eventID }], listItem);
     setShowDeleteModal(false);
     setTimeSet(false);
     setStartDateTime(null);
