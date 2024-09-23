@@ -41,40 +41,55 @@ function Home() {
     } catch (error) {}
   };
 
-  const createDateAndEvent = async (newEventData) => {
-    console.log(newEventData);
-    // find list item if in state, or fetch from DB if not
-    let parentListItem;
-    const listItemInState = listItems.find(
-      (e) => e.listItemID === newEventData?.listItemID
-    );
+  const getRelatedListItem = async (listItemID) => {
+    let listItem;
+    const listItemInState = listItems.find((e) => e.listItemID === listItemID);
     // console.log(listItemInState);
     if (listItemInState) {
-      parentListItem = listItemInState;
+      listItem = listItemInState;
     } else {
-      parentListItem = await u.fetchListItemById(newEventData.listItemID);
+      listItem = await u.fetchListItemById(listItemID);
     }
+    return { obj: listItem, inState: listItemInState };
+  };
+
+  const getRelatedEvent = async (eventID) => {
+    let relatedEvent;
+    const eventInState = events.find((e) => e.eventID === eventID);
+    // console.log(eventInState);
+    if (eventInState) {
+      relatedEvent = eventInState;
+    } else {
+      relatedEvent = await u.fetchEventByID(userUID, eventID);
+    }
+    return { obj: relatedEvent, inState: eventInState };
+  };
+
+  const createDateAndEvent = async (newData) => {
+    // console.log(newData);
+    // 🙏 find list item if in state, or fetch from DB if not
+    const relatedListItem = await getRelatedListItem(newData.listItemID);
     // create new event on db
-    const newEventID = await u.createNewEvent(userUID, newEventData);
+    const newEventID = await u.createNewEvent(userUID, newData);
     // add new event to state (if it should be in state, ie. Planner open ie. if viewMonth is same month as event) - add .eventID key
-    const eventMonth = new Date(newEventData.startDateTime).getMonth();
-    const eventYear = new Date(newEventData.startDateTime).getFullYear();
+    const eventMonth = new Date(newData.startDateTime).getMonth();
+    const eventYear = new Date(newData.startDateTime).getFullYear();
     const plannerMonth = viewMonth.getMonth();
     const plannerYear = viewMonth.getFullYear();
     const plannerOpenOnEventYearMonth =
       eventMonth === plannerMonth && eventYear === plannerYear;
-    const newEventPlusExplicit = { ...newEventData, eventID: newEventID };
+    const newEventPlusExplicit = { ...newData, eventID: newEventID };
     if (plannerOpenOnEventYearMonth) {
       const updatedEvents = [...(events || []), newEventPlusExplicit];
       setEvents(updatedEvents);
     }
     // add date obj to listItem .dates - with added .eventID key
     const updatedListItem = {
-      ...parentListItem,
-      dates: [...parentListItem.dates, newEventPlusExplicit],
+      ...relatedListItem.obj,
+      dates: [...(relatedListItem.obj.dates || []), newEventPlusExplicit],
     };
     // update the list item in state (if in state)
-    if (listItemInState) {
+    if (relatedListItem.inState) {
       const listItemsMinusUpdated = listItems.filter(
         (e) => e.listItemID !== updatedListItem.listItemID
       );
@@ -87,8 +102,73 @@ function Home() {
     await u.patchListItem(updatedListItem.listItemID, listItemMinusExplicit);
   };
 
+  /* should handle changes to:
+    - listItem.title                            ListItem.js, ListItemEditPane.js
+    - listItem.tags                             ListItemEditPane.js
+    - listItem.dates > :date .startDateTime     ListItemEditPane.js > DateSelector.js
+    - event.title                               EventEditPane.js
+    - event.tags                                EventEditPane.js
+    - event.startDateTime                       onDragEnd, EventEditPane.js > EventDateSelector.js
+     */
+  const updateEntities = async (field, data) => {
+    // data can either be an updated Event or and updated listItem Date - keys identical, except Date has .eventID
+    // console.log(data);
+    if (field === 'startDateTime') {
+      const relatedListItem = await getRelatedListItem(data.listItemID); // .obj + .inState
+      const relatedEvent = await getRelatedEvent(data.eventID); // .obj + .inState
+      // update the ListItem to change corresp. date obj in .dates
+      const updatedDateObj = relatedListItem.obj.dates.find(
+        (e) => e.eventID === data.eventID
+      );
+      updatedDateObj.startDateTime = data.startDateTime;
+      updatedDateObj.timeSet = data.timeSet;
+      const listItemDatesMinusUpdated = relatedListItem.obj.dates.filter(
+        (e) => e.eventID !== data.eventID
+      );
+      const updatedListItem = {
+        ...relatedListItem.obj,
+        dates: [...listItemDatesMinusUpdated, updatedDateObj],
+      };
+      // console.log(relatedListItem);
+      // console.log(updatedListItem);
+      // set updatedListItem in 'listItems' state (if in there) (inc. .listItemID)
+      if (relatedListItem.inState) {
+        const listItemsMinusUpdated = listItems.filter(
+          (e) => e.listItemID !== updatedListItem.listItemID
+        );
+        const updatedListItems = [
+          ...(listItemsMinusUpdated || []),
+          updatedListItem,
+        ];
+        setListItems(updatedListItems);
+      }
+      // remove .listItemID before sending listItem obj to DB /listItems
+      const { listItemID, ...restULI } = updatedListItem;
+      const updatedListItemNoID = { ...restULI };
+      await u.patchListItem(updatedListItem.listItemID, updatedListItemNoID);
+      // update the Event
+      const updatedEvent = relatedEvent.obj;
+      updatedEvent.startDateTime = data.startDateTime;
+      updatedEvent.timeSet = data.timeSet;
+      // set updatedEvent in 'events' state (if in there) (inc. .eventID)
+      if (relatedEvent.inState) {
+        const eventsMinusUpdated = events.filter(
+          (e) => e.eventID !== updatedEvent.eventID
+        );
+        const updatedEvents = [...(eventsMinusUpdated || []), updatedEvent];
+        setEvents(updatedEvents);
+      }
+      // // remove .eventID before sending event obj to DB /events
+      const { eventID, ...restUE } = updatedEvent;
+      const updatedEventNoID = { ...restUE };
+      await u.patchEventByID(userUID, updatedEvent.eventID, updatedEventNoID);
+    } else {
+    }
+  };
+
   const handleEntities = {
     createDateAndEvent,
+    updateEntities,
   };
 
   const onDragEnd = async (result) => {
@@ -157,12 +237,13 @@ function Home() {
       destination.droppableId.substring(0, 8) === 'planner-'
     ) {
       console.log('📅 MOVE BETWEEN DAYS ON PLANNER');
-      const targetDate = destination.droppableId.slice(8);
-      const dateMidnight = new Date(`${targetDate}T00:00:00Z`);
-      const isoDateUTC = dateMidnight.toISOString();
       const draggedEventID = draggableId;
-      // the event obj will ALWAYS be in 'events' state - you can't be DnDing it on the Planner if it's not!
       const eventToUpdate = events.find((e) => e.eventID === draggedEventID);
+      const timePart = eventToUpdate.startDateTime.substring(10, 24);
+      const targetDate = destination.droppableId.slice(8);
+      const dateMidnight = new Date(`${targetDate}${timePart}`);
+      const isoDateUTC = dateMidnight.toISOString();
+      // the event obj will ALWAYS be in 'events' state - you can't be DnDing it on the Planner if it's not!
       const updatedEventObj = {
         ...eventToUpdate,
         startDateTime: isoDateUTC,
@@ -171,11 +252,7 @@ function Home() {
       // So, get it using 'listItemIDForEvent'
       const listItemIDForEvent = eventToUpdate.listItemID;
       const listItemForEvent = await u.fetchListItemById(listItemIDForEvent);
-      const plusExplicitID = {
-        ...listItemForEvent,
-        listItemID: listItemIDForEvent,
-      };
-      // await handleEvents('update', updatedEventObj, plusExplicitID);
+      await handleEntities.updateEntities('startDateTime', updatedEventObj);
       return;
     }
 

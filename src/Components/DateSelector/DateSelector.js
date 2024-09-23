@@ -34,9 +34,6 @@ function DateSelector({
   const userUID = localStorage.getItem('firebaseID');
 
   const handleClickOff = async () => {
-    //
-    //
-    //
     if (!startDateTime) {
       return setIsInFocus(false);
     }
@@ -57,14 +54,12 @@ function DateSelector({
       await handleEntities.createDateAndEvent(newEventObj);
     } else {
       // FIRST update the EVENT obj
-
       const updatedEventObj = {
         ...date,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-
-      // await handleEvents('update', updatedEventObj, listItem);
+      await handleEntities.updateEntities('startDateTime', updatedEventObj);
     }
     setIsInFocus(false);
   };
@@ -80,7 +75,12 @@ function DateSelector({
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (date) {
+      // console.log(date?.startDateTime);
+      setStartDateTime(new Date(date.startDateTime));
+    }
+  }, [date?.startDateTime]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);

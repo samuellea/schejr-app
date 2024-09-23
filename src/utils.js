@@ -591,6 +591,23 @@ export const createNewEvent = async (userUID, eventData) => {
   }
 };
 
+export const fetchEventByID = async (userUID, eventID) => {
+  try {
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    const snapshot = await get(eventRef);
+    if (snapshot.exists()) {
+      // Return the data if it exists
+      return snapshot.val();
+    } else {
+      console.log('No event data available for the provided ID.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    return null;
+  }
+};
+
 export const patchEventByID = async (userUID, eventID, eventData) => {
   try {
     const eventRef = ref(database, `events/${userUID}/${eventID}`);
@@ -735,7 +752,12 @@ export const fetchListItemById = async (listItemId) => {
     const snapshot = await get(listItemRef);
     if (snapshot.exists()) {
       // Return the data if it exists
-      return snapshot.val();
+      const listItem = snapshot.val();
+      const plusExplicitID = {
+        ...listItem,
+        listItemID: listItemId,
+      };
+      return plusExplicitID;
     } else {
       console.log('No listItem data available for the provided ID.');
       return null;

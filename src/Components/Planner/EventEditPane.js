@@ -14,6 +14,7 @@ function EventEditPane({
   handleOtherEventFields,
   existingTags,
   setExistingTags,
+  handleEntities,
 }) {
   const [listItem, setListItem] = useState(null);
   const [eventTitle, setEventTitle] = useState(event.title);
@@ -24,11 +25,7 @@ function EventEditPane({
     const fetchListItem = async () => {
       try {
         const listItemForEvent = await u.fetchListItemById(event.listItemID);
-        const plusExplicitID = {
-          ...listItemForEvent,
-          listItemID: event.listItemID,
-        };
-        setListItem(plusExplicitID);
+        setListItem(listItemForEvent);
       } catch {
         // Handle error fetching listItem
       }
@@ -89,17 +86,17 @@ function EventEditPane({
             </div>
           </div>
 
-          {/* <div className={styles.datepicker}>
-              <DateSelector
-                type="standalone"
-                date={listItem.dates.find((e) => e.eventID === event.eventID)}
-                listItem={listItem}
-                handleEvents={handleEvents}
-                inFocus={true}
-                closeButton={true}
-                handleCancel={handleStopEditing}
-              />
-            </div> */}
+          <div className={styles.datepicker}>
+            <DateSelector
+              type="standalone"
+              date={listItem.dates.find((e) => e.eventID === event.eventID)}
+              listItem={listItem}
+              handleEntities={handleEntities}
+              inFocus={true}
+              closeButton={true}
+              handleCancel={handleStopEditing}
+            />
+          </div>
         </div>
       ) : (
         <h4>Loading...</h4>

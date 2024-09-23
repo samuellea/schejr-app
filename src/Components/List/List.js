@@ -20,7 +20,8 @@ function List({
   existingTags,
   showPlanner,
   togglePlanner,
-  handleEvents,
+  // handleEvents,
+  handleEntities,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
@@ -101,7 +102,7 @@ function List({
         try {
           // then delete any events on /events that have .listItemID === listItemToDelete.listItemID
           // call handleEvents with action 'delete' to delete any /events objs on DB AND to remove any of these event objs if they are currently in 'events' state
-          await handleEvents('deleteAll', listItem.dates, listItem);
+          // await handleEvents('deleteAll', listItem.dates, listItem);
           try {
             // then as a final step, delete the gcal event for this listItem if it had one
             await u.removeGCalEventByListItemID(listItemToDelete.listItemID);
@@ -183,6 +184,7 @@ function List({
                         updateListItem={updateListItem}
                         key={`list-item-${listItem.listItemID}`}
                         provided={provided}
+                        handleEntities={handleEntities}
                       />
                     </div>
                   )}

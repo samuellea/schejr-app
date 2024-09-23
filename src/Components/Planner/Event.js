@@ -39,10 +39,6 @@ function Event({
   const handleDuplicate = async () => {
     setShowOptions(false);
     // const listItemForEvent = await u.fetchListItemById(event.listItemID);
-    // const plusExplicitID = {
-    //   ...listItemForEvent,
-    //   listItemID: event.listItemID,
-    // };
     // const { eventID, ...restOfEvent } = event;
     // const duplicateEventObj = { ...restOfEvent };
     // await handleEvents('create', duplicateEventObj, plusExplicitID);
@@ -58,11 +54,7 @@ function Event({
 
   const handleConfirmDelete = async () => {
     const listItemForEvent = await u.fetchListItemById(event.listItemID);
-    const plusExplicitID = {
-      ...listItemForEvent,
-      listItemID: event.listItemID,
-    };
-    await handleEvents('deleteOne', [event], plusExplicitID);
+    // await handleEvents('deleteOne', [event], listItemForEvent);
     setShowDeleteModal(false);
   };
 
@@ -139,7 +131,7 @@ function Event({
             <EventEditPane
               event={event}
               handleStopEditing={handleStopEditing}
-              handleEvents={handleEvents}
+              handleEntities={handleEntities}
               key={event.eventID}
               // handleOtherEventFields={handleOtherEventFields}
               existingTags={existingTags}

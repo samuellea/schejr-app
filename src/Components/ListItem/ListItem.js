@@ -27,7 +27,8 @@ function ListItem({
 
   const handleTitleOnBlur = () => {
     // updateListItem(listItem, 'title', listItemRenameText);
-    handleEntities(listItem, 'title', listItemRenameText);
+    const updatedListItem = { ...listItem, title: listItemRenameText };
+    handleEntities.updateEntities(updatedListItem);
   };
 
   useEffect(() => {
@@ -114,19 +115,22 @@ function ListItem({
           <div className={styles.dateContainer} id="flexidiv">
             <DateIcon />
             <span>
-              {h.formatDateForListItem(listItem.dates[0]?.startDateTime)}
+              {h.formatDateForListItem(
+                listItem.dates.sort((a, b) =>
+                  a.startDateTime.localeCompare(b.startDateTime)
+                )[0]?.startDateTime
+              )}
               {listItem.dates?.length > 1 ? '...' : null}
             </span>
             {listItem.dates?.length > 1 ? (
               <span>
                 {`+`}
-                <span id={styles.dateCount}>{listItem.dates?.length}</span>
+                <span id={styles.dateCount}>{listItem.dates?.length - 1}</span>
                 {``}
               </span>
             ) : null}
           </div>
         ) : null}
-
         <button
           className={styles.deleteListItemButton}
           onClick={() => setShowDeleteModal(true)}

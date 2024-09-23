@@ -44,12 +44,14 @@ function ListItemEditPane({
   };
 
   useEffect(() => {
+    // console.log(listItems);
     if (!listItemEditID) {
       handleCloseEditPane();
     } else {
       const newListItem = listItems.find(
         (e) => e.listItemID === listItemEditID
       );
+      // console.log(newListItem);
       setListItem(newListItem); // This should trigger a re-render if newListItem is different
     }
   }, [listItems, listItemEditID]);
@@ -122,28 +124,31 @@ function ListItemEditPane({
             .sort(
               (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
             )
-            .map((date, i) => (
-              <div
-                className={styles.fieldWrapper}
-                key={`new-selector-${date.eventID}`}
-              >
-                <div className={styles.fieldIndent} />
-                <div className={styles.wrapperLabel}>
-                  {i === 0 && (
-                    <>
-                      <DateIcon fill="#7f7f7f" />
-                      <p className={styles.fieldLabelP}>Date</p>
-                    </>
-                  )}
+            .map((date, i) => {
+              // console.log(date);
+              return (
+                <div
+                  className={styles.fieldWrapper}
+                  key={`new-selector-${date.eventID}`}
+                >
+                  <div className={styles.fieldIndent} />
+                  <div className={styles.wrapperLabel}>
+                    {i === 0 && (
+                      <>
+                        <DateIcon fill="#7f7f7f" />
+                        <p className={styles.fieldLabelP}>Date</p>
+                      </>
+                    )}
+                  </div>
+                  <DateSelector
+                    type="field"
+                    date={date}
+                    listItem={listItem}
+                    handleEntities={handleEntities}
+                  />
                 </div>
-                <DateSelector
-                  type="field"
-                  date={date}
-                  listItem={listItem}
-                  handleEntities={handleEntities}
-                />
-              </div>
-            ))}
+              );
+            })}
       <div
         className={styles.fieldWrapper}
         key={`new-selector-${listItem.dates?.length || 0}`}
