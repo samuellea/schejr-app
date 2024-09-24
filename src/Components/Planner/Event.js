@@ -44,7 +44,7 @@ function Event({
     // await handleEvents('create', duplicateEventObj, plusExplicitID);
     const { eventID, ...rest } = event;
     const eventMinusExplicit = { ...rest };
-    await handleEntities.createDateAndEvent(eventMinusExplicit);
+    await handleEntities.createEventAndDate(eventMinusExplicit);
   };
 
   const handleStartDelete = () => {
@@ -53,8 +53,9 @@ function Event({
   };
 
   const handleConfirmDelete = async () => {
-    const listItemForEvent = await u.fetchListItemById(event.listItemID);
+    // const listItemForEvent = await u.fetchListItemById(event.listItemID);
     // await handleEvents('deleteOne', [event], listItemForEvent);
+    await handleEntities.deleteEventAndDate(event);
     setShowDeleteModal(false);
   };
 

@@ -37,14 +37,9 @@ function MainArea({
     if (selectedList.listID) {
       setListAndItemsLoaded(false);
       try {
-        const allListItems = await u.fetchListItemsByListID(
+        const allListItemsWithIDs = await u.fetchListItemsByListID(
           selectedList.listID
         );
-        const allListItemsWithIDs = Object.entries(allListItems).map((e) => ({
-          listItemID: e[0],
-          ...e[1],
-        }));
-
         setListItems(allListItemsWithIDs);
         setListAndItemsLoaded(true);
       } catch {
@@ -129,9 +124,11 @@ function MainArea({
           </p>
         </div>
       )}
-      {listItemEditID ? (
+      {listItemEditID &&
+      listItems.find((e) => e.listItemID === listItemEditID) ? (
         <ListItemEditPane
-          listItemEditID={listItemEditID}
+          // listItemEditID={listItemEditID}
+          listItem={listItems.find((e) => e.listItemID === listItemEditID)}
           listItems={listItems}
           setListItems={setListItems}
           handleCloseEditPane={handleCloseEditPane}

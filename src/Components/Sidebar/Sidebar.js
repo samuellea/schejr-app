@@ -18,8 +18,9 @@ function Sidebar({
   toggleSidebar,
   showSidebar,
   handleSelectListButton,
-  handleDeleteList,
+  // handleDeleteList,
   handleLogout,
+  deleteListAndRelated,
 }) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -110,7 +111,7 @@ function Sidebar({
                               listID={list.listID}
                               handleSelectListButton={handleSelectListButton}
                               selected={list.listID === selectedListID}
-                              handleDeleteList={handleDeleteList}
+                              deleteListAndRelated={deleteListAndRelated}
                             />
                             {/* Render the placeholder here */}
                             <div className={styles.hiddenPlaceholder}>

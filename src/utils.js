@@ -15,6 +15,7 @@ import {
 import { gapi } from 'gapi-script';
 import * as h from './helpers';
 import { lastDayOfMonth } from 'date-fns';
+import { constant } from 'lodash-es';
 
 export const createNewList = async (listData) => {
   try {
@@ -55,6 +56,35 @@ export const patchMultipleLists = async (updates) => {
     return error;
   }
 };
+
+export const deleteEventsByEventIDs = async (userUID, eventIDs) => {
+  try {
+    // Iterate over each eventID
+    for (const eventID of eventIDs) {
+      // Reference to the event object at /events/<eventID>
+      const eventRef = ref(database, `/events/${userUID}/${eventID}`);
+      // Remove the event from the database
+      await remove(eventRef);
+    }
+    console.log('All specified events deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting events:', error);
+  }
+};
+
+// export const deleteMultipleEvents = async (updates) => {
+//   try {
+//     const updatePromises = updates.map((update) => {
+//       const { listID: unneededListID, ...rest } = update;
+//       const updatedList = { ...rest };
+//       return patchList(unneededListID, updatedList);
+//     });
+//     return await Promise.all(updatePromises);
+//   } catch (error) {
+//     console.error('Error updating one or more list db objects:', error);
+//     return error;
+//   }
+// };
 
 export const patchListItem = async (listItemID, newData) => {
   try {
@@ -156,9 +186,13 @@ export const fetchListItemsByListID = async (parentListID) => {
     if (snapshot.exists()) {
       // Data exists; convert snapshot to an object
       const data = snapshot.val();
-      return data;
+      const allListItemsWithIDs = Object.entries(data).map((e) => ({
+        listItemID: e[0],
+        ...e[1],
+      }));
+      return allListItemsWithIDs;
     } else {
-      return {};
+      return [];
     }
   } catch (error) {
     console.error('Error retrieving user list items:', error);
@@ -221,33 +255,36 @@ export const createNewTag = async (tagData) => {
   }
 };
 
-export const findAndRemoveTagIDFromMatchingListItems = async (
-  tagIDToRemove
-) => {
+export const findAndRemoveTagIDFromListItems = async (tagIDToRemove) => {
   // Reference to the listItems node
   const listItemsRef = ref(database, 'listItems');
-
   try {
     // Fetch all listItems
     const snapshot = await get(listItemsRef);
-
     if (snapshot.exists()) {
       const listItems = snapshot.val();
       const updates = {}; // To hold updates for batch writing
-
       // Iterate over all items
       for (const [key, item] of Object.entries(listItems)) {
         // Check if the item has a .tags key and if it contains the tag
         if (Array.isArray(item.tags) && item.tags.includes(tagIDToRemove)) {
-          // Filter out the tag to be removed
-          const updatedTags = item.tags.filter((tag) => tag !== tagIDToRemove);
+          // Filter out the tag to be removed from top-level .tags arr
+          const updatedTags = (item.tags || []).filter(
+            (tag) => tag !== tagIDToRemove
+          );
+          // AND ALSO from their .dates objs' .tags arrs
+          const updatedDates = (item.dates || []).map((date) => ({
+            ...date,
+            tags: updatedTags,
+          }));
           // Prepare the update
-          updates[`listItems/${key}`] = { ...item, tags: updatedTags };
+          updates[`listItems/${key}`] = {
+            ...item,
+            tags: updatedTags,
+            dates: updatedDates,
+          };
         }
       }
-
-      //
-      // only sending tags! ensure all other information for each listItem object is included!
       // Perform batch update
       if (Object.keys(updates).length > 0) {
         await update(ref(database), updates);
@@ -256,7 +293,38 @@ export const findAndRemoveTagIDFromMatchingListItems = async (
     } else {
     }
   } catch (error) {
-    console.error('Error updating items:', error);
+    console.error('Error updating list items:', error);
+  }
+};
+
+export const findAndRemoveTagIDFromEvents = async (userUID, tagIDToRemove) => {
+  // Reference to the listItems node
+  const eventsRef = ref(database, `events/${userUID}`);
+  try {
+    // Fetch all listItems
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const events = snapshot.val();
+      const updates = {}; // To hold updates for batch writing
+      // Iterate over all items
+      for (const [key, event] of Object.entries(events)) {
+        // Check if the event has a .tags key and if it contains the tag
+        if (Array.isArray(event.tags) && event.tags.includes(tagIDToRemove)) {
+          // Filter out the tag to be removed
+          const updatedTags = event.tags.filter((tag) => tag !== tagIDToRemove);
+          // Prepare the update
+          updates[`events/${userUID}/${key}`] = { ...event, tags: updatedTags };
+        }
+      }
+      // Perform batch update
+      if (Object.keys(updates).length > 0) {
+        await update(ref(database), updates);
+      } else {
+      }
+    } else {
+    }
+  } catch (error) {
+    console.error('Error updating list items:', error);
   }
 };
 
@@ -618,6 +686,28 @@ export const patchEventByID = async (userUID, eventID, eventData) => {
   }
 };
 
+export const patchMultipleEventsByIDs = async (
+  userUID,
+  eventIDs,
+  dataObjects
+) => {
+  const updates = {};
+  // Iterate over the eventIDs and corresponding dataObjects
+  eventIDs.forEach((eventID, index) => {
+    if (dataObjects[index]) {
+      // Ensure there is a corresponding data object
+      updates[`/events/${userUID}/${eventID}`] = dataObjects[index];
+    }
+  });
+  try {
+    // Perform the update operation
+    await update(ref(database), updates);
+    console.log('Events updated successfully.');
+  } catch (error) {
+    console.error('Error updating events:', error);
+  }
+};
+
 // export const patchEventOnKey = async (eventID, userUID, key, newValue) => {
 //   const updates = {};
 
@@ -703,6 +793,68 @@ export const deleteEventsByListItemID = async (userUID, listItemID) => {
   } catch (error) {
     console.error('Error deleting events:', error);
     throw error;
+  }
+};
+
+export const deleteListItemsByListID = async (listID) => {
+  try {
+    // Reference to the events for the user
+    const listItemsRef = ref(database, 'listItems');
+
+    // Create a query to find events where listItemID matches the given value
+    const listItemsQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(listID)
+    );
+
+    // Retrieve all events matching the query
+    const snapshot = await get(listItemsQuery);
+
+    if (snapshot.exists()) {
+      const updates = {};
+      snapshot.forEach((childSnapshot) => {
+        const listItemID = childSnapshot.key;
+        updates[`listItems/${listItemID}`] = null; // Mark the event for deletion
+      });
+      // Perform the batch delete
+      await update(ref(database), updates);
+      console.log('Deleted listItems with listID:', listID);
+    } else {
+      console.log('No listItems found with listID:', listID);
+    }
+  } catch (error) {
+    console.error('Error deleting listItems:', error);
+    throw error;
+  }
+};
+
+export const fetchUserEventsByListItemID = async (userUID, listItemID) => {
+  const eventsRef = ref(database, `events/${userUID}`);
+  try {
+    // Create a query
+    const eventsQuery = query(
+      eventsRef,
+      orderByChild('listItemID'),
+      equalTo(listItemID)
+    );
+
+    // Execute the query
+    const snapshot = await get(eventsQuery);
+    const events = snapshot.val();
+
+    // If no events found, return an empty array
+    if (!events) return [];
+    const plusExplicitIDs = Object.entries(events).map((e) => ({
+      eventID: e[0],
+      ...e[1],
+    }));
+    // Convert the events object to an array
+    return plusExplicitIDs;
+    // return Object.values(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
   }
 };
 

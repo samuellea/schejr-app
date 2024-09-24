@@ -51,7 +51,7 @@ function DateSelector({
         tags: listItem.tags,
       };
       // await handleEvents('create', newEventObj, listItem);
-      await handleEntities.createDateAndEvent(newEventObj);
+      await handleEntities.createEventAndDate(newEventObj);
     } else {
       // FIRST update the EVENT obj
       const updatedEventObj = {
@@ -59,7 +59,10 @@ function DateSelector({
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-      await handleEntities.updateEntities('startDateTime', updatedEventObj);
+      await handleEntities.updateEventAndDates(
+        'startDateTime',
+        updatedEventObj
+      );
     }
     setIsInFocus(false);
   };
@@ -79,8 +82,9 @@ function DateSelector({
     if (date) {
       // console.log(date?.startDateTime);
       setStartDateTime(new Date(date.startDateTime));
+      setTimeSet(date.timeSet);
     }
-  }, [date?.startDateTime]);
+  }, [date?.startDateTime, date?.timeSet]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -123,7 +127,7 @@ function DateSelector({
 
   const handleConfirmDeleteDate = async () => {
     // FIRST delete EVENT obj
-    // await handleEvents('deleteOne', [{ eventID: date.eventID }], listItem);
+    await handleEntities.deleteEventAndDate(date);
     setShowDeleteModal(false);
     setTimeSet(false);
     setStartDateTime(null);

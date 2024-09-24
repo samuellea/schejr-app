@@ -12,7 +12,8 @@ function ListButton({
   listID,
   handleSelectListButton,
   selected,
-  handleDeleteList,
+  // handleDeleteList,
+  deleteListAndRelated,
 }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -21,7 +22,7 @@ function ListButton({
   const handleConfirmDeleteList = async () => {
     const listTitle = listName;
     try {
-      await handleDeleteList(listID);
+      await deleteListAndRelated(listID);
       setShowDeleteModal(false);
       toast(`Deleted ${listTitle}`, {
         duration: 3000,

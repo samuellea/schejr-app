@@ -79,7 +79,7 @@ function EventEditPane({
                 userUID={userUID}
                 listItem={listItem}
                 event={event}
-                handleOtherEventFields={handleOtherEventFields}
+                handleEntities={handleEntities}
                 existingTags={existingTags}
                 setExistingTags={setExistingTags}
               />

@@ -15,6 +15,7 @@ function TagSelector({
   setExistingTags,
   listItems,
   setListItems,
+  handleEntities,
 }) {
   const [isInFocus, setIsInFocus] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -99,18 +100,10 @@ function TagSelector({
         const updatedExistingTags = [...existingTags, newTagPlusID];
         setExistingTags(updatedExistingTags);
         //////// 🚨 AND ALSO UPDATE LISTITEM'S .TAGS IN STATE!
-        const listItemTagsMinusPlusNewTag = [
-          ...(listItem.tags || []),
-          newTagPlusID,
-        ];
-        updateListItem(listItem, 'tags', listItemTagsMinusPlusNewTag);
         // then update listItem on db to have this new tag in .tags
         const updatedListItemTags = [...(listItem.tags || []), newTagID];
-        const listItemTagsUpdated = await updateListItem(
-          listItem,
-          'tags',
-          updatedListItemTags
-        );
+        const updatedListItem = { ...listItem, tags: updatedListItemTags };
+        await handleEntities.updateEventAndDates('tags', updatedListItem);
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
       }
@@ -147,19 +140,16 @@ function TagSelector({
 
   const handleDeleteTag = async (tagID) => {
     try {
-      const tagDeleted = await u.deleteTagByID(tagID);
+      await u.deleteTagByID(tagID);
       try {
-        // update tags in app state to no longer contain the deleted tag
+        // update 'tags' state to no longer contain the deleted tag
         const existingTagsMinusDeletedTag = existingTags.filter(
           (e) => e.tagID !== tagID
         );
         setExistingTags(existingTagsMinusDeletedTag);
-        // then handle removing the deleted tag from any all listItems that used it
-        // on the front end
-        h.removeDeletedTagFromListItems(listItems, tagID, setListItems);
-        // AND on the db
-        const listItemsThatContainedTagID =
-          await u.findAndRemoveTagIDFromMatchingListItems(tagID);
+        // then handle removing the deleted tag from any all ListItems and Events that used it
+        // on the db + in state
+        await handleEntities.deleteTagFromEntities(tagID);
         setShowDeleteModal(false);
       } catch (error) {
         console.error('Failed to remove tag from matching list items:', error);
@@ -194,11 +184,9 @@ function TagSelector({
       const updatedListItemTags = listItem.tags?.length
         ? [...listItem.tags, tag.tagID]
         : [tag.tagID];
-      const listItemTagsUpdated = await updateListItem(
-        listItem,
-        'tags',
-        updatedListItemTags
-      );
+      // const listItemTagsUpdated = await updateListItem(listItem,'tags',updatedListItemTags);
+      const updatedListItem = { ...listItem, tags: updatedListItemTags };
+      await handleEntities.updateEventAndDates('tags', updatedListItem);
       setInputText('');
     } catch (error) {
       console.error('Failed to create tag:', error);
@@ -210,11 +198,8 @@ function TagSelector({
       const updatedListItemTags = [
         ...listItem?.tags.filter((e) => e !== tagID),
       ];
-      const listItemTagsUpdated = await updateListItem(
-        listItem,
-        'tags',
-        updatedListItemTags
-      );
+      const updatedListItem = { ...listItem, tags: updatedListItemTags };
+      await handleEntities.updateEventAndDates('tags', updatedListItem);
       setInputText('');
     } catch (error) {
       console.error('Failed to remove tag:', error);

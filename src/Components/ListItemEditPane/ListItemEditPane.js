@@ -10,7 +10,8 @@ import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import NotesIcon from '../Icons/NotesIcon';
 
 function ListItemEditPane({
-  listItemEditID,
+  // listItemEditID,
+  listItem,
   listItems,
   setListItems,
   handleCloseEditPane,
@@ -24,9 +25,7 @@ function ListItemEditPane({
   handleEntities,
 }) {
   // title is locked in here - so DateSelector wont recieve
-  const [listItem, setListItem] = useState(
-    listItems.find((e) => e.listItemID === listItemEditID)
-  );
+  // const [listItem, setListItem] = useState(listItem);
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [notesText, setNotesText] = useState(listItem.notes);
 
@@ -43,18 +42,18 @@ function ListItemEditPane({
     // updateListItem(listItem, 'notes', notesText);
   };
 
-  useEffect(() => {
-    // console.log(listItems);
-    if (!listItemEditID) {
-      handleCloseEditPane();
-    } else {
-      const newListItem = listItems.find(
-        (e) => e.listItemID === listItemEditID
-      );
-      // console.log(newListItem);
-      setListItem(newListItem); // This should trigger a re-render if newListItem is different
-    }
-  }, [listItems, listItemEditID]);
+  // useEffect(() => {
+  //   // console.log(listItems);
+  //   if (!listItemEditID) {
+  //     handleCloseEditPane();
+  //   } else {
+  //     const newListItem = listItems.find(
+  //       (e) => e.listItemID === listItemEditID
+  //     );
+  //     // console.log(newListItem);
+  //     setListItem(newListItem); // This should trigger a re-render if newListItem is different
+  //   }
+  // }, [listItems, listItemEditID]);
 
   const textareaRef = useRef(null);
 
@@ -115,6 +114,7 @@ function ListItemEditPane({
           setExistingTags={setExistingTags}
           listItems={listItems}
           setListItems={setListItems}
+          handleEntities={handleEntities}
         />
       </div>
 

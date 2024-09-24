@@ -16,7 +16,7 @@ function EventTagSelector({
   existingTags,
   setExistingTags,
   event,
-  handleOtherEventFields,
+  handleEntities,
 }) {
   const [isInFocus, setIsInFocus] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -105,7 +105,8 @@ function EventTagSelector({
         setEventTags([...event.tags, newTagID]);
         // update tags on event & listItem on DB and in state
         const updatedEvent = { ...event, tags: [...event.tags, newTagID] };
-        await handleOtherEventFields('tags', updatedEvent, listItem);
+        // await handleOtherEventFields('tags', updatedEvent, listItem);
+        await handleEntities.updateEventAndDates('tags', updatedEvent);
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
       }
@@ -209,7 +210,7 @@ function EventTagSelector({
       setEventTags(updatedListItemTags);
       // update tags on event & listItem on DB and in state
       const updatedEvent = { ...event, tags: updatedListItemTags };
-      await handleOtherEventFields('tags', updatedEvent, listItem);
+      await handleEntities.updateEventAndDates('tags', updatedEvent);
       setInputText('');
     } catch (error) {
       console.error('Failed to remove tag:', error);

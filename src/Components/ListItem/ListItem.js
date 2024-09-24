@@ -28,7 +28,7 @@ function ListItem({
   const handleTitleOnBlur = () => {
     // updateListItem(listItem, 'title', listItemRenameText);
     const updatedListItem = { ...listItem, title: listItemRenameText };
-    handleEntities.updateEntities(updatedListItem);
+    handleEntities.updateEventAndDates('title', updatedListItem);
   };
 
   useEffect(() => {
