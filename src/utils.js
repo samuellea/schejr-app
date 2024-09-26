@@ -57,21 +57,6 @@ export const patchMultipleLists = async (updates) => {
   }
 };
 
-export const deleteEventsByEventIDs = async (userUID, eventIDs) => {
-  try {
-    // Iterate over each eventID
-    for (const eventID of eventIDs) {
-      // Reference to the event object at /events/<eventID>
-      const eventRef = ref(database, `/events/${userUID}/${eventID}`);
-      // Remove the event from the database
-      await remove(eventRef);
-    }
-    console.log('All specified events deleted successfully.');
-  } catch (error) {
-    console.error('Error deleting events:', error);
-  }
-};
-
 // export const deleteMultipleEvents = async (updates) => {
 //   try {
 //     const updatePromises = updates.map((update) => {
@@ -171,6 +156,28 @@ export const createNewListItem = async (listItemData) => {
   }
 };
 
+export const fetchListItemById = async (listItemId) => {
+  try {
+    const listItemRef = ref(database, `listItems/${listItemId}`);
+    const snapshot = await get(listItemRef);
+    if (snapshot.exists()) {
+      // Return the data if it exists
+      const listItem = snapshot.val();
+      const plusExplicitID = {
+        ...listItem,
+        listItemID: listItemId,
+      };
+      return plusExplicitID;
+    } else {
+      console.log('No listItem data available for the provided ID.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching listItem:', error);
+    return null;
+  }
+};
+
 export const fetchListItemsByListID = async (parentListID) => {
   try {
     // Reference to the 'lists' endpoint
@@ -197,6 +204,62 @@ export const fetchListItemsByListID = async (parentListID) => {
   } catch (error) {
     console.error('Error retrieving user list items:', error);
     throw error;
+  }
+};
+
+export const getMaxManualOrderByParentID = async (parentID) => {
+  const listItemsRef = ref(database, '/listItems');
+  try {
+    // Step 1: Query to filter items by parentID
+    const parentIDQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(parentID)
+    );
+    // Fetch the data
+    const snapshot = await get(parentIDQuery);
+    if (snapshot.exists()) {
+      // Step 2: Extract the data from the snapshot and find the item with the highest manualOrder
+      const items = snapshot.val();
+      let highestItem = null;
+      // Iterate over the filtered items to find the highest manualOrder
+      Object.values(items).forEach((item) => {
+        if (!highestItem || item.manualOrder > highestItem.manualOrder) {
+          highestItem = item;
+        }
+      });
+
+      if (highestItem) {
+        // console.log(
+        //   'Object with the highest manualOrder and matching parentID:',
+        //   highestItem
+        // );
+        const maxManualOrderForList = highestItem.manualOrder;
+
+        return maxManualOrderForList;
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    console.error('Error getting highest manual order by parentID:', error);
+  }
+};
+
+export const patchMultipleListItems = async (updates) => {
+  // {data: {} }, {data: {} }, // {}, {}
+  try {
+    const updatePromises = updates.map((update) => {
+      const { listItemID: unneededListItemID, ...rest } = update;
+      const updatedListItem = { ...rest };
+      return patchListItem(unneededListItemID, updatedListItem);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.error('Error updating one or more listItems db objects:', error);
+    return error;
   }
 };
 
@@ -328,82 +391,271 @@ export const findAndRemoveTagIDFromEvents = async (userUID, tagIDToRemove) => {
   }
 };
 
-export const getMaxManualOrderByParentID = async (parentID) => {
-  const listItemsRef = ref(database, '/listItems');
+export const createNewEvent = async (userUID, eventData) => {
   try {
-    // Step 1: Query to filter items by parentID
-    const parentIDQuery = query(
-      listItemsRef,
-      orderByChild('parentID'),
-      equalTo(parentID)
-    );
-    // Fetch the data
-    const snapshot = await get(parentIDQuery);
+    // Create a reference to the 'events' endpoint
+    const eventsRef = ref(database, `events/${userUID}`);
+    // Generate a new key under the 'events' endpoint
+    const newEventRef = push(eventsRef);
+    await set(newEventRef, eventData);
+    return newEventRef.key; // Return the unique ID of the newly created event
+  } catch (error) {
+    console.error('Error creating new event:', error);
+    throw error;
+  }
+};
+
+export const fetchEventByID = async (userUID, eventID) => {
+  try {
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    const snapshot = await get(eventRef);
     if (snapshot.exists()) {
-      // Step 2: Extract the data from the snapshot and find the item with the highest manualOrder
-      const items = snapshot.val();
-      let highestItem = null;
-      // Iterate over the filtered items to find the highest manualOrder
-      Object.values(items).forEach((item) => {
-        if (!highestItem || item.manualOrder > highestItem.manualOrder) {
-          highestItem = item;
-        }
+      // Return the data if it exists
+      return snapshot.val();
+    } else {
+      console.log('No event data available for the provided ID.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    return null;
+  }
+};
+
+export const fetchUserEventsByMonth = async (userUID, month, year) => {
+  const date = new Date(year, month, 1);
+  const lastDay = lastDayOfMonth(date).getDate();
+  const startOfMonthLocal = new Date(year, month, 1, 0, 0, 0, 0); // 1st September 2024, 00:00:00 local time
+  // User's local time for the end of September 30th, 23:59:59.999 (user's local time zone)
+  const endOfMonthLocal = new Date(year, month, lastDay, 23, 59, 59, 999); // 30th September 2024, 23:59:59.999 local time
+  // Convert to UTC ISO 8601 strings
+  const startOfMonthUTC = startOfMonthLocal.toISOString();
+  const endOfMonthUTC = endOfMonthLocal.toISOString();
+  // console.log(startOfMonthUTC);
+  // console.log(endOfMonthUTC);
+  // Reference to the /events endpoint
+  const eventsRef = ref(database, `events/${userUID}`);
+  // Query the events between the calculated UTC times
+  const monthQuery = query(
+    eventsRef,
+    orderByChild('startDateTime'),
+    startAt(startOfMonthUTC),
+    endAt(endOfMonthUTC)
+  );
+  try {
+    // Use .get() for a promise-based approach
+    const snapshot = await get(monthQuery);
+    const events = snapshot.val();
+    if (events) {
+      const eventsAsArr = Object.entries(events).map(([key, value]) => ({
+        eventID: key,
+        ...value,
+      }));
+      return eventsAsArr;
+    } else {
+      console.log('No events found for that month.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
+  }
+};
+
+export const patchEventByID = async (userUID, eventID, eventData) => {
+  try {
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    await update(eventRef, eventData);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw error;
+  }
+};
+
+export const patchMultipleEventsByIDs = async (
+  userUID,
+  eventIDs,
+  dataObjects
+) => {
+  const updates = {};
+  // Iterate over the eventIDs and corresponding dataObjects
+  eventIDs.forEach((eventID, index) => {
+    if (dataObjects[index]) {
+      // Ensure there is a corresponding data object
+      updates[`/events/${userUID}/${eventID}`] = dataObjects[index];
+    }
+  });
+  try {
+    // Perform the update operation
+    await update(ref(database), updates);
+    console.log('Events updated successfully.');
+  } catch (error) {
+    console.error('Error updating events:', error);
+  }
+};
+
+// export const patchEventOnKey = async (eventID, userUID, key, newValue) => {
+//   const updates = {};
+
+//   // Prepare the update path for a single object
+//   updates[`/events/${userUID}/${eventID}/${key}`] = newValue;
+
+//   const dbRef = ref(database);
+
+//   try {
+//     // Perform the update
+//     await update(dbRef, updates);
+//     console.log(
+//       `Updated event with ID '${eventID}' on key '${key}' successfully`
+//     );
+//   } catch (error) {
+//     console.error(
+//       `Failed to update event with ID '${eventID}' on key '${key}':`,
+//       error
+//     );
+//   }
+// };
+
+export const patchMultipleEventsOnKey = async (
+  eventIDs,
+  userUID,
+  key,
+  newValue
+) => {
+  const updates = {};
+  // Prepare the updates object
+  eventIDs.forEach((id) => {
+    updates[`/events/${userUID}/${id}/${key}`] = newValue; // Replace 'propertyName' with the actual property you want to update
+  });
+
+  const dbRef = ref(database);
+
+  try {
+    // Perform the update
+    await update(dbRef, updates);
+  } catch (error) {
+    console.error(`Failed to updated events on key '${key}':`, error);
+  }
+};
+
+export const deleteEventByID = async (userUID, eventID) => {
+  try {
+    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    await remove(eventRef);
+  } catch (error) {
+    console.error('Error deleting list:', error);
+    throw error;
+  }
+};
+
+export const deleteEventsByEventIDs = async (userUID, eventIDs) => {
+  try {
+    // Iterate over each eventID
+    for (const eventID of eventIDs) {
+      // Reference to the event object at /events/<eventID>
+      const eventRef = ref(database, `/events/${userUID}/${eventID}`);
+      // Remove the event from the database
+      await remove(eventRef);
+    }
+    console.log('All specified events deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting events:', error);
+  }
+};
+
+export const deleteEventsByListItemID = async (userUID, listItemID) => {
+  try {
+    // Reference to the events for the user
+    const eventsRef = ref(database, `events/${userUID}`);
+
+    // Create a query to find events where listItemID matches the given value
+    const eventsQuery = query(
+      eventsRef,
+      orderByChild('listItemID'),
+      equalTo(listItemID)
+    );
+
+    // Retrieve all events matching the query
+    const snapshot = await get(eventsQuery);
+
+    if (snapshot.exists()) {
+      const updates = {};
+      snapshot.forEach((childSnapshot) => {
+        const eventID = childSnapshot.key;
+        updates[`events/${userUID}/${eventID}`] = null; // Mark the event for deletion
       });
 
-      if (highestItem) {
-        // console.log(
-        //   'Object with the highest manualOrder and matching parentID:',
-        //   highestItem
-        // );
-        const maxManualOrderForList = highestItem.manualOrder;
-
-        return maxManualOrderForList;
-      } else {
-        return 0;
-      }
+      // Perform the batch delete
+      await update(ref(database), updates);
+      console.log('Deleted events with listItemID:', listItemID);
     } else {
-      return 0;
+      console.log('No events found with listItemID:', listItemID);
     }
   } catch (error) {
-    console.error('Error getting highest manual order by parentID:', error);
-  }
-};
-
-export const patchMultipleListItems = async (updates) => {
-  // {data: {} }, {data: {} }, // {}, {}
-  try {
-    const updatePromises = updates.map((update) => {
-      const { listItemID: unneededListItemID, ...rest } = update;
-      const updatedListItem = { ...rest };
-      return patchListItem(unneededListItemID, updatedListItem);
-    });
-    return await Promise.all(updatePromises);
-  } catch (error) {
-    console.error('Error updating one or more listItems db objects:', error);
-    return error;
-  }
-};
-
-export const getUserSyncState = async (userUID) => {
-  try {
-    // Reference to the 'lists' endpoint
-    const userSyncStatesRef = ref(database, 'userSyncStates');
-    // Create a query to filter lists where 'createdBy' equals the given userUID
-    const userSyncStatesQuery = query(
-      userSyncStatesRef,
-      orderByChild('userUID'),
-      equalTo(userUID)
-    );
-    const snapshot = await get(userSyncStatesQuery);
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      return data;
-    } else {
-      return {};
-    }
-  } catch (error) {
-    console.error('Error retrieving userSyncState for this user:', error);
+    console.error('Error deleting events:', error);
     throw error;
+  }
+};
+
+export const deleteListItemsByListID = async (listID) => {
+  try {
+    // Reference to the events for the user
+    const listItemsRef = ref(database, 'listItems');
+
+    // Create a query to find events where listItemID matches the given value
+    const listItemsQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(listID)
+    );
+
+    // Retrieve all events matching the query
+    const snapshot = await get(listItemsQuery);
+
+    if (snapshot.exists()) {
+      const updates = {};
+      snapshot.forEach((childSnapshot) => {
+        const listItemID = childSnapshot.key;
+        updates[`listItems/${listItemID}`] = null; // Mark the event for deletion
+      });
+      // Perform the batch delete
+      await update(ref(database), updates);
+      console.log('Deleted listItems with listID:', listID);
+    } else {
+      console.log('No listItems found with listID:', listID);
+    }
+  } catch (error) {
+    console.error('Error deleting listItems:', error);
+    throw error;
+  }
+};
+
+export const fetchUserEventsByListItemID = async (userUID, listItemID) => {
+  const eventsRef = ref(database, `events/${userUID}`);
+  try {
+    // Create a query
+    const eventsQuery = query(
+      eventsRef,
+      orderByChild('listItemID'),
+      equalTo(listItemID)
+    );
+
+    // Execute the query
+    const snapshot = await get(eventsQuery);
+    const events = snapshot.val();
+
+    // If no events found, return an empty array
+    if (!events) return [];
+    const plusExplicitIDs = Object.entries(events).map((e) => ({
+      eventID: e[0],
+      ...e[1],
+    }));
+    // Convert the events object to an array
+    return plusExplicitIDs;
+    // return Object.values(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
   }
 };
 
@@ -424,6 +676,29 @@ export const createSyncStateByUserID = async (userUID, state) => {
   } catch (error) {
     console.error('Error updating one or more listItems db objects:', error);
     return error;
+  }
+};
+
+export const fetchUserSyncState = async (userUID) => {
+  try {
+    // Reference to the 'lists' endpoint
+    const userSyncStatesRef = ref(database, 'userSyncStates');
+    // Create a query to filter lists where 'createdBy' equals the given userUID
+    const userSyncStatesQuery = query(
+      userSyncStatesRef,
+      orderByChild('userUID'),
+      equalTo(userUID)
+    );
+    const snapshot = await get(userSyncStatesQuery);
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error('Error retrieving userSyncState for this user:', error);
+    throw error;
   }
 };
 
@@ -454,6 +729,8 @@ export const patchSyncStateByUserID = async (userUID, state) => {
     console.error('Error updating userSyncState object for this user:', error);
   }
 };
+
+/* ------------------------------------------------------------------------------------------------------------------- */
 
 export const addAListItemToGCal = async (listItem) => {
   const event = {
@@ -642,280 +919,5 @@ export const removeAllListItemsFromGCal = async () => {
     return await Promise.all(updatePromises);
   } catch (error) {
     console.log('error removing all list items from GCal');
-  }
-};
-
-export const createNewEvent = async (userUID, eventData) => {
-  try {
-    // Create a reference to the 'events' endpoint
-    const eventsRef = ref(database, `events/${userUID}`);
-    // Generate a new key under the 'events' endpoint
-    const newEventRef = push(eventsRef);
-    await set(newEventRef, eventData);
-    return newEventRef.key; // Return the unique ID of the newly created event
-  } catch (error) {
-    console.error('Error creating new event:', error);
-    throw error;
-  }
-};
-
-export const fetchEventByID = async (userUID, eventID) => {
-  try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
-    const snapshot = await get(eventRef);
-    if (snapshot.exists()) {
-      // Return the data if it exists
-      return snapshot.val();
-    } else {
-      console.log('No event data available for the provided ID.');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching event:', error);
-    return null;
-  }
-};
-
-export const patchEventByID = async (userUID, eventID, eventData) => {
-  try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
-    await update(eventRef, eventData);
-  } catch (error) {
-    console.error('Error updating event:', error);
-    throw error;
-  }
-};
-
-export const patchMultipleEventsByIDs = async (
-  userUID,
-  eventIDs,
-  dataObjects
-) => {
-  const updates = {};
-  // Iterate over the eventIDs and corresponding dataObjects
-  eventIDs.forEach((eventID, index) => {
-    if (dataObjects[index]) {
-      // Ensure there is a corresponding data object
-      updates[`/events/${userUID}/${eventID}`] = dataObjects[index];
-    }
-  });
-  try {
-    // Perform the update operation
-    await update(ref(database), updates);
-    console.log('Events updated successfully.');
-  } catch (error) {
-    console.error('Error updating events:', error);
-  }
-};
-
-// export const patchEventOnKey = async (eventID, userUID, key, newValue) => {
-//   const updates = {};
-
-//   // Prepare the update path for a single object
-//   updates[`/events/${userUID}/${eventID}/${key}`] = newValue;
-
-//   const dbRef = ref(database);
-
-//   try {
-//     // Perform the update
-//     await update(dbRef, updates);
-//     console.log(
-//       `Updated event with ID '${eventID}' on key '${key}' successfully`
-//     );
-//   } catch (error) {
-//     console.error(
-//       `Failed to update event with ID '${eventID}' on key '${key}':`,
-//       error
-//     );
-//   }
-// };
-
-export const patchMultipleEventsOnKey = async (
-  eventIDs,
-  userUID,
-  key,
-  newValue
-) => {
-  const updates = {};
-  // Prepare the updates object
-  eventIDs.forEach((id) => {
-    updates[`/events/${userUID}/${id}/${key}`] = newValue; // Replace 'propertyName' with the actual property you want to update
-  });
-
-  const dbRef = ref(database);
-
-  try {
-    // Perform the update
-    await update(dbRef, updates);
-  } catch (error) {
-    console.error(`Failed to updated events on key '${key}':`, error);
-  }
-};
-
-export const deleteEventByID = async (userUID, eventID) => {
-  try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
-    await remove(eventRef);
-  } catch (error) {
-    console.error('Error deleting list:', error);
-    throw error;
-  }
-};
-
-export const deleteEventsByListItemID = async (userUID, listItemID) => {
-  try {
-    // Reference to the events for the user
-    const eventsRef = ref(database, `events/${userUID}`);
-
-    // Create a query to find events where listItemID matches the given value
-    const eventsQuery = query(
-      eventsRef,
-      orderByChild('listItemID'),
-      equalTo(listItemID)
-    );
-
-    // Retrieve all events matching the query
-    const snapshot = await get(eventsQuery);
-
-    if (snapshot.exists()) {
-      const updates = {};
-      snapshot.forEach((childSnapshot) => {
-        const eventID = childSnapshot.key;
-        updates[`events/${userUID}/${eventID}`] = null; // Mark the event for deletion
-      });
-
-      // Perform the batch delete
-      await update(ref(database), updates);
-      console.log('Deleted events with listItemID:', listItemID);
-    } else {
-      console.log('No events found with listItemID:', listItemID);
-    }
-  } catch (error) {
-    console.error('Error deleting events:', error);
-    throw error;
-  }
-};
-
-export const deleteListItemsByListID = async (listID) => {
-  try {
-    // Reference to the events for the user
-    const listItemsRef = ref(database, 'listItems');
-
-    // Create a query to find events where listItemID matches the given value
-    const listItemsQuery = query(
-      listItemsRef,
-      orderByChild('parentID'),
-      equalTo(listID)
-    );
-
-    // Retrieve all events matching the query
-    const snapshot = await get(listItemsQuery);
-
-    if (snapshot.exists()) {
-      const updates = {};
-      snapshot.forEach((childSnapshot) => {
-        const listItemID = childSnapshot.key;
-        updates[`listItems/${listItemID}`] = null; // Mark the event for deletion
-      });
-      // Perform the batch delete
-      await update(ref(database), updates);
-      console.log('Deleted listItems with listID:', listID);
-    } else {
-      console.log('No listItems found with listID:', listID);
-    }
-  } catch (error) {
-    console.error('Error deleting listItems:', error);
-    throw error;
-  }
-};
-
-export const fetchUserEventsByListItemID = async (userUID, listItemID) => {
-  const eventsRef = ref(database, `events/${userUID}`);
-  try {
-    // Create a query
-    const eventsQuery = query(
-      eventsRef,
-      orderByChild('listItemID'),
-      equalTo(listItemID)
-    );
-
-    // Execute the query
-    const snapshot = await get(eventsQuery);
-    const events = snapshot.val();
-
-    // If no events found, return an empty array
-    if (!events) return [];
-    const plusExplicitIDs = Object.entries(events).map((e) => ({
-      eventID: e[0],
-      ...e[1],
-    }));
-    // Convert the events object to an array
-    return plusExplicitIDs;
-    // return Object.values(events);
-  } catch (error) {
-    console.error('Error fetching events:', error);
-    return [];
-  }
-};
-
-export const fetchUserEventsByMonth = async (userUID, month, year) => {
-  const date = new Date(year, month, 1);
-  const lastDay = lastDayOfMonth(date).getDate();
-  const startOfMonthLocal = new Date(year, month, 1, 0, 0, 0, 0); // 1st September 2024, 00:00:00 local time
-  // User's local time for the end of September 30th, 23:59:59.999 (user's local time zone)
-  const endOfMonthLocal = new Date(year, month, lastDay, 23, 59, 59, 999); // 30th September 2024, 23:59:59.999 local time
-  // Convert to UTC ISO 8601 strings
-  const startOfMonthUTC = startOfMonthLocal.toISOString();
-  const endOfMonthUTC = endOfMonthLocal.toISOString();
-  // console.log(startOfMonthUTC);
-  // console.log(endOfMonthUTC);
-  // Reference to the /events endpoint
-  const eventsRef = ref(database, `events/${userUID}`);
-  // Query the events between the calculated UTC times
-  const monthQuery = query(
-    eventsRef,
-    orderByChild('startDateTime'),
-    startAt(startOfMonthUTC),
-    endAt(endOfMonthUTC)
-  );
-  try {
-    // Use .get() for a promise-based approach
-    const snapshot = await get(monthQuery);
-    const events = snapshot.val();
-    if (events) {
-      const eventsAsArr = Object.entries(events).map(([key, value]) => ({
-        eventID: key,
-        ...value,
-      }));
-      return eventsAsArr;
-    } else {
-      console.log('No events found for that month.');
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching events:', error);
-    return [];
-  }
-};
-
-export const fetchListItemById = async (listItemId) => {
-  try {
-    const listItemRef = ref(database, `listItems/${listItemId}`);
-    const snapshot = await get(listItemRef);
-    if (snapshot.exists()) {
-      // Return the data if it exists
-      const listItem = snapshot.val();
-      const plusExplicitID = {
-        ...listItem,
-        listItemID: listItemId,
-      };
-      return plusExplicitID;
-    } else {
-      console.log('No listItem data available for the provided ID.');
-      return null;
-    }
-  } catch (error) {
-    console.error('Error fetching listItem:', error);
-    return null;
   }
 };

@@ -638,7 +638,7 @@ function Home() {
   useEffect(() => {
     const getAndSetUserSyncState = async () => {
       try {
-        const userSyncStateObj = await u.getUserSyncState(userUID);
+        const userSyncStateObj = await u.fetchUserSyncState(userUID);
 
         if (Object.keys(userSyncStateObj).length === 0) {
           // create a /userSyncStates obj for this user for the first time, and init syncWithGCal with false (default)
