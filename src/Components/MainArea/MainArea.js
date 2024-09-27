@@ -8,13 +8,13 @@ import EditIcon from '../Icons/EditIcon';
 import Planner from '../Planner/Planner';
 
 function MainArea({
+  userUID,
   showSidebar,
   selectedList,
   updateList,
   handleEntities,
   // updateListItem,
   // handleEvents,
-  userUID,
   listItems,
   setListItems,
   listAndItemsLoaded,
@@ -38,6 +38,7 @@ function MainArea({
       setListAndItemsLoaded(false);
       try {
         const allListItemsWithIDs = await u.fetchListItemsByListID(
+          userUID,
           selectedList.listID
         );
         setListItems(allListItemsWithIDs);
@@ -104,7 +105,6 @@ function MainArea({
           selectedList={selectedList}
           updateList={updateList}
           // updateListItem={updateListItem}
-          userUID={userUID}
           listItems={listItems}
           setListItems={setListItems}
           handleEditListItem={handleEditListItem}

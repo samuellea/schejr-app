@@ -15,6 +15,7 @@ const Day = forwardRef(
   (
     {
       date,
+      dateEvents,
       viewMonth,
       events,
       handleEvents,
@@ -24,16 +25,16 @@ const Day = forwardRef(
     },
     ref
   ) => {
-    const [dateEvents, setDateEvents] = useState([]);
+    // const [dateEvents, setDateEvents] = useState([]);
     const [editEvent, setEditEvent] = useState(false);
 
     const dateIsToday = isToday(parseISO(date.date));
     const todayRef = useRef(null);
 
-    useEffect(() => {
-      const eventsForThisDate = h.getEventsForDate(date.date, events);
-      setDateEvents(eventsForThisDate);
-    }, [events]);
+    // useEffect(() => {
+    //   const eventsForThisDate = h.getEventsForDate(date.date, events);
+    //   setDateEvents(eventsForThisDate);
+    // }, [events]);
 
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -85,7 +86,7 @@ const Day = forwardRef(
               <div className={styles.dropPlaceholder}>Drop item here</div>
             )}
 
-            {dateEvents.map((event, i) => {
+            {dateEvents?.map((event, i) => {
               return (
                 <Event
                   event={event}

@@ -24,8 +24,6 @@ function EventTagSelector({
   const [tagOptions, setTagOptions] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventTags, setEventTags] = useState(listItem.tags);
-  // const [selectedTags, setSelectedTags] = useState([]);
-
   const [childClickedOutside, setChildClickedOutside] = useState(false);
 
   const EventTagSelectorRef = useRef(null);
@@ -95,7 +93,7 @@ function EventTagSelector({
     };
     try {
       // create this tag on the db
-      const newTagID = await u.createNewTag(newTagData);
+      const newTagID = await u.createNewTag(userUID, newTagData);
       try {
         // update tags in app state
         const newTagPlusID = { ...newTagData, tagID: newTagID };

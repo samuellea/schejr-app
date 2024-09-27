@@ -35,7 +35,7 @@ function Sidebar({
       sidebarIndex: lists.length,
     };
     try {
-      const listID = await u.createNewList(newListData);
+      const listID = await u.createNewList(userUID, newListData);
       const newListDataPlusID = { ...newListData, listID: listID };
       const updatedLists = [...lists, newListDataPlusID];
       setLists(updatedLists);

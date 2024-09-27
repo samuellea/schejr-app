@@ -24,7 +24,10 @@ function EventEditPane({
   useEffect(() => {
     const fetchListItem = async () => {
       try {
-        const listItemForEvent = await u.fetchListItemById(event.listItemID);
+        const listItemForEvent = await u.fetchListItemById(
+          userUID,
+          event.listItemID
+        );
         setListItem(listItemForEvent);
       } catch {
         // Handle error fetching listItem

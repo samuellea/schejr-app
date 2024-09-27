@@ -32,7 +32,7 @@ function Home() {
     const updatedListNoListID = { ...rest, ...newListValues };
     try {
       // update List obj on db, removing .listID first
-      await u.patchList(list.listID, updatedListNoListID);
+      await u.patchList(userUID, list.listID, updatedListNoListID);
       // set updated List in state, keeping .listID
       const updatedListWithListID = { ...list, ...newListValues };
       const listsMinusUpdated = lists.filter((e) => e.listID !== list.listID);
@@ -48,7 +48,7 @@ function Home() {
     if (listItemInState) {
       listItem = listItemInState;
     } else {
-      listItem = await u.fetchListItemById(listItemID);
+      listItem = await u.fetchListItemById(userUID, listItemID);
     }
     return { obj: listItem, inState: listItemInState };
   };
@@ -108,7 +108,11 @@ function Home() {
     // update the list item on db (remove explicit listItemID)
     const { listItemID, ...rest } = updatedListItem;
     const listItemMinusExplicit = { ...rest };
-    await u.patchListItem(updatedListItem.listItemID, listItemMinusExplicit);
+    await u.patchListItem(
+      userUID,
+      updatedListItem.listItemID,
+      listItemMinusExplicit
+    );
   };
 
   /* should handle changes to:
@@ -166,7 +170,11 @@ function Home() {
     // remove .listItemID before sending listItem obj to DB /listItems
     const { listItemID, ...restUpLi } = updatedListItem;
     const updatedListItemNoID = { ...restUpLi };
-    await u.patchListItem(updatedListItem.listItemID, updatedListItemNoID);
+    await u.patchListItem(
+      userUID,
+      updatedListItem.listItemID,
+      updatedListItemNoID
+    );
 
     // update the Event / Events
     let updatedEvents;
@@ -227,7 +235,7 @@ function Home() {
       dates: listItemDatesMinusDeleted,
     };
     console.log(updatedListItem);
-    await u.patchListItem(data.listItemID, updatedListItem);
+    await u.patchListItem(userUID, data.listItemID, updatedListItem);
     await u.deleteEventByID(userUID, data.eventID);
     if (relatedListItem.inState) {
       const listItemsMinusUpdated = listItems.filter(
@@ -247,7 +255,7 @@ function Home() {
 
   const deleteTagFromEntities = async (tagID) => {
     // remove the tag from any ListItems (+ their .dates) / Events that have it in
-    await u.findAndRemoveTagIDFromListItems(tagID);
+    await u.findAndRemoveTagIDFromListItems(userUID, tagID);
     await u.findAndRemoveTagIDFromEvents(userUID, tagID);
     // remove the tag from any ListItems (+ their .dates) / Events that have it, IF they are in state
     const matchingListItemsInState = listItems.filter((e) =>
@@ -271,7 +279,7 @@ function Home() {
     setEvents(updatedEvents);
   };
 
-  const deleteListItemAndEvents = async (listItemID) => {
+  const deleteListItemAndEvents = async (userUID, listItemID) => {
     const listItemsMinusDeleted = listItems.filter(
       (e) => e.listItemID !== listItemID
     );
@@ -285,18 +293,18 @@ function Home() {
       (e) => e.listItemID !== listItemID
     );
     setEvents(eventsMinusDeleted);
-    await u.deleteListItemByID(listItemID);
+    await u.deleteListItemByID(userUID, listItemID);
     await u.deleteEventsByListItemID(userUID, listItemID);
   };
 
   const deleteListAndRelated = async (listID) => {
-    await u.deleteListByID(listID);
+    await u.deleteListByID(userUID, listID);
     const updatedLists = lists.filter((e) => e.listID !== listID);
     setLists(updatedLists);
-    const relatedListItems = await u.fetchListItemsByListID(listID);
+    const relatedListItems = await u.fetchListItemsByListID(userUID, listID);
     // make a version of deleteEventsByListItemID, but deleteListItemsByListID
     // call that here, to remove listItems from DB
-    await u.deleteListItemsByListID(listID);
+    await u.deleteListItemsByListID(userUID, listID);
     // use ListID to setListItems with only listItems whose .parentID !== listID
     const listItemsMinusDeleted = listItems.filter(
       (e) => e.parentID !== listID
@@ -408,7 +416,10 @@ function Home() {
       // the listItem obj? That WON'T always be in 'listItems' state. We could be moving an Event linked to a ListItem that's not being rendered in <List />
       // So, get it using 'listItemIDForEvent'
       const listItemIDForEvent = eventToUpdate.listItemID;
-      const listItemForEvent = await u.fetchListItemById(listItemIDForEvent);
+      const listItemForEvent = await u.fetchListItemById(
+        userUID,
+        listItemIDForEvent
+      );
       await handleEntities.updateEventAndDates(
         'startDateTime',
         updatedEventObj
@@ -454,14 +465,18 @@ function Home() {
         // fetch the highest manual order value present on this List
         try {
           const maxManualOrderOnDestinationList =
-            await u.getMaxManualOrderByParentID(destinationListID);
+            await u.getMaxManualOrderByParentID(userUID, destinationListID);
           const updates = {
             parentID: destinationListID,
             manualOrder: maxManualOrderOnDestinationList + 1,
           };
           try {
             // 🌐 update that item being moved accordingly
-            const updatedListItem = await u.patchListItem(listItemID, updates);
+            const updatedListItem = await u.patchListItem(
+              userUID,
+              listItemID,
+              updates
+            );
             // now update remaining list items on db
             try {
               // 🌐
@@ -537,7 +552,7 @@ function Home() {
               order: 'ascending',
             };
             // setLists with updated List object on front-end!
-            return await u.patchList(selectedList.listID, updatedList);
+            return await u.patchList(userUID, selectedList.listID, updatedList);
           } catch (error) {
             console.error(error);
           }
@@ -635,32 +650,43 @@ function Home() {
     }
   }, []);
 
+  const syncStateFetched = useRef(false);
+
   useEffect(() => {
     const getAndSetUserSyncState = async () => {
       try {
-        const userSyncStateObj = await u.fetchUserSyncState(userUID);
+        if (syncStateFetched.current) return; // Prevent multiple runs
+        syncStateFetched.current = true; // Set to true after the first run
 
+        const userSyncStateObj = await u.fetchUserSyncState(userUID);
         if (Object.keys(userSyncStateObj).length === 0) {
-          // create a /userSyncStates obj for this user for the first time, and init syncWithGCal with false (default)
-          await u.createSyncStateByUserID(userUID, false);
-          setSyncWithGCal(false);
+          // Check if object already exists before creating
+          const syncState = await u.fetchUserSyncState(userUID);
+          if (Object.keys(syncState).length === 0) {
+            await u.createSyncStateByUserID(userUID, false); // Create the object only once
+            setSyncWithGCal(false);
+          }
         } else {
-          // set our home state syncWithGCal value to be the one on that obj
           const userSyncState = Object.values(userSyncStateObj)[0].state;
           setSyncWithGCal(userSyncState);
-          return;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     getAndSetUserSyncState();
-  }, []);
+  }, [userUID]);
 
   useEffect(() => {
+    // const userUID = localStorage.getItem('firebaseID');
+    console.log(userUID);
     //
     const fetchLists = async () => {
       try {
+        console.log('?');
         const allUserLists = await u.fetchAllUserLists(userUID);
+        console.log(allUserLists);
         const allUserListsWithIDs = Object.entries(allUserLists).map((e) => ({
           listID: e[0],
           ...e[1],
@@ -690,10 +716,10 @@ function Home() {
 
       if (syncWithGCal && listItems.length) {
         // add all a user's listItems with dates' dates to their Google Calendar
-        u.addAllListItemsToGCal(listItems);
+        // u.addAllListItemsToGCal(listItems);
       } else {
         // delete all Google Calendar events with privateExtendedProperty: 'createdBy=schejr-app'
-        u.removeAllListItemsFromGCal();
+        // u.removeAllListItemsFromGCal();
       }
       u.patchSyncStateByUserID(userUID, syncWithGCal);
     }
@@ -805,12 +831,12 @@ function Home() {
       <div className={styles.container}>
         <TopBar toggleSidebar={toggleSidebar} />
         <MainArea
+          userUID={userUID}
           showSidebar={showSidebar}
           selectedList={lists?.find((e) => e.listID === selectedListID)}
           updateList={updateList}
           // updateListItem={updateListItem}
           handleEntities={handleEntities}
-          userUID={userUID}
           listItems={listItems}
           setListItems={setListItems}
           listAndItemsLoaded={listAndItemsLoaded}

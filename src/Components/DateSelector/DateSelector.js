@@ -48,7 +48,7 @@ function DateSelector({
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
         title: listItem.title,
-        tags: listItem.tags,
+        tags: listItem.tags?.length ? listItem.tags : null,
       };
       // await handleEvents('create', newEventObj, listItem);
       await handleEntities.createEventAndDate(newEventObj);

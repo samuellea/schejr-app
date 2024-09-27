@@ -20,6 +20,7 @@ function Planner({
   handleEntities,
 }) {
   const [dates, setDates] = useState([]);
+  const [eventsLoaded, setEventsLoaded] = useState(true);
 
   const userUID = localStorage.getItem('firebaseID');
 
@@ -34,7 +35,15 @@ function Planner({
     setViewMonth(newDate);
   };
 
+  useEffect(() => {
+    if (events !== null) {
+      // console.log(events);
+      setEventsLoaded(true);
+    }
+  }, [events]);
+
   const getAndSetMonthUserEvents = async (viewMonth) => {
+    setEventsLoaded(false);
     const month = viewMonth.getUTCMonth();
     const year = viewMonth.getUTCFullYear();
     try {
@@ -107,20 +116,30 @@ function Planner({
             </div>
 
             <div className={styles.datesArea}>
-              {dates.map((date) => {
-                return (
-                  <Day
-                    date={date}
-                    viewMonth={viewMonth}
-                    key={`day-${date.date}`}
-                    events={events}
-                    handleEvents={handleEvents}
-                    existingTags={existingTags}
-                    setExistingTags={setExistingTags}
-                    handleEntities={handleEntities}
-                  />
-                );
-              })}
+              {eventsLoaded ? (
+                dates.map((date) => {
+                  const eventsForThisDate = h.getEventsForDate(
+                    date.date,
+                    events
+                  );
+                  return (
+                    <Day
+                      date={date}
+                      dateEvents={eventsForThisDate}
+                      viewMonth={viewMonth}
+                      key={`day-${date.date}`}
+                      events={events}
+                      handleEvents={handleEvents}
+                      existingTags={existingTags}
+                      setExistingTags={setExistingTags}
+                      handleEntities={handleEntities}
+                      setEventsLoaded={setEventsLoaded}
+                    />
+                  );
+                })
+              ) : (
+                <div className={styles.loading}></div>
+              )}
             </div>
           </div>
 

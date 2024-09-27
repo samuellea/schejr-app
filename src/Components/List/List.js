@@ -13,7 +13,6 @@ function List({
   selectedList,
   updateList,
   updateListItem,
-  userUID,
   handleEditListItem,
   listItems,
   setListItems,
@@ -26,6 +25,8 @@ function List({
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
+
+  const userUID = localStorage.getItem('firebaseID');
 
   useEffect(() => {
     setSortOn(selectedList.sortOn);
@@ -68,7 +69,10 @@ function List({
     };
 
     try {
-      const newItemWithExplicitID = await u.createNewListItem(listData);
+      const newItemWithExplicitID = await u.createNewListItem(
+        userUID,
+        listData
+      );
 
       setListItems([...listItems, newItemWithExplicitID]);
     } catch (error) {
@@ -80,7 +84,7 @@ function List({
     await handleEntities.deleteListItemAndEvents(listItem.listItemID);
     try {
       // then as a final step, delete the gcal event for this listItem if it had one
-      await u.removeGCalEventByListItemID(listItem.listItemID);
+      // await u.removeGCalEventByListItemID(listItem.listItemID);
     } catch (error) {
       console.error(error);
     }

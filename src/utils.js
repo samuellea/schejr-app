@@ -17,10 +17,10 @@ import * as h from './helpers';
 import { lastDayOfMonth } from 'date-fns';
 import { constant } from 'lodash-es';
 
-export const createNewList = async (listData) => {
+export const createNewList = async (userUID, listData) => {
   try {
     // Create a reference to the 'lists' endpoint
-    const listsRef = ref(database, 'lists');
+    const listsRef = ref(database, `${userUID}/lists`);
     // Generate a new key under the 'lists' endpoint
     const newListRef = push(listsRef);
     // Set the data at the new reference
@@ -33,9 +33,9 @@ export const createNewList = async (listData) => {
   }
 };
 
-export const patchList = async (listID, newData) => {
+export const patchList = async (userUID, listID, newData) => {
   try {
-    const listRef = ref(database, `lists/${listID}`);
+    const listRef = ref(database, `${userUID}/lists/${listID}`);
     await update(listRef, newData);
   } catch (error) {
     console.error('Error updating list:', error);
@@ -71,9 +71,9 @@ export const patchMultipleLists = async (updates) => {
 //   }
 // };
 
-export const patchListItem = async (listItemID, newData) => {
+export const patchListItem = async (userUID, listItemID, newData) => {
   try {
-    const listItemRef = ref(database, `listItems/${listItemID}`);
+    const listItemRef = ref(database, `${userUID}/listItems/${listItemID}`);
     await update(listItemRef, newData);
   } catch (error) {
     console.error('Error updating list item:', error);
@@ -81,9 +81,9 @@ export const patchListItem = async (listItemID, newData) => {
   }
 };
 
-export const patchTag = async (tagID, newData) => {
+export const patchTag = async (userUID, tagID, newData) => {
   try {
-    const tagRef = ref(database, `tags/${tagID}`);
+    const tagRef = ref(database, `${userUID}/tags/${tagID}`);
     await update(tagRef, newData);
   } catch (error) {
     console.error('Error updating tag:', error);
@@ -92,9 +92,10 @@ export const patchTag = async (tagID, newData) => {
 };
 
 export const fetchAllUserLists = async (userUID) => {
+  console.log(userUID, ' <-- utils.js');
   try {
     // Reference to the 'lists' endpoint
-    const listsRef = ref(database, 'lists');
+    const listsRef = ref(database, `${userUID}/lists`);
     // Create a query to filter lists where 'createdBy' equals the given userUID
     const userListsQuery = query(
       listsRef,
@@ -106,6 +107,7 @@ export const fetchAllUserLists = async (userUID) => {
     if (snapshot.exists()) {
       // Data exists; convert snapshot to an object
       const data = snapshot.val();
+      console.log(data);
       return data;
     } else {
       return {};
@@ -116,9 +118,9 @@ export const fetchAllUserLists = async (userUID) => {
   }
 };
 
-export const deleteListByID = async (listID) => {
+export const deleteListByID = async (userUID, listID) => {
   try {
-    const objectRef = ref(database, `lists/${listID}`);
+    const objectRef = ref(database, `${userUID}/lists/${listID}`);
     await remove(objectRef);
   } catch (error) {
     console.error('Error deleting list:', error);
@@ -126,9 +128,9 @@ export const deleteListByID = async (listID) => {
   }
 };
 
-export const deleteTagByID = async (tagID) => {
+export const deleteTagByID = async (userUID, tagID) => {
   try {
-    const objectRef = ref(database, `tags/${tagID}`);
+    const objectRef = ref(database, `${userUID}/tags/${tagID}`);
     await remove(objectRef);
   } catch (error) {
     console.error('Error deleting tag:', error);
@@ -136,10 +138,10 @@ export const deleteTagByID = async (tagID) => {
   }
 };
 
-export const createNewListItem = async (listItemData) => {
+export const createNewListItem = async (userUID, listItemData) => {
   try {
     // Create a reference to the 'lists' endpoint
-    const listItemsRef = ref(database, 'listItems');
+    const listItemsRef = ref(database, `${userUID}/listItems`);
     // Generate a new key under the 'lists' endpoint
     const newListItemRef = push(listItemsRef);
     // Set the data at the new reference
@@ -156,9 +158,9 @@ export const createNewListItem = async (listItemData) => {
   }
 };
 
-export const fetchListItemById = async (listItemId) => {
+export const fetchListItemById = async (userUID, listItemId) => {
   try {
-    const listItemRef = ref(database, `listItems/${listItemId}`);
+    const listItemRef = ref(database, `${userUID}/listItems/${listItemId}`);
     const snapshot = await get(listItemRef);
     if (snapshot.exists()) {
       // Return the data if it exists
@@ -178,10 +180,10 @@ export const fetchListItemById = async (listItemId) => {
   }
 };
 
-export const fetchListItemsByListID = async (parentListID) => {
+export const fetchListItemsByListID = async (userUID, parentListID) => {
   try {
     // Reference to the 'lists' endpoint
-    const listItemsRef = ref(database, 'listItems');
+    const listItemsRef = ref(database, `${userUID}/listItems`);
     // Create a query to filter lists where 'createdBy' equals the given userUID
     const listItemsQuery = query(
       listItemsRef,
@@ -207,8 +209,8 @@ export const fetchListItemsByListID = async (parentListID) => {
   }
 };
 
-export const getMaxManualOrderByParentID = async (parentID) => {
-  const listItemsRef = ref(database, '/listItems');
+export const getMaxManualOrderByParentID = async (userUID, parentID) => {
+  const listItemsRef = ref(database, `${userUID}/listItems`);
   try {
     // Step 1: Query to filter items by parentID
     const parentIDQuery = query(
@@ -263,9 +265,9 @@ export const patchMultipleListItems = async (updates) => {
   }
 };
 
-export const deleteListItemByID = async (listItemID) => {
+export const deleteListItemByID = async (userUID, listItemID) => {
   try {
-    const objectRef = ref(database, `listItems/${listItemID}`);
+    const objectRef = ref(database, `${userUID}/listItems/${listItemID}`);
     await remove(objectRef);
   } catch (error) {
     console.error('Error deleting list item:', error);
@@ -273,10 +275,14 @@ export const deleteListItemByID = async (listItemID) => {
   }
 };
 
-export const deleteListItemsWithParentID = async (listID, childListItems) => {
+export const deleteListItemsWithParentID = async (
+  userUID,
+  listID,
+  childListItems
+) => {
   try {
     const deletePromises = childListItems.map((listItem) => {
-      return deleteListItemByID(listItem.listItemID);
+      return deleteListItemByID(userUID, listItem.listItemID);
     });
     return await Promise.all(deletePromises);
   } catch (error) {
@@ -287,7 +293,7 @@ export const deleteListItemsWithParentID = async (listID, childListItems) => {
 export const fetchAllUserTags = async (userUID) => {
   try {
     // Reference to the 'lists' endpoint
-    const tagsRef = ref(database, 'tags');
+    const tagsRef = ref(database, `${userUID}/tags`);
     // Create a query to filter lists where 'createdBy' equals the given userUID
     const tagsQuery = query(tagsRef, orderByChild('userUID'), equalTo(userUID));
     // Get the data from the query
@@ -305,9 +311,9 @@ export const fetchAllUserTags = async (userUID) => {
   }
 };
 
-export const createNewTag = async (tagData) => {
+export const createNewTag = async (userUID, tagData) => {
   try {
-    const tagsRef = ref(database, 'tags');
+    const tagsRef = ref(database, `${userUID}/tags`);
     const newTagRef = push(tagsRef);
     await set(newTagRef, tagData);
 
@@ -318,9 +324,12 @@ export const createNewTag = async (tagData) => {
   }
 };
 
-export const findAndRemoveTagIDFromListItems = async (tagIDToRemove) => {
+export const findAndRemoveTagIDFromListItems = async (
+  userUID,
+  tagIDToRemove
+) => {
   // Reference to the listItems node
-  const listItemsRef = ref(database, 'listItems');
+  const listItemsRef = ref(database, `${userUID}/listItems`);
   try {
     // Fetch all listItems
     const snapshot = await get(listItemsRef);
@@ -362,21 +371,21 @@ export const findAndRemoveTagIDFromListItems = async (tagIDToRemove) => {
 
 export const findAndRemoveTagIDFromEvents = async (userUID, tagIDToRemove) => {
   // Reference to the listItems node
-  const eventsRef = ref(database, `events/${userUID}`);
+  const eventsRef = ref(database, `${userUID}/events`);
   try {
     // Fetch all listItems
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const events = snapshot.val();
       const updates = {}; // To hold updates for batch writing
-      // Iterate over all items
+      // Iterate over all i tems
       for (const [key, event] of Object.entries(events)) {
         // Check if the event has a .tags key and if it contains the tag
         if (Array.isArray(event.tags) && event.tags.includes(tagIDToRemove)) {
           // Filter out the tag to be removed
           const updatedTags = event.tags.filter((tag) => tag !== tagIDToRemove);
           // Prepare the update
-          updates[`events/${userUID}/${key}`] = { ...event, tags: updatedTags };
+          updates[`${userUID}/events/${key}`] = { ...event, tags: updatedTags };
         }
       }
       // Perform batch update
@@ -394,7 +403,7 @@ export const findAndRemoveTagIDFromEvents = async (userUID, tagIDToRemove) => {
 export const createNewEvent = async (userUID, eventData) => {
   try {
     // Create a reference to the 'events' endpoint
-    const eventsRef = ref(database, `events/${userUID}`);
+    const eventsRef = ref(database, `${userUID}/events`);
     // Generate a new key under the 'events' endpoint
     const newEventRef = push(eventsRef);
     await set(newEventRef, eventData);
@@ -407,7 +416,7 @@ export const createNewEvent = async (userUID, eventData) => {
 
 export const fetchEventByID = async (userUID, eventID) => {
   try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    const eventRef = ref(database, `${userUID}/events/${eventID}`);
     const snapshot = await get(eventRef);
     if (snapshot.exists()) {
       // Return the data if it exists
@@ -434,7 +443,7 @@ export const fetchUserEventsByMonth = async (userUID, month, year) => {
   // console.log(startOfMonthUTC);
   // console.log(endOfMonthUTC);
   // Reference to the /events endpoint
-  const eventsRef = ref(database, `events/${userUID}`);
+  const eventsRef = ref(database, `${userUID}/events`);
   // Query the events between the calculated UTC times
   const monthQuery = query(
     eventsRef,
@@ -464,7 +473,7 @@ export const fetchUserEventsByMonth = async (userUID, month, year) => {
 
 export const patchEventByID = async (userUID, eventID, eventData) => {
   try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    const eventRef = ref(database, `${userUID}/events/${eventID}`);
     await update(eventRef, eventData);
   } catch (error) {
     console.error('Error updating event:', error);
@@ -482,7 +491,7 @@ export const patchMultipleEventsByIDs = async (
   eventIDs.forEach((eventID, index) => {
     if (dataObjects[index]) {
       // Ensure there is a corresponding data object
-      updates[`/events/${userUID}/${eventID}`] = dataObjects[index];
+      updates[`${userUID}/events/${eventID}`] = dataObjects[index];
     }
   });
   try {
@@ -525,7 +534,7 @@ export const patchMultipleEventsOnKey = async (
   const updates = {};
   // Prepare the updates object
   eventIDs.forEach((id) => {
-    updates[`/events/${userUID}/${id}/${key}`] = newValue; // Replace 'propertyName' with the actual property you want to update
+    updates[`${userUID}/events/${id}/${key}`] = newValue; // Replace 'propertyName' with the actual property you want to update
   });
 
   const dbRef = ref(database);
@@ -540,7 +549,7 @@ export const patchMultipleEventsOnKey = async (
 
 export const deleteEventByID = async (userUID, eventID) => {
   try {
-    const eventRef = ref(database, `events/${userUID}/${eventID}`);
+    const eventRef = ref(database, `${userUID}/events/${eventID}`);
     await remove(eventRef);
   } catch (error) {
     console.error('Error deleting list:', error);
@@ -553,7 +562,7 @@ export const deleteEventsByEventIDs = async (userUID, eventIDs) => {
     // Iterate over each eventID
     for (const eventID of eventIDs) {
       // Reference to the event object at /events/<eventID>
-      const eventRef = ref(database, `/events/${userUID}/${eventID}`);
+      const eventRef = ref(database, `${userUID}/events/${eventID}`);
       // Remove the event from the database
       await remove(eventRef);
     }
@@ -566,7 +575,7 @@ export const deleteEventsByEventIDs = async (userUID, eventIDs) => {
 export const deleteEventsByListItemID = async (userUID, listItemID) => {
   try {
     // Reference to the events for the user
-    const eventsRef = ref(database, `events/${userUID}`);
+    const eventsRef = ref(database, `${userUID}/events`);
 
     // Create a query to find events where listItemID matches the given value
     const eventsQuery = query(
@@ -582,7 +591,7 @@ export const deleteEventsByListItemID = async (userUID, listItemID) => {
       const updates = {};
       snapshot.forEach((childSnapshot) => {
         const eventID = childSnapshot.key;
-        updates[`events/${userUID}/${eventID}`] = null; // Mark the event for deletion
+        updates[`${userUID}/events/${eventID}`] = null; // Mark the event for deletion
       });
 
       // Perform the batch delete
@@ -597,41 +606,8 @@ export const deleteEventsByListItemID = async (userUID, listItemID) => {
   }
 };
 
-export const deleteListItemsByListID = async (listID) => {
-  try {
-    // Reference to the events for the user
-    const listItemsRef = ref(database, 'listItems');
-
-    // Create a query to find events where listItemID matches the given value
-    const listItemsQuery = query(
-      listItemsRef,
-      orderByChild('parentID'),
-      equalTo(listID)
-    );
-
-    // Retrieve all events matching the query
-    const snapshot = await get(listItemsQuery);
-
-    if (snapshot.exists()) {
-      const updates = {};
-      snapshot.forEach((childSnapshot) => {
-        const listItemID = childSnapshot.key;
-        updates[`listItems/${listItemID}`] = null; // Mark the event for deletion
-      });
-      // Perform the batch delete
-      await update(ref(database), updates);
-      console.log('Deleted listItems with listID:', listID);
-    } else {
-      console.log('No listItems found with listID:', listID);
-    }
-  } catch (error) {
-    console.error('Error deleting listItems:', error);
-    throw error;
-  }
-};
-
 export const fetchUserEventsByListItemID = async (userUID, listItemID) => {
-  const eventsRef = ref(database, `events/${userUID}`);
+  const eventsRef = ref(database, `${userUID}/events`);
   try {
     // Create a query
     const eventsQuery = query(
@@ -659,9 +635,63 @@ export const fetchUserEventsByListItemID = async (userUID, listItemID) => {
   }
 };
 
+export const deleteListItemsByListID = async (userUID, listID) => {
+  try {
+    // Reference to the events for the user
+    const listItemsRef = ref(database, `${userUID}/listItems`);
+
+    // Create a query to find events where listItemID matches the given value
+    const listItemsQuery = query(
+      listItemsRef,
+      orderByChild('parentID'),
+      equalTo(listID)
+    );
+
+    // Retrieve all events matching the query
+    const snapshot = await get(listItemsQuery);
+
+    if (snapshot.exists()) {
+      const updates = {};
+      snapshot.forEach((childSnapshot) => {
+        const listItemID = childSnapshot.key;
+        updates[`${userUID}/listItems/${listItemID}`] = null; // Mark the event for deletion
+      });
+      // Perform the batch delete
+      await update(ref(database), updates);
+      console.log('Deleted listItems with listID:', listID);
+    } else {
+      console.log('No listItems found with listID:', listID);
+    }
+  } catch (error) {
+    console.error('Error deleting listItems:', error);
+    throw error;
+  }
+};
+
+export const fetchUserSyncState = async (userUID) => {
+  try {
+    // Reference directly to the 'syncState' under the given user's UID
+    const userSyncStateRef = ref(database, `${userUID}/syncState`);
+
+    // Fetch the data from the 'syncState' reference
+    const snapshot = await get(userSyncStateRef);
+
+    if (snapshot.exists()) {
+      // Return the sync state data if it exists
+      return snapshot.val();
+    } else {
+      // Return an empty object if no sync state exists
+      return {};
+    }
+  } catch (error) {
+    console.error('Error retrieving userSyncState for this user:', error);
+    throw error;
+  }
+};
+
 export const createSyncStateByUserID = async (userUID, state) => {
-  const initUserSyncState = { userUID: userUID, state: state };
-  const userSyncStatesRef = ref(database, 'userSyncStates');
+  const initUserSyncState = { state: state };
+  const userSyncStatesRef = ref(database, `${userUID}/syncState`);
   // Generate a new key under the 'lists' endpoint
   const syncStateRef = push(userSyncStatesRef);
   // Set the data at the new reference
@@ -679,33 +709,10 @@ export const createSyncStateByUserID = async (userUID, state) => {
   }
 };
 
-export const fetchUserSyncState = async (userUID) => {
-  try {
-    // Reference to the 'lists' endpoint
-    const userSyncStatesRef = ref(database, 'userSyncStates');
-    // Create a query to filter lists where 'createdBy' equals the given userUID
-    const userSyncStatesQuery = query(
-      userSyncStatesRef,
-      orderByChild('userUID'),
-      equalTo(userUID)
-    );
-    const snapshot = await get(userSyncStatesQuery);
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      return data;
-    } else {
-      return {};
-    }
-  } catch (error) {
-    console.error('Error retrieving userSyncState for this user:', error);
-    throw error;
-  }
-};
-
 export const patchSyncStateByUserID = async (userUID, state) => {
   try {
     // Reference to your database node where the objects are stored
-    const userSyncStatesRef = ref(database, 'userSyncStates');
+    const userSyncStatesRef = ref(database, `${userUID}/syncState`);
     // Query to find objects where the userUID key matches the provided userUID
     const userQuery = query(
       userSyncStatesRef,
@@ -720,7 +727,7 @@ export const patchSyncStateByUserID = async (userUID, state) => {
         // Get the key of the matched object
         const key = childSnapshot.key;
         // Update the matched object using the key
-        const updateRef = ref(database, `userSyncStates/${key}`); // Replace with your actual path
+        const updateRef = ref(database, `${userUID}/syncState/${key}`); // Replace with your actual path
         update(updateRef, patchData);
       });
     } else {

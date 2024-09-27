@@ -23,7 +23,6 @@ function TagSelector({
   const [newTagColor, setNewTagColor] = useState(null);
   const [tagOptions, setTagOptions] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const [childClickedOutside, setChildClickedOutside] = useState(false);
 
   const tagSelectorRef = useRef(null);
@@ -93,7 +92,7 @@ function TagSelector({
     };
     try {
       // create this tag on the db
-      const newTagID = await u.createNewTag(newTagData);
+      const newTagID = await u.createNewTag(userUID, newTagData);
       try {
         // update tags in app state
         const newTagPlusID = { ...newTagData, tagID: newTagID };
@@ -130,7 +129,7 @@ function TagSelector({
         ];
         setExistingTags(updatedExistingTags);
         // then patch this tag on the db
-        const tagUpdated = await u.patchTag(tag.tagID, updatedTag);
+        const tagUpdated = await u.patchTag(userUID, tag.tagID, updatedTag);
       } catch (error) {
         console.error('Failed to update tag:', error);
         if (tagOptions) setTagOptions(null); // close the Options menu if it's open
@@ -140,7 +139,7 @@ function TagSelector({
 
   const handleDeleteTag = async (tagID) => {
     try {
-      await u.deleteTagByID(tagID);
+      await u.deleteTagByID(userUID, tagID);
       try {
         // update 'tags' state to no longer contain the deleted tag
         const existingTagsMinusDeletedTag = existingTags.filter(
