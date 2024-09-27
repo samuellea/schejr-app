@@ -1,0 +1,32 @@
+.container {
+  /* height: 20px; */
+  width: 100%;
+  /* border: 1px solid white; */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  color: rgb(155, 155, 155);
+  padding: 0px 20px;
+  margin-top: 28px;
+  height: auto;
+}
+
+.dayHeader {
+  font-size: 14px;
+  border-bottom: 1px solid rgba(155, 155, 155, 0.3);
+  padding: 6px 6px 6px 0px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+  /* border: 1px solid white; */
+}
+
+.titlePlaceholder {
+  height: 17px;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 20px;
+  width: 30%;
+}

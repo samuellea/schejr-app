@@ -4,6 +4,7 @@ import ChevronIcon from '../Icons/ChevronIcon';
 import * as h from '../../helpers';
 import * as u from '../../utils';
 import Day from './Day';
+import PlaceholderDay from './PlaceholderDay';
 
 function Planner({
   showPlanner,
@@ -116,30 +117,25 @@ function Planner({
             </div>
 
             <div className={styles.datesArea}>
-              {eventsLoaded ? (
-                dates.map((date) => {
-                  const eventsForThisDate = h.getEventsForDate(
-                    date.date,
-                    events
-                  );
-                  return (
-                    <Day
-                      date={date}
-                      dateEvents={eventsForThisDate}
-                      viewMonth={viewMonth}
-                      key={`day-${date.date}`}
-                      events={events}
-                      handleEvents={handleEvents}
-                      existingTags={existingTags}
-                      setExistingTags={setExistingTags}
-                      handleEntities={handleEntities}
-                      setEventsLoaded={setEventsLoaded}
-                    />
-                  );
-                })
-              ) : (
-                <div className={styles.loading}></div>
-              )}
+              {dates.map((date) => {
+                const eventsForThisDate = h.getEventsForDate(date.date, events);
+                return eventsLoaded ? (
+                  <Day
+                    date={date}
+                    dateEvents={eventsForThisDate}
+                    viewMonth={viewMonth}
+                    key={`day-${date.date}`}
+                    events={events}
+                    handleEvents={handleEvents}
+                    existingTags={existingTags}
+                    setExistingTags={setExistingTags}
+                    handleEntities={handleEntities}
+                    setEventsLoaded={setEventsLoaded}
+                  />
+                ) : (
+                  <PlaceholderDay />
+                );
+              })}
             </div>
           </div>
 
