@@ -13,7 +13,7 @@
 }
 
 .inputContainer {
-  /* border: 1px solid orange; */
+  border: 1px solid orange;
   max-width: 100%;
   border-radius: 4px;
   display: flex;

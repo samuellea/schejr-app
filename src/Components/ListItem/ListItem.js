@@ -25,10 +25,10 @@ function ListItem({
     setListItemRenameText(text);
   };
 
-  const handleTitleOnBlur = () => {
+  const handleTitleOnBlur = async () => {
     // updateListItem(listItem, 'title', listItemRenameText);
     const updatedListItem = { ...listItem, title: listItemRenameText };
-    handleEntities.updateEventAndDates('title', updatedListItem);
+    await handleEntities.updateEventAndDates('title', updatedListItem);
   };
 
   useEffect(() => {

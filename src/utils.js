@@ -350,7 +350,7 @@ export const findAndRemoveTagIDFromListItems = async (
             tags: updatedTags,
           }));
           // Prepare the update
-          updates[`listItems/${key}`] = {
+          updates[`${userUID}/listItems/${key}`] = {
             ...item,
             tags: updatedTags,
             dates: updatedDates,

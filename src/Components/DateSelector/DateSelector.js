@@ -18,7 +18,8 @@ function DateSelector({
   handleEntities,
   inFocus = false,
   closeButton = false,
-  handleCancel = () => {},
+  // handleCancel = () => {},
+  customClickOff = () => {},
 }) {
   const [startDateTime, setStartDateTime] = useState(
     date?.startDateTime ? new Date(date.startDateTime) : null
@@ -59,10 +60,15 @@ function DateSelector({
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
       };
-      await handleEntities.updateEventAndDates(
-        'startDateTime',
-        updatedEventObj
-      );
+      if (type === 'listItem') {
+        await handleEntities.updateEventAndDates(
+          'startDateTime',
+          updatedEventObj
+        );
+      }
+      if (type === 'event') {
+        customClickOff(updatedEventObj);
+      }
     }
     setIsInFocus(false);
   };
@@ -155,26 +161,21 @@ function DateSelector({
     <div
       className={styles.container}
       ref={containerRef}
-      style={{
-        height:
-          type === 'standalone' ? '0px' : type === 'field' ? '40px' : null,
-      }}
       onClick={handleInternalClick} // Prevents clicks inside from triggering outside logic
     >
-      {type === 'field' ? (
-        <div
-          className={`${styles.inputContainer} ${
-            isInFocus ? styles.isInFocus : ''
-          }`}
-          onClick={() => setIsInFocus(true)}
-        >
-          {startDateTime ? (
-            <>
-              <div className={styles.dateLabels}>
-                <DateIcon fill="white" />
-                <p className={styles.startLabel}>
-                  {h.formatDate(startDateTime)}
-                </p>
+      <div
+        className={`${styles.inputContainer} ${
+          isInFocus ? styles.isInFocus : ''
+        }`}
+        onClick={() => setIsInFocus(true)}
+        style={{ width: type === 'listItem' ? '75%' : null }}
+      >
+        {startDateTime ? (
+          <>
+            <div className={styles.dateLabels}>
+              <DateIcon fill="white" />
+              <p className={styles.startLabel}>{h.formatDate(startDateTime)}</p>
+              {type === 'listItem' ? (
                 <div
                   className={styles.deleteDateButton}
                   role="button"
@@ -182,31 +183,31 @@ function DateSelector({
                 >
                   <CloseIcon fill="#FFFFFFBF" width="12px" />
                 </div>
-              </div>
-              {timeSet && (
-                <div className={styles.timeLabel}>
-                  <ClockIcon width="15px" fill="white" />
-                  <p>{h.dateTimeTo12Hour(startDateTime)}</p>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className={styles.emptyLabel}>
-              {listItem.dates?.length > 0 && (
-                <PlusIcon fill="white" width="14px" margin="0px 0px 0px 0px" />
-              )}
-              <p>Add date</p>
+              ) : null}
             </div>
-          )}
-        </div>
-      ) : null}
+            {timeSet && (
+              <div className={styles.timeLabel}>
+                <ClockIcon width="15px" fill="white" />
+                <p>{h.dateTimeTo12Hour(startDateTime)}</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className={styles.emptyLabel}>
+            {listItem.dates?.length > 0 && (
+              <PlusIcon fill="white" width="14px" margin="0px 0px 0px 0px" />
+            )}
+            <p>Add date</p>
+          </div>
+        )}
+      </div>
+
       {isInFocus && (
         <div
           className={styles.dropdown}
           ref={datePickerRef}
           style={{
-            top:
-              type === 'standalone' ? '0px' : type === 'field' ? '35px' : null,
+            top: type === 'event' ? '0px' : type === 'listItem' ? '35px' : null,
             padding: closeButton ? '0px' : '8px',
           }}
         >
@@ -216,7 +217,7 @@ function DateSelector({
               <div
                 className={styles.closeButton}
                 role="button"
-                onClick={handleCancel}
+                onClick={() => setIsInFocus(false)}
               >
                 <CloseIcon width="18px" fill="white" />
               </div>
@@ -283,7 +284,7 @@ function DateSelector({
                 ) : null}
               </div>
             )}
-            {date ? (
+            {date && type === 'listItem' ? (
               <div
                 className={styles.bottomButton}
                 onClick={(event) => handleClear(event)}

@@ -10,11 +10,12 @@
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
+  height: 40px;
 }
 
 .inputContainer {
   /* border: 1px solid yellow; */
-  width: 75%;
+  /* width: 75%; */
   /* max-width: 90%; */
   padding: 3px 3px;
   border-radius: 4px;

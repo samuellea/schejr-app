@@ -115,6 +115,7 @@ function ListItemEditPane({
           listItems={listItems}
           setListItems={setListItems}
           handleEntities={handleEntities}
+          type="listItem"
         />
       </div>
 
@@ -141,7 +142,7 @@ function ListItemEditPane({
                     )}
                   </div>
                   <DateSelector
-                    type="field"
+                    type="listItem"
                     date={date}
                     listItem={listItem}
                     handleEntities={handleEntities}
@@ -163,7 +164,7 @@ function ListItemEditPane({
           ) : null}
         </div>
         <DateSelector
-          type="field"
+          type="listItem"
           listItem={listItem}
           handleEntities={handleEntities}
         />

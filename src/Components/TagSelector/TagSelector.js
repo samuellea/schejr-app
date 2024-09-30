@@ -16,6 +16,8 @@ function TagSelector({
   listItems,
   setListItems,
   handleEntities,
+  type,
+  customUpdate,
 }) {
   const [isInFocus, setIsInFocus] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -83,6 +85,24 @@ function TagSelector({
 
   useEffect(() => {}, [listItems]);
 
+  const handleClickOutsideParent = () => {
+    if (!childClickedOutside) {
+      // Prevent the parent logic from firing until the child's logic has executed
+
+      setIsInFocus(false);
+    } else {
+      // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
+      setTagOptions(null); // close the Options menu if it's open
+    }
+    // Reset the state for future clicks
+    setChildClickedOutside(false);
+  };
+
+  const handleInputChange = (e) => {
+    const text = e.target.value;
+    setInputText(text);
+  };
+
   const handleCreateTag = async (newTagColor) => {
     // setIsInFocus(false);
     const newTagData = {
@@ -102,7 +122,12 @@ function TagSelector({
         // then update listItem on db to have this new tag in .tags
         const updatedListItemTags = [...(listItem.tags || []), newTagID];
         const updatedListItem = { ...listItem, tags: updatedListItemTags };
-        await handleEntities.updateEventAndDates('tags', updatedListItem);
+        if (type === 'listItem') {
+          await handleEntities.updateEventAndDates('tags', updatedListItem);
+        }
+        if (type === 'event') {
+          customUpdate(updatedListItem);
+        }
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
       }
@@ -148,7 +173,14 @@ function TagSelector({
         setExistingTags(existingTagsMinusDeletedTag);
         // then handle removing the deleted tag from any all ListItems and Events that used it
         // on the db + in state
-        await handleEntities.deleteTagFromEntities(tagID);
+
+        if (type === 'listItem') {
+          await handleEntities.deleteTagFromEntities(tagID);
+        }
+        if (type === 'event') {
+          // customUpdate(updatedListItem);
+        }
+
         setShowDeleteModal(false);
       } catch (error) {
         console.error('Failed to remove tag from matching list items:', error);
@@ -156,24 +188,6 @@ function TagSelector({
     } catch (error) {
       console.error('Failed to delete tag:', error);
     }
-  };
-
-  const handleClickOutsideParent = () => {
-    if (!childClickedOutside) {
-      // Prevent the parent logic from firing until the child's logic has executed
-
-      setIsInFocus(false);
-    } else {
-      // handleUpdateExistingTag(tagOptions, 'name', tagRenameText);
-      setTagOptions(null); // close the Options menu if it's open
-    }
-    // Reset the state for future clicks
-    setChildClickedOutside(false);
-  };
-
-  const handleInputChange = (e) => {
-    const text = e.target.value;
-    setInputText(text);
   };
 
   const handleSelectExistingTag = async (tag) => {

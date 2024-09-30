@@ -5,7 +5,7 @@ import TrashIcon from '../Icons/TrashIcon';
 import DateSelector from '../DateSelector/DateSelector';
 import * as u from '../../utils';
 import TagSelector from '../TagSelector/TagSelector';
-import EventTagSelector from '../TagSelector/EventTagSelector';
+// import EventTagSelector from '../TagSelector/EventTagSelector';
 
 function EventEditPane({
   event,
@@ -18,6 +18,12 @@ function EventEditPane({
 }) {
   const [listItem, setListItem] = useState(null);
   const [eventTitle, setEventTitle] = useState(event.title);
+  const [eventStartDateTime, setEventStartDateTime] = useState(
+    event.startDateTime
+  );
+  const [eventTags, setEventTags] = useState(event.tags);
+  const [modified, setModified] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const userUID = localStorage.getItem('firebaseID');
 
@@ -35,6 +41,16 @@ function EventEditPane({
     };
     fetchListItem();
   }, []);
+
+  useEffect(() => {
+    if (
+      eventTitle !== event.title ||
+      eventStartDateTime !== event.startDateTime ||
+      eventTags !== event.tags
+    ) {
+      setModified(true);
+    }
+  }, [eventTitle, eventStartDateTime, eventTags]);
 
   const eventEditRef = useRef(null);
 
@@ -55,6 +71,34 @@ function EventEditPane({
 
   const handleTitleChange = (e) => {
     setEventTitle(e.target.value);
+  };
+
+  const handleStartDateTimeChange = (updatedEventObj) => {
+    const newStartDateTime = updatedEventObj.startDateTime;
+    setEventStartDateTime(newStartDateTime);
+  };
+
+  const handleTagsChange = (updatedEventObj) => {
+    // const newStartDateTime = updatedEventObj.startDateTime;
+    // setEventTags();
+  };
+
+  const handleStartSave = () => {};
+
+  const handleConfirmSave = async () => {
+    setSaving(true);
+
+    /*
+    await handleEntities.updateEventAndDates('title', updatedListItem);
+
+    await handleEntities.updateEventAndDates('tags', updatedListItem);
+    
+    await handleEntities.updateEventAndDates(
+      'startDateTime',
+      updatedEventObj
+    );
+
+    */
   };
 
   return (
@@ -78,28 +122,46 @@ function EventEditPane({
 
           <div className={styles.field}>
             <div className={styles.eventTags}>
-              <EventTagSelector
+              <TagSelector
                 userUID={userUID}
                 listItem={listItem}
                 event={event}
                 handleEntities={handleEntities}
                 existingTags={existingTags}
                 setExistingTags={setExistingTags}
+                type="event"
+                customUpdate={handleTagsChange}
               />
             </div>
           </div>
 
-          <div className={styles.datepicker}>
-            <DateSelector
-              type="standalone"
-              date={listItem.dates.find((e) => e.eventID === event.eventID)}
-              listItem={listItem}
-              handleEntities={handleEntities}
-              inFocus={true}
-              closeButton={true}
-              handleCancel={handleStopEditing}
-            />
+          <div className={styles.field}>
+            <div className={styles.eventDate}>
+              <div className={styles.datepicker}>
+                <DateSelector
+                  type="event"
+                  date={listItem.dates.find((e) => e.eventID === event.eventID)}
+                  listItem={listItem}
+                  handleEntities={handleEntities}
+                  // inFocus={true}
+                  closeButton={true}
+                  handleCancel={handleStopEditing}
+                  customClickOff={handleStartDateTimeChange}
+                />
+              </div>
+            </div>
           </div>
+
+          {modified ? (
+            <div
+              className={styles.field}
+              style={{ justifyContent: 'flex-end' }}
+            >
+              <button className={styles.saveButton} onClick={handleStartSave}>
+                Save
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : (
         <h4>Loading...</h4>
