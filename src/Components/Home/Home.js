@@ -123,39 +123,47 @@ function Home() {
     - event.tags                                EventEditPane.js
     - event.startDateTime                       onDragEnd, EventEditPane.js > EventDateSelector.js
      */
-  const updateEventAndDates = async (field, data) => {
+  const updateEventAndDates = async (fields, data) => {
+    // ['startDateTime', 'tags', 'title'] or ['startDateTime'] or ['tags'] or ['title']
     // data can either be an updated Event or and updated listItem Date - keys identical, except Date has .eventID
-    // console.log(data);
     const relatedListItem = await getRelatedListItem(data.listItemID); // .obj + .inState
-    let updatedListItem;
+    let updatedListItem = { ...relatedListItem.obj };
 
-    if (field === 'startDateTime') {
-      /* if field === 'startDateTime', just update .startDateTime on the .dates object which matches the eventID */
+    if (fields.includes('tags') || fields.includes('title')) {
+      /* if field includes 'tags' AND/OR 'title', update .tags/.title on ALL the .dates objs AND on the ListItem key itself */
+      // uupdate the listItem .dates objs
+      const updatedDates =
+        relatedListItem.obj.dates?.map((e) => {
+          const updatedDate = {
+            ...e,
+            title: data.title,
+            tags: data.tags ? data.tags : [],
+          };
+          return updatedDate;
+        }) || [];
+      updatedListItem.dates = updatedDates;
+      // Update the main listItem itself
+      updatedListItem.title = data.title;
+      updatedListItem.tags = data.tags ? data.tags : [];
+    }
+
+    if (fields.includes('startDateTime')) {
+      /* if field === 'startDateTime', update .startDateTime on the .dates object which matches the eventID */
       // update the ListItem to change corresp. date obj in .dates
-      const updatedDateObj = relatedListItem.obj.dates.find(
+      const updatedDateObj = updatedListItem.dates.find(
         (e) => e.eventID === data.eventID
       );
       updatedDateObj.startDateTime = data.startDateTime;
       updatedDateObj.timeSet = data.timeSet;
-      const listItemDatesMinusUpdated = relatedListItem.obj.dates.filter(
+      const listItemDatesMinusUpdated = updatedListItem.dates.filter(
         (e) => e.eventID !== data.eventID
       );
       updatedListItem = {
-        ...relatedListItem.obj,
+        ...updatedListItem,
         dates: [...listItemDatesMinusUpdated, updatedDateObj],
       };
-    } else {
-      /* else if field === 'tags' / 'title', update .tags/.title on ALL the .dates objs AND on the ListItem key itself */
-      const updatedDates = relatedListItem.obj.dates.map((e) => ({
-        ...e,
-        [field]: data[field],
-      }));
-      updatedListItem = {
-        ...relatedListItem.obj,
-        [field]: data[field],
-        dates: updatedDates,
-      };
     }
+
     // set updatedListItem in 'listItems' state (if in there) (inc. .listItemID)
     if (relatedListItem.inState) {
       const listItemsMinusUpdated = listItems.filter(
@@ -177,23 +185,38 @@ function Home() {
     );
 
     // update the Event / Events
-    let updatedEvents;
-    if (field === 'startDateTime') {
-      /* if field === 'startDateTime', just update .startDateTime on the Event object which matches the eventID */
-      const relatedEvent = await getRelatedEvent(data.eventID); // .obj + .inState
-      const updatedEvent = relatedEvent.obj;
-      updatedEvent[field] = data[field];
-      updatedEvent.timeSet = data.timeSet;
-      updatedEvents = [updatedEvent];
-    } else {
+    /*
+      get all events with provided .listItemID
+      if fields includes 'tags' and/or 'title', update 'tags' and/or 'title' on ALL of these events
+      if fields includes 'startDateTime', update 'startDateTime' and 'timeSet' on ONLY the event whose .eventID matches data.eventID (if we are updating 'startDateTime', we must ALWAYS provide data.eventID - the .eventID of the corresp. event obj)
+      */
+    const relatedEvents = await getRelatedEvents(data.listItemID); // .arr (NOT .inState)
+    let updatedEvents = [...relatedEvents.arr];
+
+    if (fields.includes('tags') || fields.includes('title')) {
       /* else if field === 'title'/'tags', update .title/.tags on ALL Event objects with .listItemID === relatedListItem.listItemID */
-      const relatedEvents = await getRelatedEvents(data.listItemID); // .arr ([] of related events) + .inState ([] of these which are in 'events' state)
       updatedEvents = relatedEvents.arr.map((e) => ({
         ...e,
-        [field]: data[field],
+        title: data.title,
+        tags: data.tags ? data.tags : [],
       }));
     }
 
+    if (fields.includes('startDateTime')) {
+      /* if field === 'startDateTime', update .startDateTime on the Event object which matches the eventID */
+      const relatedEvent = updatedEvents.find(
+        (e) => e.eventID === data.eventID
+      );
+      const updatedEvent = { ...relatedEvent };
+      updatedEvent.startDateTime = data.startDateTime;
+      updatedEvent.timeSet = data.timeSet;
+      const updatedEventsMinusRelated = updatedEvents.filter(
+        (e) => e.eventID !== data.eventID
+      );
+      updatedEvents = [...updatedEventsMinusRelated, updatedEvent];
+    }
+
+    // update events in state (if the updated events ARE ACTUALLY IN state...)
     const updatedEventsInState = updatedEvents.filter((e) =>
       events.some((f) => f.eventID === e.eventID)
     );
@@ -211,10 +234,9 @@ function Home() {
     }
     // // remove .eventID before sending event obj to DB /events
     const updatedEventIDs = updatedEvents.map((upEv) => upEv.eventID);
-    const updatedEventsNoID = updatedEvents.map((upEv) => {
-      const { eventID, ...restUpEv } = upEv;
-      return { ...restUpEv };
-    });
+    const updatedEventsNoID = updatedEvents.map(
+      ({ eventID, ...restUpEv }) => restUpEv
+    );
 
     await u.patchMultipleEventsByIDs(
       userUID,
@@ -322,6 +344,26 @@ function Home() {
     setEvents(eventsMinusDeleted);
   };
 
+  const patchListItemNotes = async (updatedListItem) => {
+    // DB
+    const { listItemID, ...restUpLi } = updatedListItem;
+    const updatedListItemNoID = { ...restUpLi };
+    await u.patchListItem(
+      userUID,
+      updatedListItem.listItemID,
+      updatedListItemNoID
+    );
+    // state
+    const listItemsMinusUpdated = listItems.filter(
+      (e) => e.listItemID !== updatedListItem.listItemID
+    );
+    const updatedListItems = [
+      ...(listItemsMinusUpdated || []),
+      updatedListItem,
+    ];
+    setListItems(updatedListItems);
+  };
+
   const handleEntities = {
     createEventAndDate,
     updateEventAndDates,
@@ -329,6 +371,7 @@ function Home() {
     deleteTagFromEntities,
     deleteListItemAndEvents,
     deleteListAndRelated,
+    patchListItemNotes,
   };
 
   const onDragEnd = async (result) => {
@@ -385,7 +428,7 @@ function Home() {
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: false,
         title: listItems.find((e) => e.listItemID === listItemID).title,
-        tags: listItems.find((e) => e.listItemID === listItemID).tags,
+        tags: listItems.find((e) => e.listItemID === listItemID).tags || [],
       };
       await handleEntities.createEventAndDate(newEventObj);
       return;
@@ -421,7 +464,7 @@ function Home() {
         listItemIDForEvent
       );
       await handleEntities.updateEventAndDates(
-        'startDateTime',
+        ['startDateTime'],
         updatedEventObj
       );
       return;
@@ -481,6 +524,7 @@ function Home() {
             try {
               // 🌐
               const multipleListItemsPatched = await u.patchMultipleListItems(
+                userUID,
                 newMOrders
               );
               toast(
@@ -570,8 +614,10 @@ function Home() {
 
         setListItems(newMOrders);
         try {
+
           // 🌐 then update database
           const multipleListItemsPatched = await u.patchMultipleListItems(
+            userUID,
             onlyChanged
           );
         } catch (error) {

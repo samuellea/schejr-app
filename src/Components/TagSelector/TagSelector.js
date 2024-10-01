@@ -9,6 +9,7 @@ import EllipsisIcon from '../Icons/EllipsisIcon';
 function TagSelector({
   userUID,
   listItem,
+  tags,
   updateListItem,
   // fetchTags,
   existingTags,
@@ -123,10 +124,10 @@ function TagSelector({
         const updatedListItemTags = [...(listItem.tags || []), newTagID];
         const updatedListItem = { ...listItem, tags: updatedListItemTags };
         if (type === 'listItem') {
-          await handleEntities.updateEventAndDates('tags', updatedListItem);
+          await handleEntities.updateEventAndDates(['tags'], updatedListItem);
         }
         if (type === 'event') {
-          customUpdate(updatedListItem);
+          customUpdate(updatedListItemTags);
         }
       } catch (error) {
         console.error('Failed to write tag to list item:', error);
@@ -192,7 +193,13 @@ function TagSelector({
         : [tag.tagID];
       // const listItemTagsUpdated = await updateListItem(listItem,'tags',updatedListItemTags);
       const updatedListItem = { ...listItem, tags: updatedListItemTags };
-      await handleEntities.updateEventAndDates('tags', updatedListItem);
+      if (type === 'listItem') {
+        await handleEntities.updateEventAndDates(['tags'], updatedListItem);
+      }
+      if (type === 'event') {
+        customUpdate(updatedListItemTags);
+      }
+
       setInputText('');
     } catch (error) {
       console.error('Failed to create tag:', error);
@@ -206,7 +213,7 @@ function TagSelector({
       ];
       const updatedListItem = { ...listItem, tags: updatedListItemTags };
       if (type === 'listItem') {
-        await handleEntities.updateEventAndDates('tags', updatedListItem);
+        await handleEntities.updateEventAndDates(['tags'], updatedListItem);
       }
       if (type === 'event') {
         customUpdate(updatedListItemTags);
@@ -249,9 +256,13 @@ function TagSelector({
       <div
         className={inputContainerCombined}
         onClick={handleInputContainerClick}
+        style={{
+          minHeight: type === 'listItem' ? '35px' : '40px',
+          padding: type === 'listItem' ? '7px 6px' : '10px',
+        }}
       >
-        {listItem?.tags?.length ? (
-          listItem?.tags?.map((tagID) => {
+        {tags?.length ? (
+          tags?.map((tagID) => {
             const matchingTag = existingTags?.find(
               (existingTag) => existingTag.tagID === tagID
             );

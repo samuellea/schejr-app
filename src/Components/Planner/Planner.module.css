@@ -166,7 +166,7 @@
 }
 
 .datesArea {
-  /* border: 4px solid lime; */
+  border: 4px solid lime;
   width: 100%;
   flex: 1 1 auto;
   overflow-y: scroll;

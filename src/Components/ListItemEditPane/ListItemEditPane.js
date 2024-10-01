@@ -8,6 +8,7 @@ import DateIcon from '../Icons/DateIcon';
 import SyncIcon from '../Icons/SyncIcon';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import NotesIcon from '../Icons/NotesIcon';
+import * as u from '../../utils';
 
 function ListItemEditPane({
   // listItemEditID,
@@ -34,27 +35,15 @@ function ListItemEditPane({
     setListItemRenameText(text);
   };
 
-  const handleTitleOnBlur = () => {
-    // updateListItem(listItem, 'title', listItemRenameText);
+  const handleTitleOnBlur = async () => {
+    const updatedListItem = { ...listItem, title: listItemRenameText };
+    await handleEntities.updateEventAndDates(['title'], updatedListItem);
   };
 
-  const handleNotesOnBlur = () => {
-    // updateListItem(listItem, 'notes', notesText);
+  const handleNotesOnBlur = async () => {
+    const updatedListItem = { ...listItem, notes: notesText };
+    await handleEntities.patchListItemNotes(updatedListItem);
   };
-
-  // useEffect(() => {
-  //   // console.log(listItems);
-  //   if (!listItemEditID) {
-  //     handleCloseEditPane();
-  //   } else {
-  //     const newListItem = listItems.find(
-  //       (e) => e.listItemID === listItemEditID
-  //     );
-  //     // console.log(newListItem);
-  //     setListItem(newListItem); // This should trigger a re-render if newListItem is different
-  //   }
-  // }, [listItems, listItemEditID]);
-
   const textareaRef = useRef(null);
 
   // Function to adjust the height based on content
@@ -108,6 +97,7 @@ function ListItemEditPane({
         <TagSelector
           userUID={userUID}
           listItem={listItem}
+          tags={listItem.tags}
           // updateListItem={updateListItem}
           // fetchTags={fetchTags}
           existingTags={existingTags}

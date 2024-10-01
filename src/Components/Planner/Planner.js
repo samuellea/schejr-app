@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Planner.module.css';
 import ChevronIcon from '../Icons/ChevronIcon';
 import * as h from '../../helpers';
@@ -22,8 +22,17 @@ function Planner({
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
+  const [scrollTop, setScrollTop] = useState(0);
 
   const userUID = localStorage.getItem('firebaseID');
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollPosition = scrollRef.current.scrollTop;
+      console.log(scrollPosition);
+      setScrollTop(scrollPosition);
+    }
+  };
 
   const handleNavMonth = (dir) => {
     const newDate = new Date(viewMonth);
@@ -75,6 +84,8 @@ function Planner({
     getAndSetMonthUserEvents(viewMonth);
   }, [viewMonth]);
 
+  const scrollRef = useRef(null);
+
   return (
     <div
       className={styles.container}
@@ -116,7 +127,11 @@ function Planner({
               </div>
             </div>
 
-            <div className={styles.datesArea}>
+            <div
+              className={styles.datesArea}
+              ref={scrollRef}
+              onScroll={handleScroll}
+            >
               {dates.map((date) => {
                 const eventsForThisDate = h.getEventsForDate(date.date, events);
                 return eventsLoaded ? (
@@ -133,7 +148,7 @@ function Planner({
                     setEventsLoaded={setEventsLoaded}
                   />
                 ) : (
-                  <PlaceholderDay />
+                  <PlaceholderDay key={`placeholderDay-${date.date}`} />
                 );
               })}
             </div>

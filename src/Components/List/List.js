@@ -81,7 +81,8 @@ function List({
   };
 
   const deleteListItem = async (listItem) => {
-    await handleEntities.deleteListItemAndEvents(listItem.listItemID);
+    console.log(listItem);
+    await handleEntities.deleteListItemAndEvents(userUID, listItem.listItemID);
     try {
       // then as a final step, delete the gcal event for this listItem if it had one
       // await u.removeGCalEventByListItemID(listItem.listItemID);

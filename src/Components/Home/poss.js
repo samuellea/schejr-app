@@ -189,7 +189,6 @@ function Home() {
     if fields includes 'tags' and/or 'title', update 'tags' and/or 'title' on ALL of these events
     if fields includes 'startDateTime', update 'startDateTime' and 'timeSet' on ONLY the event whose .eventID matches data.eventID (if we are updating 'startDateTime', we must ALWAYS provide data.eventID - the .eventID of the corresp. event obj)
     */
-
     const relatedEvents = await getRelatedEvents(data.listItemID); // .arr (NOT .inState)
     let updatedEvents = [...relatedEvents.arr];
 
@@ -503,6 +502,7 @@ function Home() {
             try {
               // 🌐
               const multipleListItemsPatched = await u.patchMultipleListItems(
+                userUID,
                 newMOrders
               );
               toast(
@@ -594,6 +594,7 @@ function Home() {
         try {
           // 🌐 then update database
           const multipleListItemsPatched = await u.patchMultipleListItems(
+            userUID,
             onlyChanged
           );
         } catch (error) {

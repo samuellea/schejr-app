@@ -250,13 +250,12 @@ export const getMaxManualOrderByParentID = async (userUID, parentID) => {
   }
 };
 
-export const patchMultipleListItems = async (updates) => {
-  // {data: {} }, {data: {} }, // {}, {}
+export const patchMultipleListItems = async (userUID, updates) => {
   try {
     const updatePromises = updates.map((update) => {
       const { listItemID: unneededListItemID, ...rest } = update;
       const updatedListItem = { ...rest };
-      return patchListItem(unneededListItemID, updatedListItem);
+      return patchListItem(userUID, unneededListItemID, updatedListItem);
     });
     return await Promise.all(updatePromises);
   } catch (error) {

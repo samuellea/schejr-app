@@ -69,4 +69,25 @@
 
 .dropPlaceholder {
   border: 3px solid red;
+  height: 38px;
+  width: 100%;
+  /* border: 2px solid hotpink; */
+  /* height: 50px; */
+  /* background-color: rgb(136, 136, 136); */
+  border: 1px solid rgb(61, 61, 61);
+  border-radius: 11px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: rgb(61, 61, 61);
+  height: 38px;
+  /* padding: 3px 8px 3px 4px; */
+  position: relative;
+  /* margin-bottom: 4px; */
+}
+
+.dropPlaceholder span {
+  font-size: 14px;
 }

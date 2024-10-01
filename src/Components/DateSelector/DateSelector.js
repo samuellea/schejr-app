@@ -62,7 +62,7 @@ function DateSelector({
       };
       if (type === 'listItem') {
         await handleEntities.updateEventAndDates(
-          'startDateTime',
+          ['startDateTime'],
           updatedEventObj
         );
       }

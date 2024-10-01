@@ -83,24 +83,30 @@ const Day = forwardRef(
             </div>
 
             {snapshot.isDraggingOver && (
-              <div className={styles.dropPlaceholder}>Drop item here</div>
+              <div className={styles.dropPlaceholder}>
+                <span>Drop item here</span>
+              </div>
             )}
 
-            {dateEvents?.map((event, i) => {
-              return (
-                <Event
-                  event={event}
-                  editEvent={editEvent}
-                  setEditEvent={setEditEvent}
-                  handleEvents={handleEvents}
-                  key={`eventComp-${event.eventID}`}
-                  index={i}
-                  existingTags={existingTags}
-                  setExistingTags={setExistingTags}
-                  handleEntities={handleEntities}
-                />
-              );
-            })}
+            {dateEvents
+              ?.sort(
+                (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+              )
+              .map((event, i) => {
+                return (
+                  <Event
+                    event={event}
+                    editEvent={editEvent}
+                    setEditEvent={setEditEvent}
+                    handleEvents={handleEvents}
+                    key={`eventComp-${event.eventID}`}
+                    index={i}
+                    existingTags={existingTags}
+                    setExistingTags={setExistingTags}
+                    handleEntities={handleEntities}
+                  />
+                );
+              })}
             {/* <div className={styles.addEventButton}>
             <PlusIcon fill="inherit" width="16px" />
             <span>Add event</span>
