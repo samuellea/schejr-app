@@ -173,14 +173,7 @@ function TagSelector({
         setExistingTags(existingTagsMinusDeletedTag);
         // then handle removing the deleted tag from any all ListItems and Events that used it
         // on the db + in state
-
-        if (type === 'listItem') {
-          await handleEntities.deleteTagFromEntities(tagID);
-        }
-        if (type === 'event') {
-          // customUpdate(updatedListItem);
-        }
-
+        await handleEntities.deleteTagFromEntities(tagID);
         setShowDeleteModal(false);
       } catch (error) {
         console.error('Failed to remove tag from matching list items:', error);
@@ -212,7 +205,13 @@ function TagSelector({
         ...listItem?.tags.filter((e) => e !== tagID),
       ];
       const updatedListItem = { ...listItem, tags: updatedListItemTags };
-      await handleEntities.updateEventAndDates('tags', updatedListItem);
+      if (type === 'listItem') {
+        await handleEntities.updateEventAndDates('tags', updatedListItem);
+      }
+      if (type === 'event') {
+        customUpdate(updatedListItemTags);
+      }
+
       setInputText('');
     } catch (error) {
       console.error('Failed to remove tag:', error);

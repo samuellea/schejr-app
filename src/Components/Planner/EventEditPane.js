@@ -5,7 +5,6 @@ import TrashIcon from '../Icons/TrashIcon';
 import DateSelector from '../DateSelector/DateSelector';
 import * as u from '../../utils';
 import TagSelector from '../TagSelector/TagSelector';
-// import EventTagSelector from '../TagSelector/EventTagSelector';
 
 function EventEditPane({
   event,
@@ -22,6 +21,7 @@ function EventEditPane({
     event.startDateTime
   );
   const [eventTags, setEventTags] = useState(event.tags);
+  const [eventTimeSet, setEventTimeSet] = useState(event.timeSet);
   const [modified, setModified] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -46,11 +46,12 @@ function EventEditPane({
     if (
       eventTitle !== event.title ||
       eventStartDateTime !== event.startDateTime ||
-      eventTags !== event.tags
+      eventTags !== event.tags ||
+      eventTimeSet !== event.timeSet
     ) {
       setModified(true);
     }
-  }, [eventTitle, eventStartDateTime, eventTags]);
+  }, [eventTitle, eventStartDateTime, eventTags, eventTimeSet]);
 
   const eventEditRef = useRef(null);
 
@@ -75,19 +76,26 @@ function EventEditPane({
 
   const handleStartDateTimeChange = (updatedEventObj) => {
     const newStartDateTime = updatedEventObj.startDateTime;
+    const newTimeSet = updatedEventObj.timeSet;
     setEventStartDateTime(newStartDateTime);
+    setEventTimeSet(newTimeSet);
   };
 
-  const handleTagsChange = (updatedEventObj) => {
-    // const newStartDateTime = updatedEventObj.startDateTime;
-    // setEventTags();
+  const handleTagsChange = (updatedTags) => {
+    setEventTags(updatedTags);
   };
 
   const handleStartSave = () => {};
 
   const handleConfirmSave = async () => {
     setSaving(true);
-
+    const updatedEvent = {
+      ...event, // this will include .eventID and .listItemID
+      title: eventTitle,
+      tags: eventTags,
+      startDateTime: eventStartDateTime,
+      timeSet: eventTimeSet,
+    };
     /*
     await handleEntities.updateEventAndDates('title', updatedListItem);
 
