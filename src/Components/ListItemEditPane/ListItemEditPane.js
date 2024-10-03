@@ -160,7 +160,7 @@ function ListItemEditPane({
         />
       </div>
 
-      <div className={styles.fieldWrapper}>
+      {/* <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>
           <SyncIcon fill="#7f7f7f" />
@@ -175,7 +175,8 @@ function ListItemEditPane({
             ? 'Synchronizing all your dates with Google Calendar'
             : 'Turn on to synchronize all your dates with Google Calendar'}
         </span>
-      </div>
+      </div> */}
+
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
         <div className={styles.dividerLine} />
