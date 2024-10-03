@@ -24,6 +24,7 @@ const Day = forwardRef(
       // scrollPosition,
       scrollRef,
       setModalBackground,
+      isLast,
     },
     ref
   ) => {
@@ -75,6 +76,7 @@ const Day = forwardRef(
             }}
             {...provided.droppableProps}
             style={{
+              marginBottom: isLast ? '50px' : null,
               ...provided.droppableProps.style,
               // backgroundColor: snapshot.isDraggingOver
               //   ? '#f0f0f0'

@@ -188,7 +188,7 @@ function Planner({
               // onScroll={handleScroll}
             >
               {eventsLoaded
-                ? dates.map((date) => {
+                ? dates.map((date, i) => {
                     const eventsForThisDate = h.getEventsForDate(
                       date.date,
                       events
@@ -206,6 +206,7 @@ function Planner({
                         setEventsLoaded={setEventsLoaded}
                         scrollRef={scrollRef}
                         setModalBackground={setModalBackground}
+                        isLast={i === dates.length - 1}
                       />
                     ) : (
                       <PlaceholderDay key={`placeholderDay-${date.date}`} />
