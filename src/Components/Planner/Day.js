@@ -21,6 +21,8 @@ const Day = forwardRef(
       existingTags,
       setExistingTags,
       handleEntities,
+      // scrollPosition,
+      scrollRef,
     },
     ref
   ) => {
@@ -103,6 +105,8 @@ const Day = forwardRef(
                     existingTags={existingTags}
                     setExistingTags={setExistingTags}
                     handleEntities={handleEntities}
+                    // scrollPosition={scrollPosition}
+                    scrollRef={scrollRef}
                   />
                 );
               })}

@@ -15,8 +15,8 @@
   align-items: stretch; /* Stretch children to match the parent's height */
   height: auto;
   /* padding: 3px 8px 3px 4px; */
-  position: relative;
   margin-bottom: 4px;
+  /* position: relative; */
 }
 
 .eventGrabContainer {

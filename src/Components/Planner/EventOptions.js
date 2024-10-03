@@ -8,13 +8,15 @@ function EventOptions({
   handleEdit,
   handleDuplicate,
   handleStartDelete,
+  showOptions,
   setShowOptions,
+  optionsPosition,
 }) {
   const optionsRef = useRef(null);
 
   const handleClickOutside = (event) => {
     if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-      setShowOptions(false);
+      setShowOptions({ show: false });
     }
   };
 
@@ -26,7 +28,11 @@ function EventOptions({
   }, []);
 
   return (
-    <div className={styles.eventOptionsMenu} ref={optionsRef}>
+    <div
+      className={styles.eventOptionsMenu}
+      ref={optionsRef}
+      style={{ [showOptions.position]: '100%' }}
+    >
       <div className={styles.eventOptionsMenuButton} onClick={handleEdit}>
         <EditIcon fill="white" width="16px" marginTop="0px" />
         <span>Edit</span>

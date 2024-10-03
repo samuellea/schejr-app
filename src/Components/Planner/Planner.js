@@ -34,20 +34,21 @@ function Planner({
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
-  const [scrollTop, setScrollTop] = useState(0);
   const [viewMode, setViewMode] = useState('month'); // 'week'
   const [anchorDate, setAnchorDate] = useState(new Date()); // init. as today's date
   const [navLabel, setNavLabel] = useState('');
-
+  // const [scrollPosition, setScrollPosition] = useState({ top: 0, bottom: 0 });
   const userUID = localStorage.getItem('firebaseID');
 
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      // const scrollPosition = scrollRef.current.scrollTop;
-      // console.log(scrollPosition);
-      // setScrollTop(scrollPosition);
-    }
-  };
+  // const handleScroll = () => {
+  //   if (scrollRef.current) {
+  //     const scrollTop = scrollRef.current.scrollTop;
+  //     const scrollHeight = scrollRef.current.scrollHeight;
+  //     const clientHeight = scrollRef.current.clientHeight;
+  //     const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
+  //     setScrollPosition({ top: scrollTop, bottom: distanceFromBottom });
+  //   }
+  // };
 
   const handleNav = (dir) => {
     if (viewMode === 'month') {
@@ -183,7 +184,7 @@ function Planner({
             <div
               className={styles.datesArea}
               ref={scrollRef}
-              onScroll={handleScroll}
+              // onScroll={handleScroll}
             >
               {eventsLoaded
                 ? dates.map((date) => {
@@ -202,6 +203,7 @@ function Planner({
                         setExistingTags={setExistingTags}
                         handleEntities={handleEntities}
                         setEventsLoaded={setEventsLoaded}
+                        scrollRef={scrollRef}
                       />
                     ) : (
                       <PlaceholderDay key={`placeholderDay-${date.date}`} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Event.module.css';
 import EllipsisIcon from '../Icons/EllipsisIcon';
 import DragIcon from '../Icons/DragIcon';
@@ -19,25 +19,43 @@ function Event({
   existingTags,
   setExistingTags,
   handleEntities,
+  // scrollPosition,
+  scrollRef,
 }) {
   const { timeSet, title, startDateTime } = event;
 
-  const [showOptions, setShowOptions] = useState(false);
+  const [showOptions, setShowOptions] = useState({ show: false, position: '' });
   const [eventEditID, setEventEditID] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [optionsPosition, setOptionsPosition] = useState('above');
+
+  const elementRef = useRef(null);
 
   const handleOptions = (eventID) => {
-    setShowOptions(true);
+    const viewThreshold = 104; // px
+    if (scrollRef.current && elementRef.current) {
+      const scrollableRect = scrollRef.current.getBoundingClientRect(); // Scrollable div's rect
+      const elementRect = elementRef.current.getBoundingClientRect(); // Draggable element's rect
+      // Calculate how much space is available above the element inside the scrollable div
+      const spaceAbove = elementRect.top - scrollableRect.top;
+      // Check if the available space is less than the threshold
+      if (spaceAbove < viewThreshold) {
+        setShowOptions({ show: true, position: 'top' });
+      } else {
+        setShowOptions({ show: true, position: 'bottom' });
+      }
+      setEventEditID(eventID);
+    }
     setEventEditID(eventID);
   };
 
   const handleEdit = () => {
-    setShowOptions(false);
+    setShowOptions({ show: false });
     setEditEvent(true);
   };
 
   const handleDuplicate = async () => {
-    setShowOptions(false);
+    setShowOptions({ show: false });
     // const listItemForEvent = await u.fetchListItemById(event.listItemID);
     // const { eventID, ...restOfEvent } = event;
     // const duplicateEventObj = { ...restOfEvent };
@@ -48,7 +66,7 @@ function Event({
   };
 
   const handleStartDelete = () => {
-    setShowOptions(false);
+    setShowOptions({ show: false });
     setShowDeleteModal(true);
   };
 
@@ -73,20 +91,14 @@ function Event({
       {(provided, snapshot) => (
         <div
           className={styles.event}
-          ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           key={`event-${event.eventID}`}
+          ref={(el) => {
+            elementRef.current = el; // Assign the DOM node to elementRef
+            provided.innerRef(el); // Also pass the DOM node to provided.innerRef
+          }}
         >
-          {showOptions && event.eventID === eventEditID ? (
-            <EventOptions
-              handleEdit={handleEdit}
-              handleDuplicate={handleDuplicate}
-              handleStartDelete={handleStartDelete}
-              setShowOptions={setShowOptions}
-              key={`eventOptions-${event.eventID}`}
-            />
-          ) : null}
           <div className={styles.eventGrabContainer}>
             <div className={styles.listItemDragHandle}>
               <DragIcon fill="#9b9b9b" width="20px" />
@@ -101,6 +113,17 @@ function Event({
                 onClick={() => handleOptions(event.eventID)}
               >
                 <EllipsisIcon fill="#9b9b9b" width="16px" />
+                {showOptions.show && event.eventID === eventEditID ? (
+                  <EventOptions
+                    handleEdit={handleEdit}
+                    handleDuplicate={handleDuplicate}
+                    handleStartDelete={handleStartDelete}
+                    showOptions={showOptions}
+                    setShowOptions={setShowOptions}
+                    key={`eventOptions-${event.eventID}`}
+                    optionsPosition={optionsPosition}
+                  />
+                ) : null}
               </div>
             </div>
             <div className={styles.tagsContainer} id="flexidiv">

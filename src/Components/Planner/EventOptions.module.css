@@ -1,6 +1,6 @@
 .eventOptionsMenu {
   position: absolute;
-  bottom: 100%; /* Positions the child directly above the parent's top boundary */
+  /* bottom: 100%; /* Positions the child directly above the parent's top boundary * */
   right: 0;
   /* height: 50px; */
   width: 200px;
