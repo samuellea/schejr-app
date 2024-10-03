@@ -16,7 +16,6 @@ const Day = forwardRef(
     {
       date,
       dateEvents,
-      viewMonth,
       events,
       handleEvents,
       existingTags,
@@ -46,7 +45,7 @@ const Day = forwardRef(
         }
       }, 250);
       return () => clearTimeout(timer);
-    }, [viewMonth, dateIsToday]);
+    }, [dateIsToday]);
 
     return (
       <Droppable
@@ -107,6 +106,7 @@ const Day = forwardRef(
                   />
                 );
               })}
+
             {/* <div className={styles.addEventButton}>
             <PlusIcon fill="inherit" width="16px" />
             <span>Add event</span>

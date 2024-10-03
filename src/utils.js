@@ -430,42 +430,47 @@ export const fetchEventByID = async (userUID, eventID) => {
   }
 };
 
-export const fetchUserEventsByMonth = async (userUID, month, year) => {
-  const date = new Date(year, month, 1);
-  const lastDay = lastDayOfMonth(date).getDate();
-  const startOfMonthLocal = new Date(year, month, 1, 0, 0, 0, 0); // 1st September 2024, 00:00:00 local time
-  // User's local time for the end of September 30th, 23:59:59.999 (user's local time zone)
-  const endOfMonthLocal = new Date(year, month, lastDay, 23, 59, 59, 999); // 30th September 2024, 23:59:59.999 local time
-  // Convert to UTC ISO 8601 strings
-  const startOfMonthUTC = startOfMonthLocal.toISOString();
-  const endOfMonthUTC = endOfMonthLocal.toISOString();
-  // console.log(startOfMonthUTC);
-  // console.log(endOfMonthUTC);
-  // Reference to the /events endpoint
+export const fetchUserEventsByRange = async (userUID, startDate, endDate) => {
+  console.log('startDate: ', startDate);
+  console.log('endDate: ', endDate);
+  const convertLocalDateToUTC = (localDateStr, isEndOfDay = false) => {
+    const localDate = new Date(localDateStr);
+    if (isEndOfDay) {
+      // Set time to 23:59:59.999 for the end date
+      localDate.setHours(23, 59, 59, 999);
+    } else {
+      // Set time to 00:00:00.000 for the start date
+      localDate.setHours(0, 0, 0, 0);
+    }
+    // Convert to ISO8601 UTC string
+    return localDate.toISOString();
+  };
+
+  // Convert local dates to UTC
+  const startUTC = convertLocalDateToUTC(startDate);
+  const endUTC = convertLocalDateToUTC(endDate, true);
+
+  // Query Firebase
   const eventsRef = ref(database, `${userUID}/events`);
-  // Query the events between the calculated UTC times
-  const monthQuery = query(
+  const eventsQuery = query(
     eventsRef,
     orderByChild('startDateTime'),
-    startAt(startOfMonthUTC),
-    endAt(endOfMonthUTC)
+    startAt(startUTC),
+    endAt(endUTC)
   );
-  try {
-    // Use .get() for a promise-based approach
-    const snapshot = await get(monthQuery);
+
+  // Fetch the data
+  const snapshot = await get(eventsQuery);
+
+  if (snapshot.exists()) {
     const events = snapshot.val();
-    if (events) {
-      const eventsAsArr = Object.entries(events).map(([key, value]) => ({
-        eventID: key,
-        ...value,
-      }));
-      return eventsAsArr;
-    } else {
-      console.log('No events found for that month.');
-      return [];
-    }
-  } catch (error) {
-    console.error('Error fetching events:', error);
+    console.log(snapshot.val());
+    const plusExplicitIDs = Object.entries(events).map((e) => ({
+      eventID: e[0],
+      ...e[1],
+    }));
+    return plusExplicitIDs;
+  } else {
     return [];
   }
 };

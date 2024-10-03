@@ -23,8 +23,8 @@ function MainArea({
   handleSetSyncWithGCal,
   events,
   setEvents,
-  viewMonth,
-  setViewMonth,
+  plannerRange,
+  setPlannerRange,
   // handleOtherEventFields,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
@@ -151,13 +151,13 @@ function MainArea({
         toggleExpand={toggleExpand}
         events={events}
         setEvents={setEvents}
-        viewMonth={viewMonth}
-        setViewMonth={setViewMonth}
         // handleEvents={handleEvents}
         existingTags={existingTags}
         setExistingTags={setExistingTags}
         // handleOtherEventFields={handleOtherEventFields}
         handleEntities={handleEntities}
+        plannerRange={plannerRange}
+        setPlannerRange={setPlannerRange}
       />
       {/* ) : null} */}
     </div>

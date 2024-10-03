@@ -1,6 +1,15 @@
-import { format, isThisYear, parseISO, formatDistanceToNow } from 'date-fns';
+import {
+  format,
+  isThisYear,
+  parseISO,
+  formatDistanceToNow,
+  startOfWeek,
+  addDays,
+  getISOWeek,
+  addWeeks,
+  subWeeks,
+} from 'date-fns';
 import { differenceWith, isEqual, find } from 'lodash-es';
-
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
     if (a[property] < b[property]) {
@@ -353,7 +362,7 @@ export const formatDateForListItem = (startDateTime) => {
 };
 
 export const formatDateString = (dateString) => {
-  // Parse the input date string into a Date object
+  // Parse the input date string into a Date objectformatDateString
   const date = parseISO(dateString);
 
   // Get the day of the month
@@ -381,33 +390,62 @@ export const formatDateString = (dateString) => {
   return formattedDate;
 };
 
-export const generateMonthlyDays = (dateObj) => {
-  // Extract month and year from the provided date object
-  const month = dateObj.getUTCMonth(); // Get month in UTC
-  const year = dateObj.getUTCFullYear(); // Get year in UTC
+export const createDateRange = (date, period) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
 
-  // Create an array to hold the objects
-  const daysArray = [];
+  let start, end;
 
-  // Create a date object for the first day of the given month and year in UTC
-  const date = new Date(Date.UTC(year, month, 1));
+  if (period === 'month') {
+    // Start: Midnight on the first day of the month (local time)
+    start = new Date(year, month, 1, 0, 0, 0, 0); // Local midnight on the first day of the month
 
-  // Get the number of days in the month
-  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    // End: Last millisecond before midnight on the last day of the month (local time)
+    end = new Date(year, month + 1, 0, 23, 59, 59, 999); // Last millisecond of the last day of the month
+  } else if (period === 'week') {
+    // Get the current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+    const currentDayOfWeek = date.getDay();
 
-  // Loop through each day of the month
-  for (let day = 1; day <= lastDayOfMonth; day++) {
-    // Set the date to the current day in the loop
-    date.setUTCDate(day);
+    // Calculate the difference to the previous Monday
+    const diffToMonday = (currentDayOfWeek + 6) % 7; // Days to subtract to get to Monday
 
-    // Format the date as YYYY-MM-DD
-    const formattedDate = date.toISOString().split('T')[0];
+    // Start: Midnight on the Monday of the week (local time)
+    start = new Date(date);
+    start.setDate(day - diffToMonday); // Adjust to previous Monday
+    start.setHours(0, 0, 0, 0); // Set time to local midnight
 
-    // Create an object with the formatted date and an empty events array
-    daysArray.push({ date: formattedDate });
+    // End: Last millisecond before midnight on the following Sunday (local time)
+    end = new Date(start);
+    end.setDate(start.getDate() + 6); // Move to Sunday
+    end.setHours(23, 59, 59, 999); // Set time to last millisecond of the day
+  } else {
+    throw new Error("Invalid period. Must be 'month' or 'week'.");
   }
-  //
-  return daysArray;
+
+  return {
+    start, // Local time for the start of the month/week
+    end, // Local time for the end of the month/week
+  };
+};
+
+export const generateRangeDates = (start, end) => {
+  // Initialize an empty array to store the results
+  const datesArray = [];
+  // Create a new Date object for start and end to avoid modifying original dates
+  let currentDate = new Date(start);
+  const endDate = new Date(end);
+  // Loop through each day until we reach the end date
+  while (currentDate <= endDate) {
+    // Format the current date as YYYY-MM-DD and push it to the result array
+    datesArray.push({
+      date: format(currentDate, 'yyyy-MM-dd'), // Formatting the date as YYYY-MM-DD
+    });
+    // Move to the next day
+    currentDate = addDays(currentDate, 1);
+  }
+  // Return the array of date objects
+  return datesArray;
 };
 
 export const getEventsForDate = (targetDateStr, events) => {

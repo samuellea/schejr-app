@@ -10,8 +10,6 @@ import {
   addDays,
   getISOWeek,
   format,
-  addMonths,
-  subMonths,
   addWeeks,
   subWeeks,
 } from 'date-fns';
@@ -25,19 +23,19 @@ function Planner({
   toggleExpand,
   events,
   setEvents,
+  viewMonth,
+  setViewMonth,
   handleEvents,
   existingTags,
   setExistingTags,
   handleEntities,
-  plannerRange,
-  setPlannerRange,
+  viewWeek,
+  setViewWeek,
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewMode, setViewMode] = useState('month'); // 'week'
-  const [anchorDate, setAnchorDate] = useState(new Date()); // init. as today's date
-  const [navLabel, setNavLabel] = useState('');
 
   const userUID = localStorage.getItem('firebaseID');
 
@@ -49,83 +47,48 @@ function Planner({
     }
   };
 
-  const handleNav = (dir) => {
-    if (viewMode === 'month') {
-      if (dir === '+') {
-        const nextMonth = addMonths(anchorDate, 1);
-        setAnchorDate(nextMonth);
-      }
-      if (dir === '-') {
-        const previousMonth = subMonths(anchorDate, 1);
-        setAnchorDate(previousMonth);
-      }
+  const handleNavMonth = (dir) => {
+    const newDate = new Date(viewMonth);
+    const currentMonth = viewMonth.getMonth();
+    if (dir === '+') {
+      newDate.setMonth(currentMonth + 1);
+    } else {
+      newDate.setMonth(currentMonth - 1);
     }
-    if (viewMode === 'week') {
-      if (dir === '+') {
-        const nextWeek = addWeeks(anchorDate, 1);
-        setAnchorDate(nextWeek);
-      }
-      if (dir === '-') {
-        const previousWeek = subWeeks(anchorDate, 1);
-        setAnchorDate(previousWeek);
-      }
-    }
+    setViewMonth(newDate);
   };
 
-  const getAndSetRangeUserEvents = async (start, end) => {
+  const getAndSetMonthUserEvents = async (viewMonth) => {
     setEventsLoaded(false);
+    const month = viewMonth.getUTCMonth();
+    const year = viewMonth.getUTCFullYear();
     try {
-      const rangeUserEvents = await u.fetchUserEventsByRange(
+      const monthUserEvents = await u.fetchUserEventsByMonth(
         userUID,
-        start,
-        end
+        month,
+        year
       );
-      console.log(rangeUserEvents);
+      console.log(monthUserEvents);
       // need to set in state now
-      setEvents(rangeUserEvents, 'setAll');
+      setEvents(monthUserEvents, 'setAll');
     } catch (error) {}
   };
 
-  const generateNavLabel = (anchorDate) => {
-    return viewMode === 'month'
-      ? anchorDate.toLocaleString('default', {
-          month: 'long',
-          year: 'numeric',
-        })
-      : `Week ${getISOWeek(anchorDate)} • ${anchorDate.toLocaleString(
-          'default',
-          {
-            year: 'numeric',
-          }
-        )}`;
+  const getAndSetWeekUserEvents = async (datesForWeek) => {
+    setEventsLoaded(false);
+    const startDate = datesForWeek[0];
+    const endDate = datesForWeek[datesForWeek.length - 1];
+    try {
+      const weekUserEvents = await u.fetchUserEventsByWeek(
+        userUID,
+        startDate,
+        endDate
+      );
+      console.log(weekUserEvents);
+      // need to set in state now
+      setEvents(weekUserEvents, 'setAll');
+    } catch (error) {}
   };
-
-  const makeDatesFetchEvents = () => {
-    const plannerRange = h.createDateRange(anchorDate, viewMode);
-    setPlannerRange(plannerRange);
-    const { start, end } = plannerRange;
-    const datesForRange = h.generateRangeDates(start, end);
-    setDates(datesForRange);
-    const navLabel = generateNavLabel(anchorDate);
-    setNavLabel(navLabel);
-    getAndSetRangeUserEvents(start, end);
-  };
-
-  // useEffect which generated the dates for the default planner range, and fetches events that fall within that (+ sets in Home state)
-  useEffect(() => {
-    makeDatesFetchEvents();
-  }, []);
-
-  // useEffect which generates the dates for the specified planner range WHEN IT CHANGES, and fetches events that fall within that (+ sets in Home state)
-  useEffect(() => {
-    // when anchorDate changes, calculate date range based on viewMode, set in Home state
-    makeDatesFetchEvents();
-  }, [anchorDate]);
-
-  useEffect(() => {
-    const dateResetToToday = new Date();
-    setAnchorDate(dateResetToToday);
-  }, [viewMode]);
 
   useEffect(() => {
     if (events !== null) {
@@ -134,16 +97,50 @@ function Planner({
     }
   }, [events]);
 
-  /*
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = now.getUTCMonth();
+    const firstDayOfMonthUTC = new Date(Date.UTC(year, month, 1));
+    // firstDayOfMonthUTC.setUTCHours(0, 0, 0, 0);
+    setViewMonth(firstDayOfMonthUTC);
+    // The time defaults to midnight (00:00:00) when only the year, month, and day are specified.
+    // getAndSetMonthUserEvents(viewMonth);
+  }, []);
+
+  useEffect(() => {
+    if (viewMode === 'month') {
       const datesForMonth = h.generateMonthlyDays(viewMonth);
       setDates(datesForMonth);
       getAndSetMonthUserEvents(viewMonth);
+    }
 
+    if (viewMode === 'week') {
       const weekData = h.generateWeeklyDays(viewWeek).dates;
-      const {datesForWeek, weekNum} = weekData;
+      const { datesForWeek, weekNum } = weekData;
       setDates(datesForWeek);
       getAndSetWeekUserEvents(datesForWeek);
-  */
+    }
+  }, [viewMonth]);
+
+  useEffect(() => {}, [viewWeek]);
+
+  useEffect(() => {
+    // setDates when viewMode changed
+    // console.log(dates);
+    if (viewMode === 'month') {
+      const datesForMonth = h.generateMonthlyDays(viewMonth);
+      // console.log(datesForMonth);
+      setDates(datesForMonth);
+      getAndSetMonthUserEvents(viewMonth);
+    }
+    if (viewMode === 'week') {
+      const weekData = h.generateWeeklyDays(viewWeek).dates;
+      const { datesForWeek, weekNum } = weekData;
+      setDates(datesForWeek);
+      getAndSetWeekUserEvents(datesForWeek);
+    }
+  }, [viewMode]);
 
   const scrollRef = useRef(null);
 
@@ -163,19 +160,27 @@ function Planner({
         <div className={styles.contentAndControls}>
           <div className={styles.contentContainer}>
             <div className={styles.monthNavigator}>
-              <div className={styles.navButton} onClick={() => handleNav('-')}>
+              <div
+                className={styles.navButton}
+                onClick={() => handleNavMonth('-')}
+              >
                 <div className={styles.navIconL}></div>
               </div>
               <div className={styles.monthNavLabel}>
                 <span>
-                  <h4>{navLabel}</h4>
+                  <h4>
+                    {viewMonth.toLocaleString('default', { month: 'long' })}
+                  </h4>
                 </span>
 
                 <span className={styles.monthNavYear}>
-                  {/* <h4>{viewMonth.getFullYear()}</h4> */}
+                  <h4>{viewMonth.getFullYear()}</h4>
                 </span>
               </div>
-              <div className={styles.navButton} onClick={() => handleNav('+')}>
+              <div
+                className={styles.navButton}
+                onClick={() => handleNavMonth('+')}
+              >
                 <div className={styles.navIconR}></div>
               </div>
             </div>
@@ -185,29 +190,25 @@ function Planner({
               ref={scrollRef}
               onScroll={handleScroll}
             >
-              {eventsLoaded
-                ? dates.map((date) => {
-                    const eventsForThisDate = h.getEventsForDate(
-                      date.date,
-                      events
-                    );
-                    return eventsLoaded ? (
-                      <Day
-                        date={date}
-                        dateEvents={eventsForThisDate}
-                        key={`day-${date.date}`}
-                        events={events}
-                        handleEvents={handleEvents}
-                        existingTags={existingTags}
-                        setExistingTags={setExistingTags}
-                        handleEntities={handleEntities}
-                        setEventsLoaded={setEventsLoaded}
-                      />
-                    ) : (
-                      <PlaceholderDay key={`placeholderDay-${date.date}`} />
-                    );
-                  })
-                : null}
+              {dates.map((date) => {
+                const eventsForThisDate = h.getEventsForDate(date.date, events);
+                return eventsLoaded ? (
+                  <Day
+                    date={date}
+                    dateEvents={eventsForThisDate}
+                    viewMonth={viewMonth}
+                    key={`day-${date.date}`}
+                    events={events}
+                    handleEvents={handleEvents}
+                    existingTags={existingTags}
+                    setExistingTags={setExistingTags}
+                    handleEntities={handleEntities}
+                    setEventsLoaded={setEventsLoaded}
+                  />
+                ) : (
+                  <PlaceholderDay key={`placeholderDay-${date.date}`} />
+                );
+              })}
             </div>
           </div>
 

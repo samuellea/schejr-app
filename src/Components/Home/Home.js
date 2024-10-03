@@ -21,7 +21,7 @@ function Home() {
   const [syncWithGCal, setSyncWithGCal] = useState(false);
   const [selectedListID, setSelectedListID] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [viewMonth, setViewMonth] = useState(new Date());
+  const [plannerRange, setPlannerRange] = useState({ start: null, end: null });
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -81,14 +81,14 @@ function Home() {
     // create new event on db
     const newEventID = await u.createNewEvent(userUID, newData);
     // add new event to state (if it should be in state, ie. Planner open ie. if viewMonth is same month as event) - add .eventID key
-    const eventMonth = new Date(newData.startDateTime).getMonth();
-    const eventYear = new Date(newData.startDateTime).getFullYear();
-    const plannerMonth = viewMonth.getMonth();
-    const plannerYear = viewMonth.getFullYear();
-    const plannerOpenOnEventYearMonth =
-      eventMonth === plannerMonth && eventYear === plannerYear;
+    const eventDate = new Date(newData.startDateTime);
+    const eventTimeUTC = eventDate.getTime(); // UTC time of eventDate
+    const startTimeUTC = plannerRange.start.getTime(); // UTC time of .start
+    const endTimeUTC = plannerRange.end.getTime(); // UTC time of .end
+    const eventIsWithinRange =
+      eventTimeUTC >= startTimeUTC && eventTimeUTC <= endTimeUTC;
     const newEventPlusExplicit = { ...newData, eventID: newEventID };
-    if (plannerOpenOnEventYearMonth) {
+    if (eventIsWithinRange) {
       const updatedEvents = [...(events || []), newEventPlusExplicit];
       setEvents(updatedEvents);
     }
@@ -614,7 +614,6 @@ function Home() {
 
         setListItems(newMOrders);
         try {
-
           // 🌐 then update database
           const multipleListItemsPatched = await u.patchMultipleListItems(
             userUID,
@@ -891,8 +890,8 @@ function Home() {
           handleSetSyncWithGCal={handleSetSyncWithGCal}
           events={events}
           setEvents={setEvents}
-          viewMonth={viewMonth}
-          setViewMonth={setViewMonth}
+          plannerRange={plannerRange}
+          setPlannerRange={setPlannerRange}
           // handleEvents={handleEvents}
           // handleOtherEventFields={handleOtherEventFields}
         />
