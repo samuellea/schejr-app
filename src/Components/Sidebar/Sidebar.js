@@ -23,6 +23,7 @@ function Sidebar({
   deleteListAndRelated,
 }) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [listDeleteBackground, setListDeleteBackground] = useState(false);
 
   const createList = async () => {
     // length of 'lists' in state - 1
@@ -50,7 +51,7 @@ function Sidebar({
   }`;
 
   return (
-    <div className={combined}>
+    <div className={combined} style={{ zIndex: listDeleteBackground ? 9 : 1 }}>
       <div className={styles.listsHeader}>
         <div
           role="button"
@@ -112,6 +113,7 @@ function Sidebar({
                               handleSelectListButton={handleSelectListButton}
                               selected={list.listID === selectedListID}
                               deleteListAndRelated={deleteListAndRelated}
+                              setListDeleteBackground={setListDeleteBackground}
                             />
                             {/* Render the placeholder here */}
                             <div className={styles.hiddenPlaceholder}>
@@ -131,15 +133,17 @@ function Sidebar({
           </div>
         )}
       </Droppable>
-
-      <div className={styles.dividerLine} />
-      <div
-        role="button"
-        className={styles.logOutButton}
-        onClick={() => setShowLogoutModal(true)}
-      >
-        Log out
+      <div className={styles.logOutSection}>
+        <div className={styles.dividerLine} />
+        <div
+          role="button"
+          className={styles.logOutButton}
+          onClick={() => setShowLogoutModal(true)}
+        >
+          Log out
+        </div>
       </div>
+
       {showLogoutModal ? (
         <ConfirmDeleteModal
           message={`Log out ${displayName}`}

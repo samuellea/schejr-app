@@ -12,12 +12,13 @@
   line-height: 120%;
   width: 100%;
   user-select: none;
-  min-height: 30px;
   font-size: 14px;
-  padding: 0px 8px;
   box-sizing: border-box;
   word-wrap: no-wrap;
-  /* border: 1px solid red; */
+  /* border: 1px solid lime; */
+  position: relative;
+  /* z-index: 7; */
+  height: 30px;
 }
 
 .container:hover {
@@ -38,5 +39,28 @@
 }
 
 .deleteListButton {
-  margin-left: auto;
+  /* margin-left: auto; */
+}
+
+.listTitleWrapper {
+  /* border: 1px solid red; */
+  /* min-height: 30px; */
+  height: 100%;
+  padding: 0px 8px;
+  display: flex;
+  flex: row;
+  align-items: center;
+  width: 80%;
+  box-sizing: border-box;
+}
+
+.trashCanWrapper {
+  width: 20%;
+  height: 100%;
+  /* border: 1px solid cyan; */
+  box-sizing: border-box;
+  display: flex;
+  flex: row;
+  align-items: center;
+  justify-content: center;
 }

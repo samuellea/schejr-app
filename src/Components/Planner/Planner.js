@@ -31,6 +31,7 @@ function Planner({
   handleEntities,
   plannerRange,
   setPlannerRange,
+  setModalBackground,
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
@@ -204,6 +205,7 @@ function Planner({
                         handleEntities={handleEntities}
                         setEventsLoaded={setEventsLoaded}
                         scrollRef={scrollRef}
+                        setModalBackground={setModalBackground}
                       />
                     ) : (
                       <PlaceholderDay key={`placeholderDay-${date.date}`} />

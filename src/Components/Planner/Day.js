@@ -23,6 +23,7 @@ const Day = forwardRef(
       handleEntities,
       // scrollPosition,
       scrollRef,
+      setModalBackground,
     },
     ref
   ) => {
@@ -36,6 +37,14 @@ const Day = forwardRef(
     //   const eventsForThisDate = h.getEventsForDate(date.date, events);
     //   setDateEvents(eventsForThisDate);
     // }, [events]);
+
+    useEffect(() => {
+      if (editEvent) {
+        setModalBackground(true);
+      } else {
+        setModalBackground(false);
+      }
+    }, [editEvent]);
 
     useEffect(() => {
       const timer = setTimeout(() => {

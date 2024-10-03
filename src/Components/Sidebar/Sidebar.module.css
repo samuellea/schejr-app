@@ -7,12 +7,12 @@
   position: absolute; /* Allow overlaying */
   top: 0; /* Adjust as needed */
   left: 0; /* Adjust as needed */
-  z-index: 8; /* Ensure this sibling is on top */
-  padding: 0px 8px 0px 4px;
+  /* padding: 0px 8px 0px 4px; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 1;
   /* justify-content: center; */
 }
 
@@ -61,7 +61,32 @@
 
 .listContainer {
   /* border: 1px solid lime; */
+  box-sizing: border-box;
   width: 100%;
+  height: 90%;
+  overflow-y: auto;
+  /* overflow-y: scroll; */
+}
+
+.listContainer::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.listContainer::-webkit-scrollbar-track {
+  background: #2c2c2c !important;
+  border-radius: 10px !important;
+}
+
+.listContainer::-webkit-scrollbar-thumb {
+  background: #6b6b6b !important;
+  border-radius: 6px !important;
+  width: 8px !important;
+  min-height: 30px !important; /* Ensures minimum height */
+  height: 30px !important; /* Forces the thumb height to always be fixed */
+}
+
+.listContainer::-webkit-scrollbar-thumb:hover {
+  background: #939393 !important;
 }
 
 [data-rfd-placeholder-context-id] {
@@ -80,6 +105,17 @@
     margin 0.2s cubic-bezier(0.2, 0, 0, 1);
   /* background-color: purple; */
   background: none;
+}
+
+.logOutSection {
+  /* border: 3px solid red; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  box-sizing: border-box;
 }
 
 .logOutButton {
@@ -110,8 +146,9 @@
 }
 
 .dragOver {
-  background: white !important;
-  border: 3px solid blue;
+  /* background: white !important; */
+  /* border: 3px solid blue; */
+  background: #4c4c4c !important;
 }
 
 .hiddenPlaceholder {

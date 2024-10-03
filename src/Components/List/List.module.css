@@ -116,8 +116,36 @@
   width: 15px;
   border-radius: 6px;
   background-color: #333333;
-  margin: auto 0px 12px 12px;
+  /* margin: 12px 0px 12px 12px; */
 }
 
 .listsHeaderButton:hover {
+}
+
+.showPlannerWrapper {
+  height: 71px;
+  border-top: 1px solid rgba(155, 155, 155, 0.151);
+  box-sizing: border-box;
+  margin-top: auto;
+  padding: 12px 12px;
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.showPlannerLabel {
+  margin-left: 12px;
+  color: rgb(155, 155, 155);
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.showPlannerLabel span {
+  margin-left: 8px;
+  margin-top: 1px;
 }

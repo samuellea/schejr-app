@@ -43,12 +43,12 @@ export const patchList = async (userUID, listID, newData) => {
   }
 };
 
-export const patchMultipleLists = async (updates) => {
+export const patchMultipleLists = async (userUID, updates) => {
   try {
     const updatePromises = updates.map((update) => {
       const { listID: unneededListID, ...rest } = update;
       const updatedList = { ...rest };
-      return patchList(unneededListID, updatedList);
+      return patchList(userUID, unneededListID, updatedList);
     });
     return await Promise.all(updatePromises);
   } catch (error) {

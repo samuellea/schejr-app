@@ -27,8 +27,16 @@ function ListItem({
 
   const handleTitleOnBlur = async () => {
     // updateListItem(listItem, 'title', listItemRenameText);
-    const updatedListItem = { ...listItem, title: listItemRenameText };
-    await handleEntities.updateEventAndDates(['title'], updatedListItem);
+    if (listItemRenameText !== listItem.title) {
+      const updatedListItem = { ...listItem, title: listItemRenameText };
+      await handleEntities.updateEventAndDates(['title'], updatedListItem);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleTitleOnBlur();
+    }
   };
 
   useEffect(() => {
@@ -94,6 +102,7 @@ function ListItem({
           value={listItemRenameText}
           id="flexidiv"
           ref={inputRef}
+          onKeyDown={(event) => handleKeyDown(event)}
         />
         <div className={styles.tagsContainer} id="flexidiv">
           {listItem?.tags?.map((tag) => {

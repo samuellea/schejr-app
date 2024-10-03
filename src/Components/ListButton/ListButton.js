@@ -14,15 +14,22 @@ function ListButton({
   selected,
   // handleDeleteList,
   deleteListAndRelated,
+  setListDeleteBackground,
 }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const combined = `${styles.container} ${selected ? styles.selected : null}`;
 
+  const handleShowDeleteModal = (flag) => {
+    setListDeleteBackground(flag);
+    setShowDeleteModal(flag);
+  };
+
   const handleConfirmDeleteList = async () => {
     const listTitle = listName;
     try {
       await deleteListAndRelated(listID);
+      setListDeleteBackground(false);
       setShowDeleteModal(false);
       toast(`Deleted ${listTitle}`, {
         duration: 3000,
@@ -31,30 +38,35 @@ function ListButton({
       toast(`Problem deleting ${listTitle}`, {
         duration: 3000,
       });
+      setListDeleteBackground(false);
       setShowDeleteModal(false);
     }
   };
 
   return (
-    <div
-      className={combined}
-      onClick={() => handleSelectListButton(listID)}
-      key={`listButton-${listID}`}
-    >
-      <TagsIcon />
-      <p className={styles.listTitle}>{listName}</p>
+    <div className={combined} key={`listButton-${listID}`}>
       <div
-        role="button"
-        className={styles.deleteListButton}
-        onClick={() => setShowDeleteModal(true)}
+        className={styles.listTitleWrapper}
+        onClick={() => handleSelectListButton(listID)}
       >
-        <TrashIcon fill="#9b9b9b" width="16px" />
+        <TagsIcon />
+        <p className={styles.listTitle}>{listName}</p>
       </div>
+      <div className={styles.trashCanWrapper}>
+        <div
+          role="button"
+          className={styles.deleteListButton}
+          onClick={() => handleShowDeleteModal(true)}
+        >
+          <TrashIcon fill="#9b9b9b" width="16px" />
+        </div>
+      </div>
+
       {showDeleteModal ? (
         <ConfirmDeleteModal
-          message="Delete this list?"
+          message={`Delete list ${listName}?`}
           handleConfirm={() => handleConfirmDeleteList()}
-          handleCancel={() => setShowDeleteModal(false)}
+          handleCancel={() => handleShowDeleteModal(false)}
           confirmLabel="Delete"
         />
       ) : null}

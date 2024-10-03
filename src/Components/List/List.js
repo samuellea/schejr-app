@@ -8,6 +8,7 @@ import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 import Sort from '../Sort/Sort';
 import PlusIcon from '../Icons/PlusIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
+import DateIcon from '../Icons/DateIcon';
 
 function List({
   selectedList,
@@ -40,10 +41,12 @@ function List({
   };
 
   const handleTitleOnBlur = async () => {
-    let newTitle = listTitle;
-    if (!listTitle.length) newTitle = selectedList.title;
-    const newListValues = { title: newTitle };
-    updateList(selectedList, newListValues);
+    if (selectedList.title !== listTitle) {
+      let newTitle = listTitle;
+      if (!listTitle.length) newTitle = selectedList.title;
+      const newListValues = { title: newTitle };
+      updateList(selectedList, newListValues);
+    }
   };
 
   const handleToggleOrder = async () => {
@@ -93,6 +96,12 @@ function List({
 
   const plannerButtonCombined = `${styles.plannerButton} ${styles.listsHeaderButton}`;
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleTitleOnBlur();
+    }
+  };
+
   return (
     <div
       className={styles.listContainerWrapper}
@@ -119,6 +128,7 @@ function List({
               onChange={handleTitleChange} // Directly pass the handler
               onBlur={handleTitleOnBlur}
               value={listTitle}
+              onKeyDown={(event) => handleKeyDown(event)}
             />
             <Sort
               selectedList={selectedList}
@@ -170,12 +180,18 @@ function List({
         <span>New</span>
       </div>
       {!showPlanner ? (
-        <div
-          role="button"
-          className={styles.listsHeaderButton}
-          onClick={togglePlanner}
-        >
-          <ChevronIcon fill="white" width="20px" flip={90} />
+        <div className={styles.showPlannerWrapper}>
+          <div
+            role="button"
+            className={styles.listsHeaderButton}
+            onClick={togglePlanner}
+          >
+            <ChevronIcon fill="white" width="20px" flip={90} />
+          </div>
+          <div className={styles.showPlannerLabel}>
+            <DateIcon fill="white" width="16px" marginBottom="0px" />
+            <span>Show Planner</span>
+          </div>
         </div>
       ) : null}
     </div>

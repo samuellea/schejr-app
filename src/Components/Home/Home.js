@@ -22,12 +22,14 @@ function Home() {
   const [selectedListID, setSelectedListID] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [plannerRange, setPlannerRange] = useState({ start: null, end: null });
+  const [modalBackground, setModalBackground] = useState(false);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
   const displayName = localStorage.getItem('displayName');
 
   const updateList = async (list, newListValues) => {
+    console.log(list);
     const { listID: unneededListID, ...rest } = list;
     const updatedListNoListID = { ...rest, ...newListValues };
     try {
@@ -377,10 +379,19 @@ function Home() {
   const onDragEnd = async (result) => {
     // console.log('onDragEnd!');
     const { destination, source, draggableId, droppableId } = result;
-    // console.log('source: ', source);
-    // console.log('destination: ', destination);
+    console.log('source: ', source);
+    console.log('destination: ', destination);
     // console.log('draggableId: ', draggableId);
     // console.log('droppableId: ', droppableId);
+
+    if (
+      source.droppableId.substring(0, 8) === 'planner-' &&
+      destination.droppableId.substring(0, 20) === 'droppableListButton-'
+    ) {
+      toast(`❌ Can't move Events onto Lists`, {
+        duration: 2000,
+      });
+    }
     // Item was dropped outside a droppable area
     if (!destination) {
       console.log('❌ NOT A VALID DROPPABLE AREA');
@@ -478,7 +489,7 @@ function Home() {
       console.log('⭐ MOVE TO DIFFERENT LIST');
       const sourceListID = source.droppableId.substring(5);
       console.log(sourceListID);
-      const destinationListID = destination.droppableId; // id of the List you're moving it to
+      const destinationListID = destination.droppableId.substring(20); // id of the List you're moving it to
       console.log(destinationListID);
       // check that not trying to drag a list item to the list it's already on
       if (sourceListID !== destinationListID) {
@@ -646,7 +657,7 @@ function Home() {
       }));
       setLists(updatedLists);
       // then, need to update all other /lists objects' .sidebarIndex values accordingly - both in STATE and on DB!
-      await u.patchMultipleLists(updatedLists);
+      await u.patchMultipleLists(userUID, updatedLists);
     }
   };
 
@@ -784,50 +795,6 @@ function Home() {
     navigate('/login');
   };
 
-  // Function which updates the list object (by id) in lists state - a separate, timed function will then update this list object on firebase
-
-  /*
-
-  const updateList = async (listID, field, value) => {
-    let newValue = value;
-    if (field === 'title' && value === '') newValue = 'Untitled';
-    const updatedListObj = {
-      ...lists.filter((e) => e.listID === listID)[0],
-      [field]: newValue,
-    };
-    const listsMinusUpdated = lists.filter((e) => e.listID !== listID);
-    const listsPlusUpdated = [...listsMinusUpdated, updatedListObj];
-    // set updated List in state
-    setLists(listsPlusUpdated);
-    const { createdAt, createdBy, title } = updatedListObj;
-    // now update the List obj on db
-    const updatedListData = {
-      createdAt,
-      createdBy,
-      title, // ADD OTHER FIELDS WHEN IMPLEMENTED! 🚨🚨🚨
-    };
-    
-    try {
-      await u.patchList(selectedListID, updatedListData);
-    } catch (error) {}
-  };
-  
-  */
-
-  /*
- action, source, newData
-
- handleEntities.create.listItem()
- handleEntities.create.event()
-
- handleEntities.update.listItem()
- handleEntities.update.event()
-
- handleEntities.delete.listItem()
- handleEntities.delete.event()
- 
-  */
-
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -892,6 +859,7 @@ function Home() {
           setEvents={setEvents}
           plannerRange={plannerRange}
           setPlannerRange={setPlannerRange}
+          setModalBackground={setModalBackground}
           // handleEvents={handleEvents}
           // handleOtherEventFields={handleOtherEventFields}
         />
@@ -908,6 +876,7 @@ function Home() {
           // handleDeleteList={handleDeleteList}
           handleLogout={handleLogout}
           deleteListAndRelated={deleteListAndRelated}
+          modalBackground={modalBackground}
         />
       </div>
       <Toaster />

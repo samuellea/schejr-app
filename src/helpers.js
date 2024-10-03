@@ -105,18 +105,29 @@ export const sortItems = (items, sortKey, order, existingTags) => {
 
   if (sortKey === 'startDate') {
     return items.sort((a, b) => {
-      const dateA = a.date?.startDate ? new Date(a.date.startDate) : null;
-      const dateB = b.date?.startDate ? new Date(b.date.startDate) : null;
+      const hasADates = Array.isArray(a.dates);
+      const hasBDates = Array.isArray(b.dates);
 
-      // Handle null values by placing them at the end (ascending) or the beginning (descending)
-      if (dateA === null && dateB === null) return 0;
-      if (dateA === null) return isAscending ? 1 : -1;
-      if (dateB === null) return isAscending ? -1 : 1;
+      // Case 1: Both have dates keys
+      if (hasADates && hasBDates) {
+        const dateA = new Date(a.dates[0]?.startDateTime);
+        const dateB = new Date(b.dates[0]?.startDateTime);
 
-      // Compare the dates
-      return isAscending
-        ? dateA - dateB // Ascending order
-        : dateB - dateA; // Descending order
+        return order === 'ascending' ? dateA - dateB : dateB - dateA; // Sort based on the order
+      }
+
+      // Case 2: A has dates, B does not
+      if (hasADates && !hasBDates) {
+        return -1; // a comes before b
+      }
+
+      // Case 3: A does not have dates, B does
+      if (!hasADates && hasBDates) {
+        return 1; // b comes before a
+      }
+
+      // Case 4: Neither has dates keys (they stay in original order)
+      return 0;
     });
   }
 

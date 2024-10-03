@@ -25,6 +25,7 @@ function MainArea({
   setEvents,
   plannerRange,
   setPlannerRange,
+  setModalBackground,
   // handleOtherEventFields,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
@@ -158,6 +159,7 @@ function MainArea({
         handleEntities={handleEntities}
         plannerRange={plannerRange}
         setPlannerRange={setPlannerRange}
+        setModalBackground={setModalBackground}
       />
       {/* ) : null} */}
     </div>

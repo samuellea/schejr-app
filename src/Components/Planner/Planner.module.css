@@ -9,7 +9,7 @@
   /* height: 50%; */
   bottom: 0%; /* Adjust as needed */
   left: 0%; /* Adjust as needed */
-  z-index: 10; /* Ensure this sibling is on top */
+  z-index: 2; /* Ensure this sibling is on top */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -34,7 +34,7 @@
   width: 15px;
   border-radius: 6px;
   background-color: #333333;
-  /* margin-top: auto; */
+  /* margin: 12px 0px 12px 12px; */
   margin-right: 12px;
 }
 
@@ -78,10 +78,11 @@
   /* padding: 10px 10px 0px 10px; */
   box-sizing: border-box;
   padding: 0px 12px;
-  height: 70px;
+  height: 71px;
   flex: 0 1 auto;
   /* height: 90px; */
   /* height: 300px; */
+  border-top: 1px solid rgba(155, 155, 155, 0.151);
 }
 
 .monthNavigator {
@@ -95,6 +96,8 @@
   flex: 0 1 auto;
   /* padding: 6px 0px; */
   margin-bottom: 6px;
+  padding-top: 6px;
+  /* padding: 4px 0px; */
 }
 
 .monthNavLabel span {
@@ -170,7 +173,7 @@
 }
 
 .datesArea {
-  border: 4px solid lime;
+  /* border: 4px solid lime; */
   width: 100%;
   flex: 1 1 auto;
   overflow-y: scroll;
