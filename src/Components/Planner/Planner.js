@@ -164,24 +164,6 @@ function Planner({
       {showPlanner ? (
         <div className={styles.contentAndControls}>
           <div className={styles.contentContainer}>
-            <div className={styles.monthNavigator}>
-              <div className={styles.navButton} onClick={() => handleNav('-')}>
-                <div className={styles.navIconL}></div>
-              </div>
-              <div className={styles.monthNavLabel}>
-                <span>
-                  <h4>{navLabel}</h4>
-                </span>
-
-                <span className={styles.monthNavYear}>
-                  {/* <h4>{viewMonth.getFullYear()}</h4> */}
-                </span>
-              </div>
-              <div className={styles.navButton} onClick={() => handleNav('+')}>
-                <div className={styles.navIconR}></div>
-              </div>
-            </div>
-
             <div
               className={styles.datesArea}
               ref={scrollRef}
@@ -217,25 +199,49 @@ function Planner({
           </div>
 
           <div className={styles.controlsContainer}>
-            {!plannerMax ? (
+            <div className={styles.expandButtonsContainer}>
+              {!plannerMax ? (
+                <div
+                  role="button"
+                  className={styles.listsHeaderButton}
+                  onClick={togglePlanner}
+                >
+                  <ChevronIcon fill="white" width="20px" flip={270} />
+                </div>
+              ) : null}
               <div
                 role="button"
                 className={styles.listsHeaderButton}
-                onClick={togglePlanner}
+                onClick={toggleExpand}
               >
-                <ChevronIcon fill="white" width="20px" flip={270} />
+                <ChevronIcon
+                  fill="white"
+                  width="20px"
+                  flip={plannerMax ? 270 : 90}
+                />
               </div>
-            ) : null}
-            <div
-              role="button"
-              className={styles.listsHeaderButton}
-              onClick={toggleExpand}
-            >
-              <ChevronIcon
-                fill="white"
-                width="20px"
-                flip={plannerMax ? 270 : 90}
-              />
+            </div>
+
+            <div className={styles.monthNavigatorContainer}>
+              <div className={styles.monthNavigator}>
+                <div
+                  className={styles.navButton}
+                  onClick={() => handleNav('-')}
+                >
+                  <div className={styles.navIconL}></div>
+                </div>
+                <div className={styles.monthNavLabel}>
+                  <span>
+                    <h4>{navLabel}</h4>
+                  </span>
+                </div>
+                <div
+                  className={styles.navButton}
+                  onClick={() => handleNav('+')}
+                >
+                  <div className={styles.navIconR}></div>
+                </div>
+              </div>
             </div>
 
             <div className={styles.viewModeContainer}>

@@ -1,6 +1,7 @@
 .container {
   /* border: 2px solid orange; */
   border-left: 1px solid rgba(155, 155, 155, 0.151);
+  border-top: 1px solid rgba(155, 155, 155, 0.151);
   background-color: #202020;
   color: white;
   width: 100%;
@@ -72,14 +73,14 @@
   /* border: 2px solid yellow; */
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   /* padding: 28px 28px 28px 28px; */
   /* padding: 10px 10px 0px 10px; */
   box-sizing: border-box;
   padding: 0px 12px;
   height: 71px;
-  flex: 0 1 auto;
+  /* flex: 0 1 auto; */
   /* height: 90px; */
   /* height: 300px; */
   border-top: 1px solid rgba(155, 155, 155, 0.151);
@@ -93,7 +94,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  flex: 0 1 auto;
+  /* flex: 0 1 auto; */
   /* padding: 6px 0px; */
   margin-bottom: 6px;
   padding-top: 6px;
@@ -213,7 +214,7 @@
   border-radius: 8px;
   padding: 2px 6px;
   /* box-sizing: border-box; */
-  margin-left: auto;
+  /* margin-left: auto; */
 }
 
 .viewModeButton {
@@ -231,4 +232,16 @@
 
 #viewButtonSelected {
   background-color: #202020;
+}
+
+.monthNavigatorContainer {
+  /* border: 1px solid red; */
+  /* width: 200px; */
+  height: 45px;
+}
+
+.expandButtonsContainer {
+  /* border: 1px solid yellow; */
+  display: flex;
+  flex-direction: row;
 }
