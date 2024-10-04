@@ -3,12 +3,14 @@ import styles from './TopBar.module.css';
 import ChevronIcon from '../Icons/ChevronIcon';
 import LogoutIcon from '../Icons/LogoutIcon';
 import DateIcon from '../Icons/DateIcon';
+import EditIcon from '../Icons/EditIcon';
 
 function TopBar({
   toggleSidebar,
   showSidebar,
   displayName,
   setShowLogoutModal,
+  createList,
 }) {
   return (
     <div className={styles.container}>
@@ -26,9 +28,20 @@ function TopBar({
           />
         </div>
         {showSidebar ? (
-          <p className={styles.topbarText} id={styles.sidebarHeader}>
-            {displayName}'s lists
-          </p>
+          <>
+            <p className={styles.topbarText} id={styles.sidebarHeader}>
+              {displayName}'s lists
+            </p>
+
+            <div
+              role="button"
+              className={styles.topbarButton}
+              onClick={createList}
+              id={styles.createList}
+            >
+              <EditIcon fill="white" width="16px" />
+            </div>
+          </>
         ) : null}
         {!showSidebar ? (
           <>

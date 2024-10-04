@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styles from './Sidebar.module.css';
 import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
-import randomEmoji from 'random-emoji';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import EditIcon from '../Icons/EditIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
@@ -22,27 +21,6 @@ function Sidebar({
   deleteListAndRelated,
 }) {
   const [listDeleteBackground, setListDeleteBackground] = useState(false);
-
-  const createList = async () => {
-    // length of 'lists' in state - 1
-    const newListData = {
-      title: `Untitled ${randomEmoji.random({ count: 1 })[0].character}`,
-      createdAt: Date.now(),
-      createdBy: userUID,
-      sortOn: 'manualOrder',
-      order: 'ascending',
-      sidebarIndex: lists.length,
-    };
-    try {
-      const listID = await u.createNewList(userUID, newListData);
-      const newListDataPlusID = { ...newListData, listID: listID };
-      const updatedLists = [...lists, newListDataPlusID];
-      setLists(updatedLists);
-      setSelectedListID(listID);
-    } catch (error) {
-      console.error('Failed to create list:', error);
-    }
-  };
 
   // const combined = `${styles.container} ${
   //   showSidebar ? styles.sidebarOpen : styles.sidebarClosed
