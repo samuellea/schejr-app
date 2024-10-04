@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './TopBar.module.css';
 import ChevronIcon from '../Icons/ChevronIcon';
 import LogoutIcon from '../Icons/LogoutIcon';
-import DateIcon from '../Icons/DateIcon';
+import TagsIcon from '../Icons/TagsIcon';
 import EditIcon from '../Icons/EditIcon';
 
 function TopBar({
@@ -45,7 +45,7 @@ function TopBar({
         ) : null}
         {!showSidebar ? (
           <>
-            <DateIcon fill="white" width="16px" />
+            <TagsIcon fill="white" width="16px" />
             <p className={styles.topbarText} id={styles.showListsLabel}>
               Show lists
             </p>
