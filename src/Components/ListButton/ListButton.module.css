@@ -64,5 +64,6 @@
   flex: row;
   align-items: center;
   justify-content: flex-end;
-  padding: 2%;
+  padding: 3px;
+  margin-right: 8px;
 }
