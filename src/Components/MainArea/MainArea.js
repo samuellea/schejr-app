@@ -6,6 +6,7 @@ import * as u from '../../utils';
 import { Droppable } from '@hello-pangea/dnd'; // Updated import
 import EditIcon from '../Icons/EditIcon';
 import Planner from '../Planner/Planner';
+import ChevronIcon from '../Icons/ChevronIcon';
 
 function MainArea({
   userUID,
@@ -27,6 +28,7 @@ function MainArea({
   setPlannerRange,
   setModalBackground,
   // handleOtherEventFields,
+  toggleSidebar,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -99,8 +101,21 @@ function MainArea({
   return (
     <div
       className={styles.container}
-      style={{ width: showSidebar ? '80%' : '100%' }}
+      // style={{ width: showSidebar ? '80%' : '100%' }}
     >
+      {/* {showSidebar ? <div className={styles.sidebarSpacer} /> : null} */}
+      {/* <div className={styles.sidebarSpacer} /> */}
+
+      {/* {!showSidebar ? (
+        <div
+          role="button"
+          className={styles.openSidebarButton}
+          onClick={toggleSidebar}
+        >
+          <ChevronIcon fill="white" width="16px" flip="180" />
+        </div>
+      ) : null} */}
+
       {selectedList && listAndItemsLoaded ? (
         <List
           selectedList={selectedList}
@@ -160,6 +175,7 @@ function MainArea({
         plannerRange={plannerRange}
         setPlannerRange={setPlannerRange}
         setModalBackground={setModalBackground}
+        showSidebar={showSidebar}
       />
       {/* ) : null} */}
     </div>

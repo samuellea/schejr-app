@@ -63,5 +63,6 @@
   display: flex;
   flex: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: 2%;
 }

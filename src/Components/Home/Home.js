@@ -840,44 +840,52 @@ function Home() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className={styles.container}>
-        <TopBar toggleSidebar={toggleSidebar} />
-        <MainArea
-          userUID={userUID}
-          showSidebar={showSidebar}
-          selectedList={lists?.find((e) => e.listID === selectedListID)}
-          updateList={updateList}
-          // updateListItem={updateListItem}
-          handleEntities={handleEntities}
-          listItems={listItems}
-          setListItems={setListItems}
-          listAndItemsLoaded={listAndItemsLoaded}
-          setListAndItemsLoaded={setListAndItemsLoaded}
-          syncWithGCal={syncWithGCal}
-          handleSetSyncWithGCal={handleSetSyncWithGCal}
-          events={events}
-          setEvents={setEvents}
-          plannerRange={plannerRange}
-          setPlannerRange={setPlannerRange}
-          setModalBackground={setModalBackground}
-          // handleEvents={handleEvents}
-          // handleOtherEventFields={handleOtherEventFields}
-        />
-        <Sidebar
-          userUID={userUID}
-          displayName={displayName}
-          lists={lists}
-          setLists={setLists}
-          selectedListID={selectedListID}
-          setSelectedListID={setSelectedListID}
+      <div className={styles.wrapper}>
+        <TopBar
           toggleSidebar={toggleSidebar}
           showSidebar={showSidebar}
-          handleSelectListButton={handleSelectListButton}
-          // handleDeleteList={handleDeleteList}
-          handleLogout={handleLogout}
-          deleteListAndRelated={deleteListAndRelated}
-          modalBackground={modalBackground}
+          displayName={displayName}
         />
+        <div className={styles.container}>
+          {showSidebar ? (
+            <Sidebar
+              userUID={userUID}
+              displayName={displayName}
+              lists={lists}
+              setLists={setLists}
+              selectedListID={selectedListID}
+              setSelectedListID={setSelectedListID}
+              toggleSidebar={toggleSidebar}
+              showSidebar={showSidebar}
+              handleSelectListButton={handleSelectListButton}
+              // handleDeleteList={handleDeleteList}
+              handleLogout={handleLogout}
+              deleteListAndRelated={deleteListAndRelated}
+            />
+          ) : null}
+          <MainArea
+            userUID={userUID}
+            toggleSidebar={toggleSidebar}
+            showSidebar={showSidebar}
+            selectedList={lists?.find((e) => e.listID === selectedListID)}
+            updateList={updateList}
+            // updateListItem={updateListItem}
+            handleEntities={handleEntities}
+            listItems={listItems}
+            setListItems={setListItems}
+            listAndItemsLoaded={listAndItemsLoaded}
+            setListAndItemsLoaded={setListAndItemsLoaded}
+            syncWithGCal={syncWithGCal}
+            handleSetSyncWithGCal={handleSetSyncWithGCal}
+            events={events}
+            setEvents={setEvents}
+            plannerRange={plannerRange}
+            setPlannerRange={setPlannerRange}
+            setModalBackground={setModalBackground}
+            // handleEvents={handleEvents}
+            // handleOtherEventFields={handleOtherEventFields}
+          />
+        </div>
       </div>
       <Toaster />
     </DragDropContext>

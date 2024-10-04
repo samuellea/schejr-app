@@ -32,6 +32,7 @@ function Planner({
   plannerRange,
   setPlannerRange,
   setModalBackground,
+  showSidebar,
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
@@ -159,109 +160,114 @@ function Planner({
           : plannerMax
           ? '0px 0px 0px 0px'
           : '0px 0px 0px 0px',
+        borderTop: plannerMax ? 'none' : '1px solid rgba(155, 155, 155, 0.151)',
       }}
     >
+      {/* {showSidebar ? <div className={styles.sidebarSpacer} /> : null} */}
+      {/* <div className={styles.sidebarSpacer} /> */}
       {showPlanner ? (
-        <div className={styles.contentAndControls}>
-          <div className={styles.contentContainer}>
-            <div
-              className={styles.datesArea}
-              ref={scrollRef}
-              // onScroll={handleScroll}
-            >
-              {eventsLoaded
-                ? dates.map((date, i) => {
-                    const eventsForThisDate = h.getEventsForDate(
-                      date.date,
-                      events
-                    );
-                    return eventsLoaded ? (
-                      <Day
-                        date={date}
-                        dateEvents={eventsForThisDate}
-                        key={`day-${date.date}`}
-                        events={events}
-                        handleEvents={handleEvents}
-                        existingTags={existingTags}
-                        setExistingTags={setExistingTags}
-                        handleEntities={handleEntities}
-                        setEventsLoaded={setEventsLoaded}
-                        scrollRef={scrollRef}
-                        setModalBackground={setModalBackground}
-                        isLast={i === dates.length - 1}
-                      />
-                    ) : (
-                      <PlaceholderDay key={`placeholderDay-${date.date}`} />
-                    );
-                  })
-                : null}
+        <div className={styles.plannerContentWrapper}>
+          <div className={styles.contentAndControls}>
+            <div className={styles.contentContainer}>
+              <div
+                className={styles.datesArea}
+                ref={scrollRef}
+                // onScroll={handleScroll}
+              >
+                {eventsLoaded
+                  ? dates.map((date, i) => {
+                      const eventsForThisDate = h.getEventsForDate(
+                        date.date,
+                        events
+                      );
+                      return eventsLoaded ? (
+                        <Day
+                          date={date}
+                          dateEvents={eventsForThisDate}
+                          key={`day-${date.date}`}
+                          events={events}
+                          handleEvents={handleEvents}
+                          existingTags={existingTags}
+                          setExistingTags={setExistingTags}
+                          handleEntities={handleEntities}
+                          setEventsLoaded={setEventsLoaded}
+                          scrollRef={scrollRef}
+                          setModalBackground={setModalBackground}
+                          isLast={i === dates.length - 1}
+                        />
+                      ) : (
+                        <PlaceholderDay key={`placeholderDay-${date.date}`} />
+                      );
+                    })
+                  : null}
+              </div>
             </div>
-          </div>
 
-          <div className={styles.controlsContainer}>
-            <div className={styles.expandButtonsContainer}>
-              {!plannerMax ? (
+            <div className={styles.controlsContainer}>
+              <div className={styles.expandButtonsContainer}>
+                {!plannerMax ? (
+                  <div
+                    role="button"
+                    className={styles.listsHeaderButton}
+                    onClick={togglePlanner}
+                  >
+                    <ChevronIcon fill="white" width="20px" flip={270} />
+                  </div>
+                ) : null}
                 <div
                   role="button"
                   className={styles.listsHeaderButton}
-                  onClick={togglePlanner}
+                  onClick={toggleExpand}
                 >
-                  <ChevronIcon fill="white" width="20px" flip={270} />
+                  <ChevronIcon
+                    fill="white"
+                    width="20px"
+                    flip={plannerMax ? 270 : 90}
+                  />
                 </div>
-              ) : null}
-              <div
-                role="button"
-                className={styles.listsHeaderButton}
-                onClick={toggleExpand}
-              >
-                <ChevronIcon
-                  fill="white"
-                  width="20px"
-                  flip={plannerMax ? 270 : 90}
-                />
               </div>
-            </div>
 
-            <div className={styles.monthNavigatorContainer}>
-              <div className={styles.monthNavigator}>
-                <div
-                  className={styles.navButton}
-                  onClick={() => handleNav('-')}
-                >
-                  <div className={styles.navIconL}></div>
-                </div>
-                <div className={styles.monthNavLabel}>
-                  <span>
-                    <h4>{navLabel}</h4>
-                  </span>
-                </div>
-                <div
-                  className={styles.navButton}
-                  onClick={() => handleNav('+')}
-                >
-                  <div className={styles.navIconR}></div>
+              <div className={styles.monthNavigatorContainer}>
+                <div className={styles.monthNavigator}>
+                  <div
+                    className={styles.navButton}
+                    onClick={() => handleNav('-')}
+                  >
+                    <div className={styles.navIconL}></div>
+                  </div>
+                  <div className={styles.monthNavLabel}>
+                    <span>
+                      <h4>{navLabel}</h4>
+                    </span>
+                  </div>
+                  <div
+                    className={styles.navButton}
+                    onClick={() => handleNav('+')}
+                  >
+                    <div className={styles.navIconR}></div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className={styles.viewModeContainer}>
-              <div
-                role="button"
-                className={styles.viewModeButton}
-                id={viewMode === 'month' ? styles.viewButtonSelected : null}
-                onClick={() => setViewMode('month')}
-              >
-                <MonthIcon width="24px" />
-                <span>Month</span>
-              </div>
-              <div
-                role="button"
-                className={styles.viewModeButton}
-                id={viewMode === 'week' ? styles.viewButtonSelected : null}
-                onClick={() => setViewMode('week')}
-              >
-                <WeekIcon width="24px" />
-                <span>Week</span>
+              <div className={styles.viewModeContainer}>
+                <div
+                  role="button"
+                  className={styles.viewModeButton}
+                  id={viewMode === 'month' ? styles.viewButtonSelected : null}
+                  onClick={() => setViewMode('month')}
+                >
+                  <MonthIcon width="24px" />
+                  <span>Month</span>
+                </div>
+                <div
+                  role="button"
+                  className={styles.viewModeButton}
+                  id={viewMode === 'week' ? styles.viewButtonSelected : null}
+                  onClick={() => setViewMode('week')}
+                >
+                  <WeekIcon width="24px" />
+                  <span>Week</span>
+                </div>
               </div>
             </div>
           </div>

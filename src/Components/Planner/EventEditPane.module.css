@@ -9,9 +9,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 3;
+  z-index: 9999 !important;
   box-sizing: border-box;
-  /* border: 3px solid blue; */
+  border: 3px solid lime;
 }
 
 .eventEditPane {

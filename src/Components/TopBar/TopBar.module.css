@@ -1,6 +1,6 @@
 .container {
   /* border: 2px solid cyan; */
-  height: 55px;
+  height: 46px;
   width: 100%;
   box-sizing: border-box;
   /* background-color: #2d2d2d; */
@@ -10,21 +10,118 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 0px 10px;
+  /* padding: 0px 10px; */
+  color: white;
+  border-bottom: 1px solid rgba(155, 155, 155, 0.151);
 }
 
-.listsHeaderButton {
+.listsHeader {
+  height: 100%;
+  width: 20%;
+  min-width: 200px;
+  /* border: 1px solid red; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
+  position: relative;
+  color: white;
+}
+
+.topbarText {
+  /* height: 100%; */
+  font-size: 14px;
+  /* border: 1px solid yellow; */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis;
+}
+
+#sidebarHeader {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#showListsLabel {
+  font-size: 12px;
+  color: #9b9b9b;
+  margin-left: 8px;
+  /* border: 1px solid yellow; */
+  padding-top: 2px;
+}
+
+.topbarButton {
   /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  height: 10px;
-  width: 10px;
+  height: 36px;
+  width: 36px;
   border-radius: 6px;
+  box-sizing: border-box;
 }
 
-.listsHeaderButton:hover {
+#toggleSidebar {
+  /* margin-right: auto; */
+  margin-right: 10px;
+  margin-left: 8px;
   background-color: #333333;
+}
+
+.topbarButton:hover {
+  background-color: #4c4c4c;
+}
+
+.logoutContainer {
+  margin-left: auto;
+  height: 100%;
+  width: 20%;
+  min-width: 200px;
+  /* border: 1px solid orange; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 12px;
+  color: #9b9b9b;
+}
+
+.logoutButton {
+  border: 1px solid #9b9b9b76;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
+  font-size: 12px;
+  width: 120px;
+  /* padding-left: 10px; */
+  box-sizing: border-box;
+}
+
+.logoutButton:hover {
+  background-color: #333333;
+  color: white;
+}
+
+.logoutButton span {
+  /* border: 1px solid red; */
+  height: 100%;
+  margin-right: 8px;
+  padding: 0px 0px 2px 0px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#logout {
+  /* margin-left: 8px; */
 }

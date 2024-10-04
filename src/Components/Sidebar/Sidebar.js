@@ -46,29 +46,15 @@ function Sidebar({
     }
   };
 
-  const combined = `${styles.container} ${
-    showSidebar ? styles.sidebarOpen : styles.sidebarClosed
-  }`;
+  // const combined = `${styles.container} ${
+  //   showSidebar ? styles.sidebarOpen : styles.sidebarClosed
+  // }`;
 
   return (
-    <div className={combined} style={{ zIndex: listDeleteBackground ? 9 : 1 }}>
-      <div className={styles.listsHeader}>
-        <div
-          role="button"
-          className={styles.listsHeaderButton}
-          onClick={toggleSidebar}
-        >
-          <ChevronIcon fill="white" width="16px" />
-        </div>
-        <p className={styles.sidebarTitle}>{displayName}'s lists</p>
-        <div
-          role="button"
-          className={styles.listsHeaderButton}
-          onClick={createList}
-        >
-          <EditIcon fill="white" width="16px" />
-        </div>
-      </div>
+    <div
+      className={styles.container}
+      // style={{ zIndex: listDeleteBackground ? 9 : 1 }}
+    >
       {/* Sidebar Droppable */}
       <Droppable droppableId="sidebar" isCombineEnabled={true}>
         {(provided) => (
@@ -133,7 +119,7 @@ function Sidebar({
           </div>
         )}
       </Droppable>
-      <div className={styles.logOutSection}>
+      {/* <div className={styles.logOutSection}>
         <div className={styles.dividerLine} />
         <div
           role="button"
@@ -142,7 +128,7 @@ function Sidebar({
         >
           Log out
         </div>
-      </div>
+      </div> */}
 
       {showLogoutModal ? (
         <ConfirmDeleteModal

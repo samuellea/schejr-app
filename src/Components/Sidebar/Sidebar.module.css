@@ -2,26 +2,20 @@
   /* border: 3px solid yellow; */
   height: 100%;
   width: 20%;
+  min-width: 200px;
   box-sizing: border-box;
   background-color: #202020;
-  position: absolute; /* Allow overlaying */
-  top: 0; /* Adjust as needed */
-  left: 0; /* Adjust as needed */
+  /* position: absolute;  */
+  /* top: 0;  */
+  /* left: 0;  */
   /* padding: 0px 8px 0px 4px; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1;
+  /* z-index: 2; */
   /* justify-content: center; */
-}
-
-.sidebarTitle {
-  color: white;
-  font-size: 14px;
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow text */
-  text-overflow: ellipsis;
+  border-right: 1px solid rgba(155, 155, 155, 0.151);
 }
 
 .listsHeaderButton {
@@ -107,8 +101,7 @@
   background: none;
 }
 
-.logOutSection {
-  /* border: 3px solid red; */
+/* .logOutSection {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -116,7 +109,7 @@
   justify-content: center;
   height: 70px;
   box-sizing: border-box;
-}
+} */
 
 .logOutButton {
   /* margin-top: auto; */

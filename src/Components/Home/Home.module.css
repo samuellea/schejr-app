@@ -1,25 +1,17 @@
+.wrapper {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   /* border: 3px solid green; */
-  height: 100%;
+  flex-grow: 1;
   box-sizing: border-box;
   background-color: #191919;
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   overflow: hidden;
-}
-
-.modalBackground {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 8;
-  box-sizing: border-box;
 }

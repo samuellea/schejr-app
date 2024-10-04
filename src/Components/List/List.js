@@ -171,14 +171,14 @@ function List({
                 </Draggable>
               )) || null}
             {provided.placeholder}
+            <div className={styles.newListItemButtonDivier} />
+            <div className={styles.newListItemButton} onClick={createListItem}>
+              <PlusIcon fill="white" width="16px" />
+              <span>New</span>
+            </div>
           </div>
         )}
       </Droppable>
-      <div className={styles.newListItemButtonDivier} />
-      <div className={styles.newListItemButton} onClick={createListItem}>
-        <PlusIcon fill="white" width="16px" />
-        <span>New</span>
-      </div>
       {!showPlanner ? (
         <div className={styles.showPlannerWrapper}>
           <div
