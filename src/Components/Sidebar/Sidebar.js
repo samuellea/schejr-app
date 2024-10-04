@@ -6,7 +6,6 @@ import randomEmoji from 'random-emoji';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import EditIcon from '../Icons/EditIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
-import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
 function Sidebar({
   userUID,
@@ -22,7 +21,6 @@ function Sidebar({
   handleLogout,
   deleteListAndRelated,
 }) {
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [listDeleteBackground, setListDeleteBackground] = useState(false);
 
   const createList = async () => {
@@ -129,15 +127,6 @@ function Sidebar({
           Log out
         </div>
       </div> */}
-
-      {showLogoutModal ? (
-        <ConfirmDeleteModal
-          message={`Log out ${displayName}`}
-          handleConfirm={() => handleLogout()}
-          handleCancel={() => setShowLogoutModal(false)}
-          confirmLabel="Log out"
-        />
-      ) : null}
     </div>
   );
 }

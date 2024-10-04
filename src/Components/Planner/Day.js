@@ -40,14 +40,6 @@ const Day = forwardRef(
     // }, [events]);
 
     useEffect(() => {
-      if (editEvent) {
-        setModalBackground(true);
-      } else {
-        setModalBackground(false);
-      }
-    }, [editEvent]);
-
-    useEffect(() => {
       const timer = setTimeout(() => {
         if (dateIsToday && todayRef.current) {
           todayRef.current.scrollIntoView({

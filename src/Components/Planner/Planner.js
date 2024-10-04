@@ -192,7 +192,7 @@ function Planner({
                           handleEntities={handleEntities}
                           setEventsLoaded={setEventsLoaded}
                           scrollRef={scrollRef}
-                          setModalBackground={setModalBackground}
+                          // setModalBackground={setModalBackground}
                           isLast={i === dates.length - 1}
                         />
                       ) : (

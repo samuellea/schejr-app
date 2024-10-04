@@ -4,7 +4,12 @@ import ChevronIcon from '../Icons/ChevronIcon';
 import LogoutIcon from '../Icons/LogoutIcon';
 import DateIcon from '../Icons/DateIcon';
 
-function TopBar({ toggleSidebar, showSidebar, displayName }) {
+function TopBar({
+  toggleSidebar,
+  showSidebar,
+  displayName,
+  setShowLogoutModal,
+}) {
   return (
     <div className={styles.container}>
       <div className={styles.listsHeader}>
@@ -28,7 +33,6 @@ function TopBar({ toggleSidebar, showSidebar, displayName }) {
         {!showSidebar ? (
           <>
             <DateIcon fill="white" width="16px" />
-
             <p className={styles.topbarText} id={styles.showListsLabel}>
               Show lists
             </p>
@@ -36,7 +40,10 @@ function TopBar({ toggleSidebar, showSidebar, displayName }) {
         ) : null}
       </div>
       <div className={styles.logoutContainer}>
-        <div className={styles.logoutButton} onClick={toggleSidebar}>
+        <div
+          className={styles.logoutButton}
+          onClick={() => setShowLogoutModal(true)}
+        >
           <span>Log out</span>
           <LogoutIcon fill="white" width="18px" margin="2px 0px 0px 0px" />
         </div>

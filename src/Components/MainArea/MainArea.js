@@ -174,7 +174,7 @@ function MainArea({
         handleEntities={handleEntities}
         plannerRange={plannerRange}
         setPlannerRange={setPlannerRange}
-        setModalBackground={setModalBackground}
+        // setModalBackground={setModalBackground}
         showSidebar={showSidebar}
       />
       {/* ) : null} */}

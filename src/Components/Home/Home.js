@@ -9,6 +9,7 @@ import * as h from '../../helpers';
 import { DragDropContext } from '@hello-pangea/dnd'; // Updated import
 import toast, { Toaster } from 'react-hot-toast';
 import { gapi } from 'gapi-script';
+import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 
 function Home() {
   const [lists, setLists] = useState([]);
@@ -22,7 +23,8 @@ function Home() {
   const [selectedListID, setSelectedListID] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [plannerRange, setPlannerRange] = useState({ start: null, end: null });
-  const [modalBackground, setModalBackground] = useState(false);
+  // const [modalBackground, setModalBackground] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -845,6 +847,7 @@ function Home() {
           toggleSidebar={toggleSidebar}
           showSidebar={showSidebar}
           displayName={displayName}
+          setShowLogoutModal={setShowLogoutModal}
         />
         <div className={styles.container}>
           {showSidebar ? (
@@ -881,13 +884,21 @@ function Home() {
             setEvents={setEvents}
             plannerRange={plannerRange}
             setPlannerRange={setPlannerRange}
-            setModalBackground={setModalBackground}
+            // setModalBackground={setModalBackground}
             // handleEvents={handleEvents}
             // handleOtherEventFields={handleOtherEventFields}
           />
         </div>
       </div>
       <Toaster />
+      {showLogoutModal ? (
+        <ConfirmDeleteModal
+          message={`Log out ${displayName}?`}
+          handleConfirm={() => handleLogout()}
+          handleCancel={() => setShowLogoutModal(false)}
+          confirmLabel="Log out"
+        />
+      ) : null}
     </DragDropContext>
   );
 }
