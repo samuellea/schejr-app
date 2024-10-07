@@ -6,6 +6,7 @@ import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
 import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 import Sort from '../Sort/Sort';
+import Search from '../Search/Search';
 import PlusIcon from '../Icons/PlusIcon';
 import ChevronIcon from '../Icons/ChevronIcon';
 import DateIcon from '../Icons/DateIcon';
@@ -26,6 +27,8 @@ function List({
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
+  const [searchString, setSearchString] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   const userUID = localStorage.getItem('firebaseID');
 
@@ -34,6 +37,25 @@ function List({
     setOrder(selectedList.order);
     setListTitle(selectedList.title);
   }, [selectedList]); // Dependency on selectedList
+
+  // compose a single string for search purposes
+  useEffect(() => {
+    // if (!searchString.length) return setSearchResults([]);
+    const listItemStrings = listItems.map((listItem) => {
+      const tagsStrings =
+        listItem.tags
+          ?.map((tagID) => existingTags.find((tag) => tag.tagID === tagID).name)
+          .join(' ') || '';
+      const string = `${listItem.title} ${tagsStrings}`;
+      return { listItemID: listItem.listItemID, string: string };
+    });
+    console.log(listItemStrings);
+    const filtered = listItemStrings.filter((item) =>
+      item.string.toLowerCase().includes(searchString.toLowerCase())
+    );
+    console.log(filtered);
+    setSearchResults(filtered);
+  }, [listItems, searchString]); // Dependency on selectedList
 
   const handleTitleChange = (e) => {
     const text = e.target.value;
@@ -139,9 +161,21 @@ function List({
               setOrder={setOrder}
               handleToggleOrder={handleToggleOrder}
               existingTags={existingTags}
+              searchString={searchString}
+              setSearchString={setSearchString}
             />
+            {/* <Search
+              searchString={searchString}
+              setSearchString={setSearchString}
+            /> */}
             {h
               .sortItems(listItems, sortOn, order, existingTags)
+              ?.filter((sortItem) =>
+                searchResults.some(
+                  (searchResult) =>
+                    searchResult.listItemID === sortItem.listItemID
+                )
+              )
               ?.map((listItem, index) => (
                 <Draggable
                   key={`draggable-${listItem.listItemID}`}
@@ -165,6 +199,7 @@ function List({
                         key={`list-item-${listItem.listItemID}`}
                         provided={provided}
                         handleEntities={handleEntities}
+                        searching={searchString.length > 0}
                       />
                     </div>
                   )}

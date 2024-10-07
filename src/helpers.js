@@ -99,12 +99,12 @@ export const sortItems = (items, sortKey, order, existingTags) => {
       }
       return 0;
     });
-
+    // console.log(sorted);
     return sorted;
   }
 
   if (sortKey === 'startDate') {
-    return items.sort((a, b) => {
+    const sorted = items.sort((a, b) => {
       const hasADates = Array.isArray(a.dates);
       const hasBDates = Array.isArray(b.dates);
 
@@ -129,6 +129,8 @@ export const sortItems = (items, sortKey, order, existingTags) => {
       // Case 4: Neither has dates keys (they stay in original order)
       return 0;
     });
+    // console.log(sorted);
+    return sorted;
   }
 
   if (sortKey === 'tags') {
@@ -181,7 +183,7 @@ export const sortItems = (items, sortKey, order, existingTags) => {
         .filter((id) => id !== null); // Filter out null values (missing tags)
       return { ...e, tags: tagsAsIDs };
     });
-
+    // console.log(backToTagIDs)
     return backToTagIDs;
   }
 };

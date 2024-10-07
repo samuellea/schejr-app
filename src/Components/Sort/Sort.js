@@ -7,6 +7,7 @@ import TickIcon from '../Icons/TickIcon';
 import ArrowIcon from '../Icons/ArrowIcon';
 import CloseIcon from '../Icons/CloseIcon';
 import * as u from '../../utils';
+import SearchIcon from '../Icons/SearchIcon';
 
 function Sort({
   selectedList,
@@ -17,6 +18,8 @@ function Sort({
   setOrder,
   handleToggleOrder,
   existingTags,
+  searchString,
+  setSearchString,
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -86,6 +89,11 @@ function Sort({
     setShowDropdown(false);
   };
 
+  const handleSearchChange = (e) => {
+    const text = e.target.value;
+    setSearchString(text);
+  };
+
   return (
     <div className={styles.container}>
       <div className={sortWindowCombined} onClick={toggleDropdown}>
@@ -153,6 +161,26 @@ function Sort({
               <TickIcon width="14px" />
             </span>
           ) : null}
+        </div>
+      </div>
+
+      <div className={styles.searchContainer}>
+        <div
+          className={styles.searchInputWrapper}
+          style={{
+            borderColor: searchString.length > 0 ? 'white' : '#8b989896',
+          }}
+        >
+          <SearchIcon width="16px" fill="white" />
+          <input
+            className={styles.searchInput}
+            type="text"
+            id="listSearch"
+            placeholder="Search"
+            value={searchString}
+            onChange={handleSearchChange}
+            // onKeyDown={(event) => handleKeyDown(event)}
+          />
         </div>
       </div>
     </div>

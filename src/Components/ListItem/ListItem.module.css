@@ -213,6 +213,24 @@
   pointer-events: auto;
 }
 
+.disabledDragHandle {
+  width: 10px;
+  height: 80%;
+  /* border: 1px solid white; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  pointer-events: none;
+  padding: 0px 5px;
+  position: relative;
+  border-radius: 4px;
+}
+
 .first {
   flex-grow: 0; /* Do not grow beyond its content width */
   flex-shrink: 1; /* Allow to shrink based on content */

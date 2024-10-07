@@ -16,6 +16,7 @@ function ListItem({
   deleteListItem,
   updateListItem,
   handleEntities,
+  searching,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -83,9 +84,13 @@ function ListItem({
 
   return (
     <div className={styles.container}>
-      <div className={styles.listItemDragHandle}>
-        <DragIcon fill="#9b9b9b" position="absolute" width="100%" />
-      </div>
+      {!searching ? (
+        <div className={styles.listItemDragHandle}>
+          <DragIcon fill="#9b9b9b" position="absolute" width="100%" />
+        </div>
+      ) : (
+        <div className={styles.disabledDragHandle}></div>
+      )}
 
       <button
         className={styles.editListItemButton}
