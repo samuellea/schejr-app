@@ -181,6 +181,15 @@ function Sort({
             onChange={handleSearchChange}
             // onKeyDown={(event) => handleKeyDown(event)}
           />
+          {searchString.length > 0 ? (
+            <div
+              className={styles.clearSearchContainer}
+              role="button"
+              onClick={() => setSearchString('')}
+            >
+              <CloseIcon fill="#191919" width="12px" margin="0px 0px 0px 0px" />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
