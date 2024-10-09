@@ -178,7 +178,6 @@ function MainArea({
         setPlannerRange={setPlannerRange}
         // setModalBackground={setModalBackground}
         showSidebar={showSidebar}
-        lists={lists}
       />
       {/* ) : null} */}
     </div>

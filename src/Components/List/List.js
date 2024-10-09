@@ -201,7 +201,6 @@ function List({
                         provided={provided}
                         handleEntities={handleEntities}
                         searching={searchString.length > 0}
-                        lists={lists}
                       />
                     </div>
                   )}
