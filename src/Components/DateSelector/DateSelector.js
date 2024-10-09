@@ -46,6 +46,7 @@ function DateSelector({
       const newEventObj = {
         createdBy: userUID,
         listItemID: listItem.listItemID,
+        listID: listItem.parentID,
         startDateTime: isoDateUTC, // ISO 8601 UTC format
         timeSet: timeSet,
         title: listItem.title,

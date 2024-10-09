@@ -7,7 +7,7 @@
   position: absolute; /* Allow overlaying */
   top: 0; /* Adjust as needed */
   left: 0%; /* Adjust as needed */
-  z-index: 10; /* Ensure this sibling is on top */
+  z-index: 4; /* Ensure this sibling is on top */
   display: flex;
   flex-direction: column;
   align-items: center;

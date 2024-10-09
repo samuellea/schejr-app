@@ -17,6 +17,7 @@ function ListItem({
   updateListItem,
   handleEntities,
   searching,
+  lists,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -151,6 +152,16 @@ function ListItem({
         >
           <TrashIcon fill="#9b9b9b" width="16px" />
         </button>
+        <div
+          style={{
+            height: '10px',
+            width: '10px',
+            borderRadius: '100px',
+            backgroundColor: `${
+              lists.find((e) => e.listID === listItem.parentID).color
+            }`,
+          }}
+        />
       </div>
       {showDeleteModal ? (
         <ConfirmDeleteModal

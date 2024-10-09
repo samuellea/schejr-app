@@ -29,6 +29,7 @@ function MainArea({
   setModalBackground,
   // handleOtherEventFields,
   toggleSidebar,
+  lists,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -129,6 +130,7 @@ function MainArea({
           togglePlanner={togglePlanner}
           // handleEvents={handleEvents}
           handleEntities={handleEntities}
+          lists={lists}
         />
       ) : (
         <div className={styles.emptyMessage}>
@@ -176,6 +178,7 @@ function MainArea({
         setPlannerRange={setPlannerRange}
         // setModalBackground={setModalBackground}
         showSidebar={showSidebar}
+        lists={lists}
       />
       {/* ) : null} */}
     </div>

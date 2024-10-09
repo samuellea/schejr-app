@@ -33,6 +33,7 @@ function Planner({
   setPlannerRange,
   setModalBackground,
   showSidebar,
+  lists,
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
@@ -194,6 +195,7 @@ function Planner({
                           scrollRef={scrollRef}
                           // setModalBackground={setModalBackground}
                           isLast={i === dates.length - 1}
+                          lists={lists}
                         />
                       ) : (
                         <PlaceholderDay key={`placeholderDay-${date.date}`} />

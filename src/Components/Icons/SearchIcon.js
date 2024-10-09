@@ -6,7 +6,7 @@ function SearchIcon({ width, fill = 'white' }) {
       <svg
         role="graphics-symbol"
         viewBox="0 0 20 20"
-        class="newSidebarSearch"
+        className="newSidebarSearch"
         style={{
           width: width,
           height: width,

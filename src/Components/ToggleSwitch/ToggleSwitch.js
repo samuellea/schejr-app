@@ -2,15 +2,15 @@ import React from 'react';
 import styles from './ToggleSwitch.module.css';
 import ChevronIcon from '../Icons/ChevronIcon';
 
-function ToggleSwitch({ syncWithGCal, handleSetSyncWithGCal }) {
+function ToggleSwitch({ toggleValue, setToggleValue }) {
   const sliderCombined = `${styles.slider} ${styles.round}`;
   return (
     <div className={styles.container}>
       <label className={styles.switch}>
         <input
           type="checkbox"
-          checked={syncWithGCal}
-          onChange={handleSetSyncWithGCal}
+          checked={toggleValue}
+          onChange={setToggleValue}
         />
         <span className={sliderCombined}></span>
       </label>

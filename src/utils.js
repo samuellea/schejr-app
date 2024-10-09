@@ -475,7 +475,30 @@ export const fetchUserEventsByRange = async (userUID, startDate, endDate) => {
   }
 };
 
+export const fetchAllUserEvents = async (userUID) => {
+  const eventsRef = ref(database, `${userUID}/events`);
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const events = snapshot.val(); // This will be an object containing all events
+      const plusExplicitIDs = Object.entries(events).map((e) => ({
+        eventID: e[0],
+        ...e[1],
+      }));
+      return plusExplicitIDs;
+    } else {
+      console.log('No data available');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+};
+
 export const patchEventByID = async (userUID, eventID, eventData) => {
+  console.log('');
+  console.log(eventID);
+  console.log(eventData);
   try {
     const eventRef = ref(database, `${userUID}/events/${eventID}`);
     await update(eventRef, eventData);
@@ -742,6 +765,57 @@ export const patchSyncStateByUserID = async (userUID, state) => {
 };
 
 /* ------------------------------------------------------------------------------------------------------------------- */
+
+/*
+- add all events to GCal (extendedProperties > private > createdBy === 'schejr-app') (+ also add ex>private>eventID === event.eventID on each GCal event)
+  addAllEventsToGcal
+- delete all events to GCal (extendedProperties > private > createdBy === 'schejr-app')
+  removeAllEventsFromGCal
+- fetch all events from GCal (extendedProperties > private > createdBy === 'schejr-app')
+  fetchAllEventsFromGCal
+- update multiple AND single events on GCal (pass in array of eventIDs + their corresp. updated data - this can handle just one, too)
+  updateEventsOnGCal
+- create single event on GCal
+  addEventToGCal
+- delete singl event from GCal
+  removeEventFromGCal
+*/
+
+export const addAllEventsToGCal = async (userUID) => {
+  // not all a user's events will be in app state - fetch them first
+  const userEvents = await fetchAllUserEvents(userUID);
+  console.log(userEvents);
+  const userEventsFormatted = userEvents.map((event) => {
+    return {
+      summary: event.title,
+      start: {
+        dateTime: event.startDateTime, // Use dateTime for specific time
+      },
+      extendedProperties: {
+        private: {
+          createdBy: 'schejr-app-sam-lea', // Unique identifier to mark the event as created by your app
+          listItemID: event.listItemID,
+          eventID: event.eventID,
+        },
+      },
+    };
+  });
+  console.log(userEventsFormatted);
+};
+
+export const removeAllEventsFromGCal = async () => {};
+
+export const addEventToGCal = async () => {};
+
+export const updateEventsOnGCal = async () => {}; // 1 or more
+
+export const removeEventFromGCal = async () => {};
+
+export const removeGCalEventsByListItemID = async () => {};
+
+export const removeGCalEventsByListID = async () => {};
+
+/* -------------------------------------------------------------------- */
 
 export const addAListItemToGCal = async (listItem) => {
   const event = {

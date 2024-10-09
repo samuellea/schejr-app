@@ -19,6 +19,8 @@ function Sidebar({
   // handleDeleteList,
   handleLogout,
   deleteListAndRelated,
+  specialUpdateEvents,
+  specialUpdateListItems,
 }) {
   const [listDeleteBackground, setListDeleteBackground] = useState(false);
 
@@ -105,6 +107,8 @@ function Sidebar({
           Log out
         </div>
       </div> */}
+      <button onClick={specialUpdateEvents}>Events</button>
+      <button onClick={specialUpdateListItems}>ListItems</button>
     </div>
   );
 }

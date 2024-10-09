@@ -25,6 +25,7 @@ const Day = forwardRef(
       scrollRef,
       setModalBackground,
       isLast,
+      lists,
     },
     ref
   ) => {
@@ -110,6 +111,7 @@ const Day = forwardRef(
                     handleEntities={handleEntities}
                     // scrollPosition={scrollPosition}
                     scrollRef={scrollRef}
+                    lists={lists}
                   />
                 );
               })}

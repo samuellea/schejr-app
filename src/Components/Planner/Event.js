@@ -21,6 +21,7 @@ function Event({
   handleEntities,
   // scrollPosition,
   scrollRef,
+  lists,
 }) {
   const { timeSet, title, startDateTime } = event;
 
@@ -106,6 +107,16 @@ function Event({
           </div>
           <div className={styles.eventDetailsContainer}>
             <div className={styles.titleAndEditContainer}>
+              <div
+                style={{
+                  height: '10px',
+                  width: '10px',
+                  borderRadius: '100px',
+                  backgroundColor: `${
+                    lists.find((e) => e.listID === event.listID).color
+                  }`,
+                }}
+              />
               <div className={styles.eventTitle}>{title}</div>
               <div
                 className={styles.eventMoreButton}

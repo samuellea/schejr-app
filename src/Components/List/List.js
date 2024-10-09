@@ -23,6 +23,7 @@ function List({
   togglePlanner,
   // handleEvents,
   handleEntities,
+  lists,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
@@ -200,6 +201,7 @@ function List({
                         provided={provided}
                         handleEntities={handleEntities}
                         searching={searchString.length > 0}
+                        lists={lists}
                       />
                     </div>
                   )}

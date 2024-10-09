@@ -160,22 +160,22 @@ function ListItemEditPane({
         />
       </div>
 
-      {/* <div className={styles.fieldWrapper}>
+      <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
         <div className={styles.wrapperLabel}>
           <SyncIcon fill="#7f7f7f" />
           <p className={styles.fieldLabelP}>Sync</p>
         </div>
         <ToggleSwitch
-          syncWithGCal={syncWithGCal}
-          handleSetSyncWithGCal={handleSetSyncWithGCal}
+          toggleValue={syncWithGCal}
+          setToggleValue={handleSetSyncWithGCal}
         />
         <span className={styles.syncExplanation}>
           {syncWithGCal
             ? 'Synchronizing all your dates with Google Calendar'
             : 'Turn on to synchronize all your dates with Google Calendar'}
         </span>
-      </div> */}
+      </div>
 
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
