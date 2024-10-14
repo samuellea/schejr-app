@@ -841,15 +841,23 @@ function Home() {
       console.log(syncWithGCal);
 
       if (syncWithGCal) {
-        const addAllEvents = async () => {
+        // const addAllEvents = async () => {
+        //   try {
+        //     await u.addAllEventsToGCal(userUID);
+        //   } catch {
+        //     // Handle error adding all events
+        //   }
+        // };
+        // addAllEvents();
+      } else {
+        const deleteAllEvents = async () => {
           try {
-            const events = await u.addAllEventsToGCal(userUID);
+            await u.removeAllEventsFromGCal();
           } catch {
-            // Handle error fetching lists
+            // Handle error deleting all events
           }
         };
-        addAllEvents();
-      } else {
+        deleteAllEvents();
       }
     }
     // Update the ref to the current slice value after the logic runs

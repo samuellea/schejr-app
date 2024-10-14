@@ -764,7 +764,7 @@ export const patchSyncStateByUserID = async (userUID, state) => {
   }
 };
 
-/* ------------------------------------------------------------------------------------------------------------------- */
+/* NEW NEW NEW NEW NEW NEW NEW NEW------------------------------------------------------------------------------------------------------------------- */
 
 /*
 - add all events to GCal (extendedProperties > private > createdBy === 'schejr-app') (+ also add ex>private>eventID === event.eventID on each GCal event)
@@ -781,41 +781,98 @@ export const patchSyncStateByUserID = async (userUID, state) => {
   removeEventFromGCal
 */
 
-export const addAllEventsToGCal = async (userUID) => {
-  // not all a user's events will be in app state - fetch them first
-  const userEvents = await fetchAllUserEvents(userUID);
-  console.log(userEvents);
-  const userEventsFormatted = userEvents.map((event) => {
-    return {
-      summary: event.title,
-      start: {
-        dateTime: event.startDateTime, // Use dateTime for specific time
-      },
-      extendedProperties: {
-        private: {
-          createdBy: 'schejr-app-sam-lea', // Unique identifier to mark the event as created by your app
-          listItemID: event.listItemID,
-          eventID: event.eventID,
-        },
-      },
-    };
-  });
-  console.log(userEventsFormatted);
+export const addEventToGCal = async (event) => {
+  try {
+    await gapi.client.calendar.events.insert({
+      calendarId: 'primary',
+      resource: event,
+    });
+  } catch (error) {
+    console.error('Error creating GCal event:', error);
+  }
 };
 
-export const removeAllEventsFromGCal = async () => {};
+export const addAllEventsToGCal = async (userUID) => {
+  // not all a user's events will be in app state - fetch them first
+  try {
+    const userEvents = await fetchAllUserEvents(userUID);
+    console.log(userEvents);
+    const userEventsFormatted = userEvents.map((event) => {
+      const startTime = new Date(event.startDateTime);
+      const endTime = new Date(startTime);
+      endTime.setMinutes(startTime.getMinutes() + 5); // Set to 5 minutes after startTime
+      return {
+        summary: event.title,
+        start: {
+          dateTime: event.startDateTime, // Use dateTime for specific time
+        },
+        end: {
+          dateTime: endTime.toISOString(), // End time 1 minute after start
+        },
+        extendedProperties: {
+          private: {
+            createdBy: 'schejr-app-sam-lea', // Unique identifier to mark the event as created by your app
+            listItemID: event.listItemID,
+            eventID: event.eventID,
+            listID: event.listID,
+          },
+        },
+      };
+    });
+    console.log(userEventsFormatted);
+    // now... logic for adding one and/or multiple events to GCal?
+    const updatePromises = userEventsFormatted.map((event) => {
+      return addEventToGCal(event);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export const addEventToGCal = async () => {};
+export const removeEventFromGCal = async (event) => {
+  try {
+    await gapi.client.calendar.events.delete({
+      calendarId: 'primary',
+      eventId: event.id,
+    });
+  } catch (error) {
+    console.error(`Failed to delete GCal event ${event.summary}:`, error);
+  }
+};
+
+export const removeAllEventsFromGCal = async () => {
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      privateExtendedProperty: 'createdBy=schejr-app-sam-lea', // Filtering by your custom identifier
+      showDeleted: false,
+      singleEvents: true,
+      maxResults: 2500, // Adjust if you expect more than 2500 events
+    });
+
+    const allEventsMadeByUser = response.result.items;
+
+    if (!allEventsMadeByUser || allEventsMadeByUser.length === 0) {
+      return;
+    }
+
+    const updatePromises = allEventsMadeByUser.map((event) => {
+      return removeEventFromGCal(event);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.log('error removing all list items from GCal');
+  }
+};
 
 export const updateEventsOnGCal = async () => {}; // 1 or more
-
-export const removeEventFromGCal = async () => {};
 
 export const removeGCalEventsByListItemID = async () => {};
 
 export const removeGCalEventsByListID = async () => {};
 
-/* -------------------------------------------------------------------- */
+/* OLD OLD OLD OLD OLD OLD OLD OLD -------------------------------------------------------------------- */
 
 export const addAListItemToGCal = async (listItem) => {
   const event = {
@@ -986,7 +1043,7 @@ export const removeAllListItemsFromGCal = async () => {
   try {
     const response = await gapi.client.calendar.events.list({
       calendarId: 'primary',
-      privateExtendedProperty: 'createdBy=schejr-app', // Filtering by your custom identifier
+      privateExtendedProperty: 'createdBy=schejr-app-sam-lea', // Filtering by your custom identifier
       showDeleted: false,
       singleEvents: true,
       maxResults: 2500, // Adjust if you expect more than 2500 events

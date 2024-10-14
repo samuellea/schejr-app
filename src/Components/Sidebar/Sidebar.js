@@ -107,8 +107,8 @@ function Sidebar({
           Log out
         </div>
       </div> */}
-      <button onClick={specialUpdateEvents}>Events</button>
-      <button onClick={specialUpdateListItems}>ListItems</button>
+      {/* <button onClick={specialUpdateEvents}>Events</button> */}
+      {/* <button onClick={specialUpdateListItems}>ListItems</button> */}
     </div>
   );
 }
