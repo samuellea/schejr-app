@@ -7,6 +7,7 @@ import { Droppable } from '@hello-pangea/dnd'; // Updated import
 import EditIcon from '../Icons/EditIcon';
 import Planner from '../Planner/Planner';
 import ChevronIcon from '../Icons/ChevronIcon';
+import EventDiscrepancies from '../EventDiscrepancies/EventDiscrepancies';
 
 function MainArea({
   userUID,
@@ -30,6 +31,9 @@ function MainArea({
   // handleOtherEventFields,
   toggleSidebar,
   lists,
+  discrepanciesChecked,
+  eventDiscrepancies,
+  handleSubmitFixes,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -117,6 +121,13 @@ function MainArea({
         </div>
       ) : null} */}
 
+      {discrepanciesChecked && eventDiscrepancies ? (
+        <EventDiscrepancies
+          evDiscs={eventDiscrepancies}
+          handleSubmitFixes={handleSubmitFixes}
+        />
+      ) : null}
+
       {selectedList && listAndItemsLoaded ? (
         <List
           selectedList={selectedList}
@@ -132,7 +143,7 @@ function MainArea({
           handleEntities={handleEntities}
           lists={lists}
         />
-      ) : (
+      ) : !eventDiscrepancies ? (
         <div className={styles.emptyMessage}>
           <p className={styles.emptyMessageSpan}>
             Select a list or create one with
@@ -141,7 +152,7 @@ function MainArea({
             </span>
           </p>
         </div>
-      )}
+      ) : null}
       {listItemEditID &&
       listItems.find((e) => e.listItemID === listItemEditID) ? (
         <ListItemEditPane

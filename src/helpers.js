@@ -8,8 +8,11 @@ import {
   getISOWeek,
   addWeeks,
   subWeeks,
+  toDate,
 } from 'date-fns';
 import { differenceWith, isEqual, find } from 'lodash-es';
+import { toZonedTime } from 'date-fns-tz';
+
 export const sortByProperty = (arr, property, ascending = true) => {
   return arr.slice().sort((a, b) => {
     if (a[property] < b[property]) {
@@ -486,6 +489,119 @@ export const getEventsForDate = (targetDateStr, events) => {
     // Check if the event's local date matches the target date
     return eventDateLocalStr === targetDateStr;
   });
+};
+
+export const formatGCalEventAsDBEvent = (userUID, gcalEvent) => {
+  const { eventID, listID, listItemID } = gcalEvent.extendedProperties.private;
+  let startDateTime;
+  // if startDateTime hasn't had a TIME SPECIFIED, on GCal it will just be YYYY-MM-DD: add midnight UTC time to startDateTime string
+  if (gcalEvent.start.date)
+    startDateTime = `${gcalEvent.start.date}T00:00:00.000Z`; // ie. NOT gcalEvent.start.dateTime (which is a specified TIME as well as date)
+  if (gcalEvent.start.dateTime) {
+    // GCal events have time offset at end, rather than being represented in UTC Z time - convert these.
+    const dateObj = new Date(gcalEvent.start.dateTime);
+    // Convert it to UTC (Zulu time)
+    const utcDateTime = dateObj.toISOString();
+    startDateTime = utcDateTime;
+    // startDateTime = gcalEvent.start.dateTime;
+  }
+  return {
+    gcalEventID: gcalEvent.id, // *
+    createdBy: userUID,
+    eventID: eventID,
+    listID: listID,
+    listItemID: listItemID,
+    startDateTime: startDateTime, // can change
+    timeSet: gcalEvent.start.date ? false : true, // can change
+    title: gcalEvent.summary, // can change
+  };
+};
+
+export const composeDiscrepancies = (allDBEvents, allGCalEventsFormatted) => {
+  console.log('allDBEvents:');
+  console.log(allDBEvents);
+  console.log('allGCalEventsFormatted:');
+  console.log(allGCalEventsFormatted);
+  console.log('-----------------------');
+  const discrepancies = {
+    bothButDiff: [],
+    schejrNotGCal: [],
+    gcalNotSchejr: [],
+  };
+  /* 1. Iterate across allDBEvents
+	- find obj with same .eventID in allGCalEventsFormatted = 'correspGCalEvent'
+		 - if none found, add current DBEvent to .schejrNotGCal + .keep key = null
+		 - if corresp GCal event found; for each key on current DBEvent, does the same key in correspGCalEvent have a different value?
+			 if NOT, and no obj in .bothButDiff with same .eventID, create a new obj, add current DBEvent as .schejr and correspGCalEvent as .gcal, 
+       add this field to .changedFields []. Then push this new obj to .bothButDiff
+  */
+  allDBEvents.forEach((dbEvent) => {
+    const correspGCalEvent = allGCalEventsFormatted.find(
+      (gcalEvent) => gcalEvent.eventID === dbEvent.eventID
+    );
+    if (correspGCalEvent) {
+      Object.entries(dbEvent).forEach(([key, value]) => {
+        if (correspGCalEvent[key] !== dbEvent[key]) {
+          const diffObjIndex = discrepancies.bothButDiff.findIndex(
+            (e) => e.eventID === dbEvent.eventID
+          );
+          if (diffObjIndex !== -1) {
+            discrepancies.bothButDiff[diffObjIndex].changedFields.push(key);
+          } else {
+            const newDiffObj = {
+              eventID: dbEvent.eventID,
+              schejr: dbEvent,
+              gcal: correspGCalEvent,
+              changedFields: [key],
+              keep: null,
+            };
+            discrepancies.bothButDiff.push(newDiffObj);
+          }
+        }
+      });
+    } else {
+      discrepancies.schejrNotGCal.push({ ...dbEvent, keep: null });
+    }
+  });
+
+  /* Iterate across allGCalEventsFormatted
+     - check with current GCalEvent - is there an obj in allDBEvents with same .eventID? if NOT, add this GCalEvent to .gcalNotSchejr + .keep key = null
+  */
+  allGCalEventsFormatted.forEach((gcalEvent) => {
+    const correspDBEvent = allDBEvents.find(
+      (dbEvent) => dbEvent.eventID === gcalEvent.eventID
+    );
+    if (!correspDBEvent)
+      discrepancies.gcalNotSchejr.push({ ...gcalEvent, keep: null });
+  });
+
+  const discrepanciesSorted = {
+    bothButDiff: discrepancies.bothButDiff.sort(
+      (a, b) =>
+        new Date(a.schejr.startDateTime) - new Date(b.schejr.startDateTime)
+    ),
+    gcalNotSchejr: discrepancies.gcalNotSchejr.sort(
+      (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+    ),
+    schejrNotGCal: discrepancies.schejrNotGCal.sort(
+      (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+    ),
+  };
+
+  return discrepanciesSorted;
+};
+
+export const formatDateTimeDiscrepancyCard = (dateTime, timeSet) => {
+  if (timeSet) {
+    // Get the user's local timezone
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Convert the UTC date string to the user's local timezone
+    const zonedDate = toZonedTime(dateTime, userTimeZone);
+    // Format the date in the desired format
+    return format(zonedDate, "EEE, MMM do yyyy '@' h:mm a");
+  } else {
+    return dateTime.substring(0, dateTime.indexOf('T'));
+  }
 };
 
 export const times = [

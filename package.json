@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.2.0",
     "firebase": "^10.13.0",
     "gapi-script": "^1.2.0",
     "lodash-es": "^4.17.21",
@@ -29,12 +30,6 @@
     "test:watch": "nodemon --exec 'npm test'",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -47,15 +42,23 @@
       "last 1 safari version"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@babel/register": "^7.24.6",
+    "@eslint/js": "^9.12.0",
     "chai": "^5.1.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.35.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "globals": "^15.11.0",
     "jsdom": "^25.0.0",
     "jsdom-global": "^3.0.2",
     "mocha": "^10.7.3",

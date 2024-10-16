@@ -28,6 +28,23 @@ function Home() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showGCalAddModal, setShowGCalAddModal] = useState(false);
   const [showGCalDeleteModal, setShowGCalDeleteModal] = useState(false);
+  const [eventDiscrepancies, setEventDiscrepancies] = useState(null);
+  const [discrepanciesChecked, setDiscrepanciesChecked] = useState(false);
+  const [discrDisable, setDiscrDisable] = useState(true);
+  const [fixes, setFixes] = useState(null);
+  const [showFixModal, setShowFixModal] = useState(false);
+
+  useEffect(() => {
+    console.log(`discrepanciesChecked: ${discrepanciesChecked}`);
+    console.log(`eventDiscrepancies: ${eventDiscrepancies}`);
+
+    if (discrepanciesChecked && eventDiscrepancies === null) {
+      setDiscrDisable(false);
+    }
+    if (discrepanciesChecked && eventDiscrepancies) {
+      setDiscrDisable(true);
+    }
+  }, [discrepanciesChecked, eventDiscrepancies]);
 
   const navigate = useNavigate();
   const userUID = localStorage.getItem('firebaseID');
@@ -667,6 +684,9 @@ function Home() {
     }
   };
 
+  const [gapiInit, setGapiInit] = useState(false);
+  const [syncFetched, setSyncFetched] = useState(false);
+
   // set Google Calendar API key in gapi
   useEffect(() => {
     const accessToken = localStorage.getItem('googleAccessToken');
@@ -686,6 +706,7 @@ function Home() {
           .then((res) => {
             // Set the access token for gapi requests
             gapi.client.setToken({ access_token: accessToken });
+            setGapiInit(true);
             //
           })
           .catch((error) => {
@@ -694,6 +715,29 @@ function Home() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (gapiInit && syncFetched) {
+      // if user's syncState is true on DB when app loads AND gapi has been init'd with access_token, run event discr. check
+      if (syncWithGCal) {
+        const eventDiscrepancyCheck = async () => {
+          try {
+            const eventDiscrepancies = await u.performEventDiscrepancyCheck(
+              userUID
+            );
+            console.log(eventDiscrepancies);
+            setEventDiscrepancies(eventDiscrepancies);
+            setDiscrepanciesChecked(true); // regardless of whether any discrepancies found
+          } catch (error) {
+            // Handle error fetching GCal events
+          }
+        };
+        eventDiscrepancyCheck();
+      } else {
+        setDiscrepanciesChecked(true);
+      }
+    }
+  }, [gapiInit, syncFetched]);
 
   useEffect(() => {
     const expires = localStorage.getItem('expires');
@@ -731,6 +775,7 @@ function Home() {
         } else {
           const userSyncState = Object.values(userSyncStateObj)[0].state;
           setSyncWithGCal(userSyncState);
+          setSyncFetched(true);
         }
       } catch (error) {
         console.error(error);
@@ -743,12 +788,11 @@ function Home() {
   useEffect(() => {
     // const userUID = localStorage.getItem('firebaseID');
     console.log(userUID);
+    console.log(syncWithGCal);
     //
     const fetchLists = async () => {
       try {
-        console.log('?');
         const allUserLists = await u.fetchAllUserLists(userUID);
-        console.log(allUserLists);
         const allUserListsWithIDs = Object.entries(allUserLists).map((e) => ({
           listID: e[0],
           ...e[1],
@@ -760,9 +804,6 @@ function Home() {
     };
     fetchLists();
   }, []);
-
-  const prevSliceRef = useRef();
-  const timeoutIdRef = useRef(null);
 
   const handleLogout = () => {
     // Perform your logout logic here
@@ -832,38 +873,6 @@ function Home() {
       u.patchSyncStateByUserID(userUID, syncWithGCal);
   */
 
-  useEffect(() => {
-    // Check if the previous slice is different from the current slice
-    if (
-      prevSliceRef.current !== undefined &&
-      prevSliceRef.current !== syncWithGCal
-    ) {
-      console.log(syncWithGCal);
-
-      if (syncWithGCal) {
-        // const addAllEvents = async () => {
-        //   try {
-        //     await u.addAllEventsToGCal(userUID);
-        //   } catch {
-        //     // Handle error adding all events
-        //   }
-        // };
-        // addAllEvents();
-      } else {
-        const deleteAllEvents = async () => {
-          try {
-            await u.removeAllEventsFromGCal();
-          } catch {
-            // Handle error deleting all events
-          }
-        };
-        deleteAllEvents();
-      }
-    }
-    // Update the ref to the current slice value after the logic runs
-    prevSliceRef.current = syncWithGCal;
-  }, [syncWithGCal]);
-
   const handleSetSyncWithGCal = () => {
     console.log(syncWithGCal);
     if (!syncWithGCal) {
@@ -876,11 +885,29 @@ function Home() {
   const handleAddAllEventsToGcal = () => {
     setShowGCalAddModal(false);
     setSyncWithGCal(true);
+    const patchSyncAndAddAllEvents = async () => {
+      try {
+        await u.patchSyncStateByUserID(userUID, true);
+        await u.addAllEventsToGCal(userUID);
+      } catch {
+        // Handle error adding all events
+      }
+    };
+    patchSyncAndAddAllEvents();
   };
 
   const handleDeleteAllEventsFromGcal = () => {
     setShowGCalDeleteModal(false);
     setSyncWithGCal(false);
+    const patchSyncAndDeleteAllEvents = async () => {
+      try {
+        await u.patchSyncStateByUserID(userUID, false);
+        await u.removeAllEventsFromGCal();
+      } catch {
+        // Handle error deleting all events
+      }
+    };
+    patchSyncAndDeleteAllEvents();
   };
 
   const handleCancelGCalAdd = () => {
@@ -914,82 +941,40 @@ function Home() {
     }
   };
 
-  const specialUpdateEvents = async () => {
-    console.log('specialUpdateEvents');
-    const events = await u.fetchAllUserEvents(userUID);
-    console.log(events);
-    const lists = await u.fetchAllUserLists(userUID);
-    const listsPlusExplicit = Object.entries(lists).map((arr) => ({
-      listID: arr[0],
-      ...arr[1],
-    }));
-    console.log(listsPlusExplicit);
-    const getAllListItems = async (explicitLists) => {
-      const listsPromises = explicitLists.map(async (list) => {
-        return await u.fetchListItemsByListID(userUID, list.listID);
-      });
-      return await Promise.all(listsPromises);
-    };
-    const listItems = await getAllListItems(listsPlusExplicit);
-    console.log(listItems.length);
-    console.log(listItems);
-    const listItemsFlat = listItems.flat();
-    console.log(listItemsFlat.length);
-    console.log(listItemsFlat);
-    const lookup = listItemsFlat.reduce((acc, listItem) => {
-      acc[listItem.listItemID] = listItem.parentID;
-      return acc;
-    }, {});
-    console.log(lookup);
-    const eventsPlusListIDs = events.map((event) => ({
-      ...event,
-      listID: lookup[event.listItemID],
-    }));
-    console.log(eventsPlusListIDs);
-    // fetchListItemsByListID
-    const patchAllEvents = async (explicitEvents) => {
-      const eventsPromises = explicitEvents.map(async (event) => {
-        const { eventID: unneededEventID, ...rest } = event;
-        const unexplicitEventData = { ...rest };
-        return await u.patchEventByID(
-          userUID,
-          unneededEventID,
-          unexplicitEventData
-        );
-      });
-      return await Promise.all(eventsPromises);
-    };
-    patchAllEvents(eventsPlusListIDs);
-  };
+  const handleSubmitFixes = (updatedEvDiscs) => {
+    console.log(updatedEvDiscs);
+    const { bothButDiff, schejrNotGCal, gcalNotSchejr } = updatedEvDiscs;
+    const gcalPatch = [];
+    const dbPatch = [];
+    const gcalAdd = [];
+    const dbAdd = [];
+    const gcalDelete = [];
+    const dbDelete = [];
 
-  const specialUpdateListItems = async () => {
-    console.log('specialUpdateListItems');
-    const lists = await u.fetchAllUserLists(userUID);
-    const listsPlusExplicit = Object.entries(lists).map((arr) => ({
-      listID: arr[0],
-      ...arr[1],
-    }));
-    // console.log(listsPlusExplicit);
-    const getAllListItems = async (explicitLists) => {
-      const listsPromises = explicitLists.map(async (list) => {
-        return await u.fetchListItemsByListID(userUID, list.listID);
-      });
-      return await Promise.all(listsPromises);
-    };
-    const listItems = await getAllListItems(listsPlusExplicit);
-    // console.log(listItems.length);
-    // console.log(listItems);
-    const listItemsFlat = listItems.flat();
-    console.log(listItemsFlat);
-    const listItemsUpdated = listItemsFlat.map((listItem) => {
-      if (!listItem.dates || listItem.dates?.length === 0) return listItem;
-      const updatedDates = listItem.dates.map((date) => ({
-        ...date,
-        listID: listItem.parentID,
-      }));
-      return { ...listItem, dates: updatedDates };
+    bothButDiff.forEach((e) => {
+      if (e.keep === 'schejr')
+        gcalPatch.push({ gcalEventID: e.gcal.gcalEventID, event: e.schejr });
+      if (e.keep === 'gcal') {
+        const { gcalEventID, ...rest } = e.gcal;
+        dbPatch.push({ ...rest });
+      }
     });
-    await u.patchMultipleListItems(userUID, listItemsUpdated);
+
+    schejrNotGCal.forEach((e) => {
+      if (e.keep === 'true') gcalAdd.push({ event: e });
+      if (e.keep === 'false') dbDelete.push({ event: e });
+    });
+
+    gcalNotSchejr.forEach((e) => {
+      if (e.keep === 'true') {
+        const { gcalEventID, keep, ...rest } = e;
+        dbAdd.push({ event: { ...rest } });
+      }
+      if (e.keep === 'false') gcalDelete.push({ event: e });
+    });
+
+    const fixes = { gcalPatch, dbPatch, gcalAdd, dbAdd, gcalDelete, dbDelete };
+    console.log(fixes);
   };
 
   return (
@@ -1001,6 +986,7 @@ function Home() {
           displayName={displayName}
           setShowLogoutModal={setShowLogoutModal}
           createList={createList}
+          discrDisable={discrDisable}
         />
         <div className={styles.container}>
           {showSidebar ? (
@@ -1017,8 +1003,7 @@ function Home() {
               // handleDeleteList={handleDeleteList}
               handleLogout={handleLogout}
               deleteListAndRelated={deleteListAndRelated}
-              specialUpdateEvents={specialUpdateEvents}
-              specialUpdateListItems={specialUpdateListItems}
+              discrDisable={discrDisable}
             />
           ) : null}
           <MainArea
@@ -1040,6 +1025,9 @@ function Home() {
             plannerRange={plannerRange}
             setPlannerRange={setPlannerRange}
             lists={lists}
+            discrepanciesChecked={discrepanciesChecked}
+            eventDiscrepancies={eventDiscrepancies}
+            handleSubmitFixes={handleSubmitFixes}
             // setModalBackground={setModalBackground}
             // handleEvents={handleEvents}
             // handleOtherEventFields={handleOtherEventFields}

@@ -14,7 +14,8 @@ import {
 } from 'firebase/database';
 import { gapi } from 'gapi-script';
 import * as h from './helpers';
-import { lastDayOfMonth } from 'date-fns';
+import { lastDayOfMonth, formatISO } from 'date-fns';
+import { toZonedTime, format } from 'date-fns-tz';
 import { constant } from 'lodash-es';
 
 export const createNewList = async (userUID, listData) => {
@@ -738,26 +739,28 @@ export const createSyncStateByUserID = async (userUID, state) => {
 
 export const patchSyncStateByUserID = async (userUID, state) => {
   try {
-    // Reference to your database node where the objects are stored
+    // Reference to the syncState node under the given userUID
     const userSyncStatesRef = ref(database, `${userUID}/syncState`);
-    // Query to find objects where the userUID key matches the provided userUID
-    const userQuery = query(
-      userSyncStatesRef,
-      orderByChild('userUID'),
-      equalTo(userUID)
-    );
-    const snapshot = await get(userQuery);
-    const patchData = { userUID: userUID, state: state };
+    // Get all the syncState nodes for this user
+    const snapshot = await get(userSyncStatesRef);
     if (snapshot.exists()) {
-      // Iterate over the matched objects and update them
-      snapshot.forEach((childSnapshot) => {
-        // Get the key of the matched object
-        const key = childSnapshot.key;
-        // Update the matched object using the key
-        const updateRef = ref(database, `${userUID}/syncState/${key}`); // Replace with your actual path
-        update(updateRef, patchData);
+      // Iterate over each child node under syncState
+      snapshot.forEach(async (childSnapshot) => {
+        const key = childSnapshot.key; // Get the key of the child node
+        const syncStateData = childSnapshot.val(); // Get the current data for this child
+        // Only update the child node if it has a state key
+        if (syncStateData && typeof syncStateData.state !== 'undefined') {
+          try {
+            const updateRef = ref(database, `${userUID}/syncState/${key}`);
+            const patchData = { state: state };
+            await update(updateRef, patchData); // Use await to update the node
+          } catch (error) {
+            console.error(`Error updating syncState for key ${key}:`, error);
+          }
+        }
       });
     } else {
+      console.log(`No syncState found for user ${userUID}`);
     }
   } catch (error) {
     console.error('Error updating userSyncState object for this user:', error);
@@ -781,6 +784,52 @@ export const patchSyncStateByUserID = async (userUID, state) => {
   removeEventFromGCal
 */
 
+export const convertDBToGCal = (event) => {
+  const gcalEventObj = {
+    summary: event.title,
+    extendedProperties: {
+      private: {
+        createdBy: 'schejr-app-sam-lea', // Unique identifier to mark the event as created by your app
+        listItemID: event.listItemID,
+        eventID: event.eventID,
+        listID: event.listID,
+      },
+    },
+  };
+  if (!event.timeSet) {
+    // if no specific time set, make an All Day Event on GCal
+    const startDateTimeObject = new Date(event.startDateTime);
+    const endDateTimeObject = new Date(event.startDateTime);
+    endDateTimeObject.setDate(endDateTimeObject.getDate() + 1); // Add one day to endDateTimeObject
+    const formattedStart = startDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    const formattedEnd = endDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    gcalEventObj.start = { date: formattedStart };
+    gcalEventObj.end = { date: formattedEnd };
+  } else {
+    // console.log(event.startDateTime);
+    // if a specific time has been set, ensure this time is converted from UTC to local before adding to GCal
+    const startDateTime = event.startDateTime;
+    const endDateTimeObject = new Date(event.startDateTime);
+    endDateTimeObject.setMinutes(endDateTimeObject.getMinutes() + 5); // Set to 5 minutes after startTime
+    // console.log(endDateTimeObject);
+    const endDateTime = endDateTimeObject.toISOString();
+    // console.log(startDateTime);
+    // console.log(endDateTime);
+
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // Automatically detects user's local time zone
+
+    gcalEventObj.start = {
+      dateTime: startDateTime,
+      timeZone,
+    };
+    gcalEventObj.end = { dateTime: endDateTime, timeZone };
+    // console.log(gcalEventObj);
+  }
+  return gcalEventObj;
+};
+
+export const convertGCalToDB = (gcalEvent) => {};
+
 export const addEventToGCal = async (event) => {
   try {
     await gapi.client.calendar.events.insert({
@@ -796,32 +845,12 @@ export const addAllEventsToGCal = async (userUID) => {
   // not all a user's events will be in app state - fetch them first
   try {
     const userEvents = await fetchAllUserEvents(userUID);
-    console.log(userEvents);
-    const userEventsFormatted = userEvents.map((event) => {
-      const startTime = new Date(event.startDateTime);
-      const endTime = new Date(startTime);
-      endTime.setMinutes(startTime.getMinutes() + 5); // Set to 5 minutes after startTime
-      return {
-        summary: event.title,
-        start: {
-          dateTime: event.startDateTime, // Use dateTime for specific time
-        },
-        end: {
-          dateTime: endTime.toISOString(), // End time 1 minute after start
-        },
-        extendedProperties: {
-          private: {
-            createdBy: 'schejr-app-sam-lea', // Unique identifier to mark the event as created by your app
-            listItemID: event.listItemID,
-            eventID: event.eventID,
-            listID: event.listID,
-          },
-        },
-      };
+    // console.log(userEvents);
+    const userEventsGCalFormat = userEvents.map((event) => {
+      return convertDBToGCal(event);
     });
-    console.log(userEventsFormatted);
-    // now... logic for adding one and/or multiple events to GCal?
-    const updatePromises = userEventsFormatted.map((event) => {
+    // console.log(userEventsGCalFormat);
+    const updatePromises = userEventsGCalFormat.map((event) => {
       return addEventToGCal(event);
     });
     return await Promise.all(updatePromises);
@@ -871,6 +900,72 @@ export const updateEventsOnGCal = async () => {}; // 1 or more
 export const removeGCalEventsByListItemID = async () => {};
 
 export const removeGCalEventsByListID = async () => {};
+
+export const fetchAllEventsFromGCal = async () => {
+  try {
+    // Make the API request to list events with specific private extended property
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary', // Primary calendar
+      privateExtendedProperty: `createdBy=schejr-app-sam-lea`, // Filter by private extended property
+      showDeleted: false, // Optional: Exclude deleted events
+      maxResults: 2500, // Max results per request (2500 is the maximum allowed)
+      // singleEvents: true, // Expand recurring events into instances if needed
+    });
+    // Get the list of events
+    const gcalEvents = response.result.items;
+    console.log(gcalEvents);
+    // Check if any events were found
+    if (gcalEvents && gcalEvents.length > 0) {
+      // Sort events by start time after fetching
+      gcalEvents.sort((a, b) => {
+        const startA = new Date(a.start.dateTime || a.start.date);
+        const startB = new Date(b.start.dateTime || b.start.date);
+        return startA - startB; // Sort ascending
+      });
+      return gcalEvents;
+    } else {
+      console.log(
+        'No events found with the specified private extended property.'
+      );
+    }
+  } catch (error) {
+    console.error('Error fetching events with extended property:', error);
+    return error;
+  }
+};
+
+export const performEventDiscrepancyCheck = async (userUID) => {
+  const allGCalEvents = await fetchAllEventsFromGCal();
+  const allDBEvents = await fetchAllUserEvents(userUID);
+  console.log(allGCalEvents);
+  console.log(allDBEvents);
+  const allGCalEventsFormatted = allGCalEvents.map((gcalEvent) =>
+    h.formatGCalEventAsDBEvent(userUID, gcalEvent)
+  );
+  /*
+    { bothButDiff: [
+        { eventID: 1, schejr: {}, gcal: {}, changedFields: [], keep: null // either 'schejr' or 'gcal' },
+        { eventID: 2, schejr: {}, gcal: {}, changedFields: [], keep: null },
+      ], // sort on .schejr.startDateTime asc
+      schejrNotGCal: [
+        {eventID: 3, ...event, keep: null // either 'true' or 'false' - if true, add to gcal, if false, delete from DB },
+      ], // sort on .startDateTime asc
+      gcalNotSchejr: [
+        {eventID: 4, ...event, keep: null // either 'true' or 'false' - if true, add to schejr, if false, delete from gcal },
+      ] // sort on .startDateTime asc
+    }
+*/
+  const discrepancies = h.composeDiscrepancies(
+    allDBEvents,
+    allGCalEventsFormatted
+  );
+  const { bothButDiff, schejrNotGCal, gcalNotSchejr } = discrepancies;
+  if (!bothButDiff.length && !schejrNotGCal.length && !gcalNotSchejr.length) {
+    return null;
+  } else {
+    return discrepancies;
+  }
+};
 
 /* OLD OLD OLD OLD OLD OLD OLD OLD -------------------------------------------------------------------- */
 

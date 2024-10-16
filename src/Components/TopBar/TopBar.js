@@ -11,6 +11,7 @@ function TopBar({
   displayName,
   setShowLogoutModal,
   createList,
+  discrDisable,
 }) {
   return (
     <div className={styles.container}>
@@ -38,6 +39,7 @@ function TopBar({
               className={styles.topbarButton}
               onClick={createList}
               id={styles.createList}
+              style={{ pointerEvents: discrDisable ? 'none' : null }}
             >
               <EditIcon fill="white" width="16px" />
             </div>

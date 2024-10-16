@@ -1,0 +1,89 @@
+.container {
+  height: 100%;
+  width: 100%;
+  border: 5px solid orange;
+  box-sizing: border-box;
+  color: white;
+}
+
+.section {
+  border: 3px solid blue;
+  box-sizing: border-box;
+}
+
+.header {
+  border: 2px solid red;
+  background-color: lightgray;
+  box-sizing: border-box;
+  color: black;
+}
+
+.comparer {
+  border: 4px solid rgb(151, 151, 151);
+  height: 100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.comparerDirectionOverlay {
+  /* border: 12px dotted orange; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  font-size: 42px;
+  pointer-events: none;
+}
+
+.side {
+  width: 50%;
+  height: 100%;
+  /* border: 2px solid yellow; */
+  box-sizing: border-box;
+  position: relative;
+  display: flex; /* Use flexbox for layout */
+  flex-direction: row; /* Arrange children in a row */
+  align-items: stretch; /* Stretch children to fill height */
+}
+
+.checkboxContainer {
+  width: auto; /* Let width be determined by content */
+  height: 100%; /* Full height of parent */
+  background-color: rgba(169, 169, 169, 0.176); /* Background color */
+  display: flex; /* Enable flexbox for alignment */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center align items */
+  justify-content: center; /* Center vertically */
+}
+
+.checkboxContainer input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.cardContainer {
+  border: 2px dotted gray;
+  height: 100%; /* Full height of parent */
+  flex-grow: 1; /* Take up remaining space */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.submitButton {
+  height: 30px;
+  width: 100px;
+  margin-top: 20px;
+}

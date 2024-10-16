@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Sidebar.module.css';
 import ListButton from '../ListButton/ListButton';
 import * as u from '../../utils';
@@ -19,18 +19,14 @@ function Sidebar({
   // handleDeleteList,
   handleLogout,
   deleteListAndRelated,
-  specialUpdateEvents,
-  specialUpdateListItems,
+  discrDisable,
 }) {
   const [listDeleteBackground, setListDeleteBackground] = useState(false);
-
-  // const combined = `${styles.container} ${
-  //   showSidebar ? styles.sidebarOpen : styles.sidebarClosed
-  // }`;
 
   return (
     <div
       className={styles.container}
+      style={{ pointerEvents: discrDisable ? 'none' : null }}
       // style={{ zIndex: listDeleteBackground ? 9 : 1 }}
     >
       {/* Sidebar Droppable */}
@@ -107,8 +103,6 @@ function Sidebar({
           Log out
         </div>
       </div> */}
-      {/* <button onClick={specialUpdateEvents}>Events</button> */}
-      {/* <button onClick={specialUpdateListItems}>ListItems</button> */}
     </div>
   );
 }
