@@ -1000,40 +1000,41 @@ function Home() {
 
     await Promise.all(gcalAddPromises);
 
-    // NO! You need to delete BOTH the event AND the ListItem .date!!
     const dbDeletePromises = dbDelete.map((e) => {
       return deleteEventAndDate(e);
     });
 
     await Promise.all(dbDeletePromises);
 
-    // const createEventAndDateThenUpdateGCalEvent = async ({
-    //   gcalEventID,
-    //   event,
-    // }) => {
-    //   try {
-    //     const { eventID, ...rest } = event;
-    //     const newEventData = { ...rest };
-    //     const newEventID = await createEventAndDate(newEventData);
-    //     const updatedGCalEvent = { ...rest, eventID: newEventID };
-    //     await u.updateEventOnGCal(updatedGCalEvent, gcalEventID);
-    //   } catch (error) {
-    //     console.log(error);
-    //     return error;
-    //   }
-    // };
+    const createEventAndDateThenUpdateGCalEvent = async ({
+      gcalEventID,
+      event,
+    }) => {
+      try {
+        const { eventID, ...rest } = event;
+        const newEventData = { ...rest };
+        const newEventID = await createEventAndDate(newEventData);
+        const updatedGCalEvent = { ...rest, eventID: newEventID };
+        await u.updateEventOnGCal(updatedGCalEvent, gcalEventID);
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    };
 
-    // // NO!! You need to create Event AND ListItem > .date! PLUS +++ additional step: with the DB id of the newly created /events obj, patch the existing GCal event ext prop .eventID!
-    // const dbAddPromises = dbAdd.map((e) => {
-    //   return createEventAndDateThenUpdateGCalEvent(e);
-    // });
+    // NO!! You need to create Event AND ListItem > .date! PLUS +++ additional step: with the DB id of the newly created /events obj, patch the existing GCal event ext prop .eventID!
+    const dbAddPromises = dbAdd.map((e) => {
+      return createEventAndDateThenUpdateGCalEvent(e);
+    });
 
-    // const gcalDeletePromises = gcalDelete.map((e) => {
-    //   const gcalEventIDKeyAsID = { ...e, id: e.gcalEventID };
-    //   return u.removeEventFromGCal(gcalEventIDKeyAsID);
-    // });
+    await Promise.all(dbAddPromises);
 
-    // await Promise.all(gcalDeletePromises);
+    const gcalDeletePromises = gcalDelete.map((e) => {
+      const gcalEventIDKeyAsID = { ...e, id: e.gcalEventID };
+      return u.removeEventFromGCal(gcalEventIDKeyAsID);
+    });
+
+    await Promise.all(gcalDeletePromises);
 
     /*---------------------------------------------*/
   };
