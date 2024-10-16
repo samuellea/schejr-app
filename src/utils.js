@@ -497,9 +497,6 @@ export const fetchAllUserEvents = async (userUID) => {
 };
 
 export const patchEventByID = async (userUID, eventID, eventData) => {
-  console.log('');
-  console.log(eventID);
-  console.log(eventData);
   try {
     const eventRef = ref(database, `${userUID}/events/${eventID}`);
     await update(eventRef, eventData);
@@ -803,8 +800,16 @@ export const convertDBToGCal = (event) => {
     endDateTimeObject.setDate(endDateTimeObject.getDate() + 1); // Add one day to endDateTimeObject
     const formattedStart = startDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
     const formattedEnd = endDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
-    gcalEventObj.start = { date: formattedStart };
-    gcalEventObj.end = { date: formattedEnd };
+    gcalEventObj.start = {
+      date: formattedStart,
+      dateTime: null,
+      timeZone: null,
+    };
+    gcalEventObj.end = {
+      date: formattedEnd,
+      dateTime: null,
+      timeZone: null,
+    };
   } else {
     // console.log(event.startDateTime);
     // if a specific time has been set, ensure this time is converted from UTC to local before adding to GCal
@@ -895,7 +900,28 @@ export const removeAllEventsFromGCal = async () => {
   }
 };
 
-export const updateEventsOnGCal = async () => {}; // 1 or more
+export const updateEventOnGCal = async (newData, gcalEventID = null) => {
+  // have to convert newData (in DB form) into GCal event form
+  try {
+    let targetGCalEventID = gcalEventID;
+    // if gcalEventID not passed in when called, find gcalEventID of corresp event obj
+    if (!gcalEventID) {
+      const correspGCalEvent = await fetchGCalEventByDBEventID(newData.eventID);
+      targetGCalEventID = correspGCalEvent.id;
+    }
+    const updatedGCalEventObj = convertDBToGCal(newData);
+    console.log(updatedGCalEventObj);
+    const response = await gapi.client.calendar.events.patch({
+      calendarId: 'primary', // Change this to your calendar ID if needed
+      eventId: targetGCalEventID,
+      resource: updatedGCalEventObj,
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}; // 1 or more
 
 export const removeGCalEventsByListItemID = async () => {};
 
@@ -931,6 +957,27 @@ export const fetchAllEventsFromGCal = async () => {
   } catch (error) {
     console.error('Error fetching events with extended property:', error);
     return error;
+  }
+};
+
+export const fetchGCalEventByDBEventID = async (eventID) => {
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary', // Change this to your calendar ID if needed
+      singleEvents: true,
+      maxResults: 1,
+    });
+    const events = response.result.items;
+    const matchingEvent = events.find(
+      (event) =>
+        event.extendedProperties &&
+        event.extendedProperties.private &&
+        event.extendedProperties.private.eventID === eventID
+    );
+    return matchingEvent || null;
+  } catch (error) {
+    console.error('Error fetching GCal event:', error);
+    throw error; // Re-throw the error for further handling
   }
 };
 
@@ -999,14 +1046,18 @@ export const addAListItemToGCal = async (listItem) => {
 };
 
 export const addAllListItemsToGCal = async (listItems) => {
-  const onlyListItemsWithDates = listItems.filter((e) =>
-    e.hasOwnProperty('date')
-  );
-
-  const updatePromises = onlyListItemsWithDates.map((listItem) => {
-    return addAListItemToGCal(listItem);
-  });
-  return await Promise.all(updatePromises);
+  try {
+    const onlyListItemsWithDates = listItems.filter((e) =>
+      e.hasOwnProperty('date')
+    );
+    const updatePromises = onlyListItemsWithDates.map((listItem) => {
+      return addAListItemToGCal(listItem);
+    });
+    return await Promise.all(updatePromises);
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
 export const removeListItemFromGCal = async (event) => {

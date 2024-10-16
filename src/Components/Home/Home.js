@@ -137,6 +137,7 @@ function Home() {
       updatedListItem.listItemID,
       listItemMinusExplicit
     );
+    return newEventID;
   };
 
   /* should handle changes to:
@@ -941,7 +942,7 @@ function Home() {
     }
   };
 
-  const handleSubmitFixes = (updatedEvDiscs) => {
+  const handleSubmitFixes = async (updatedEvDiscs) => {
     console.log(updatedEvDiscs);
     const { bothButDiff, schejrNotGCal, gcalNotSchejr } = updatedEvDiscs;
     const gcalPatch = [];
@@ -956,25 +957,76 @@ function Home() {
         gcalPatch.push({ gcalEventID: e.gcal.gcalEventID, event: e.schejr });
       if (e.keep === 'gcal') {
         const { gcalEventID, ...rest } = e.gcal;
-        dbPatch.push({ ...rest });
+        dbPatch.push({ ...rest }); // ✅ note - e.gcal is ALREADY FORMATTED as a DB Event object; done @ utils > performEventDiscrepancyCheck > formatGCalEventAsDBEvent
       }
     });
 
     schejrNotGCal.forEach((e) => {
-      if (e.keep === 'true') gcalAdd.push({ event: e });
-      if (e.keep === 'false') dbDelete.push({ event: e });
+      if (e.keep === 'true') gcalAdd.push(e);
+      if (e.keep === 'false') dbDelete.push(e);
     });
 
     gcalNotSchejr.forEach((e) => {
       if (e.keep === 'true') {
         const { gcalEventID, keep, ...rest } = e;
-        dbAdd.push({ event: { ...rest } });
+        dbAdd.push({ gcalEventID, event: { ...rest } });
       }
-      if (e.keep === 'false') gcalDelete.push({ event: e });
+      if (e.keep === 'false') gcalDelete.push(e);
     });
 
     const fixes = { gcalPatch, dbPatch, gcalAdd, dbAdd, gcalDelete, dbDelete };
     console.log(fixes);
+
+    const gcalPatchPromises = gcalPatch.map((e) => {
+      return u.updateEventOnGCal(e.event, e.gcalEventID);
+    });
+
+    await Promise.all(gcalPatchPromises);
+
+    const dbPatchPromises = dbPatch.map((event) => {
+      return handleEntities.updateEventAndDates(
+        ['title', 'tags', 'startDateTime'],
+        event
+      );
+    });
+
+    await Promise.all(dbPatchPromises);
+
+    // const gcalAddPromises = gcalAdd.map((event) => {
+    //   return u.addEventToGCal(event);
+    // });
+
+    // const createEventAndDateThenUpdateGCalEvent = async ({
+    //   gcalEventID,
+    //   event,
+    // }) => {
+    //   try {
+    //     const { eventID, ...rest } = event;
+    //     const newEventData = { ...rest };
+    //     const newEventID = await createEventAndDate(newEventData);
+    //     const updatedGCalEvent = { ...rest, eventID: newEventID };
+    //     await u.updateEventOnGCal(updatedGCalEvent, gcalEventID);
+    //   } catch (error) {
+    //     console.log(error);
+    //     return error;
+    //   }
+    // };
+
+    // // NO!! You need to create Event AND ListItem > .date! PLUS +++ additional step: with the DB id of the newly created /events obj, patch the existing GCal event ext prop .eventID!
+    // const dbAddPromises = dbAdd.map((e) => {
+    //   return createEventAndDateThenUpdateGCalEvent(e);
+    // });
+
+    // const gcalDeletePromises = gcalDelete.map((e) => {
+    //   const gcalEventIDKeyAsID = { ...e, id: e.gcalEventID };
+    //   return u.removeEventFromGCal(gcalEventIDKeyAsID);
+    // });
+
+    // const dbDeletePromises = dbDelete.map((e) => {
+    //   return u.deleteEventByID(userUID, e.eventID);
+    // });
+
+    /*---------------------------------------------*/
   };
 
   return (
