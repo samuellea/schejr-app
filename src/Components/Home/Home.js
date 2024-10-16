@@ -721,6 +721,7 @@ function Home() {
     if (gapiInit && syncFetched) {
       // if user's syncState is true on DB when app loads AND gapi has been init'd with access_token, run event discr. check
       if (syncWithGCal) {
+        console.log('gonne');
         const eventDiscrepancyCheck = async () => {
           try {
             const eventDiscrepancies = await u.performEventDiscrepancyCheck(
@@ -992,9 +993,19 @@ function Home() {
 
     await Promise.all(dbPatchPromises);
 
-    // const gcalAddPromises = gcalAdd.map((event) => {
-    //   return u.addEventToGCal(event);
-    // });
+    const gcalAddPromises = gcalAdd.map((event) => {
+      const dbToGCal = u.convertDBToGCal(event);
+      return u.addEventToGCal(dbToGCal);
+    });
+
+    await Promise.all(gcalAddPromises);
+
+    // NO! You need to delete BOTH the event AND the ListItem .date!!
+    const dbDeletePromises = dbDelete.map((e) => {
+      return deleteEventAndDate(e);
+    });
+
+    await Promise.all(dbDeletePromises);
 
     // const createEventAndDateThenUpdateGCalEvent = async ({
     //   gcalEventID,
@@ -1022,9 +1033,7 @@ function Home() {
     //   return u.removeEventFromGCal(gcalEventIDKeyAsID);
     // });
 
-    // const dbDeletePromises = dbDelete.map((e) => {
-    //   return u.deleteEventByID(userUID, e.eventID);
-    // });
+    // await Promise.all(gcalDeletePromises);
 
     /*---------------------------------------------*/
   };

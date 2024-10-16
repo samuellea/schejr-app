@@ -782,6 +782,7 @@ export const patchSyncStateByUserID = async (userUID, state) => {
 */
 
 export const convertDBToGCal = (event) => {
+  console.log(event);
   const gcalEventObj = {
     summary: event.title,
     extendedProperties: {
@@ -836,6 +837,7 @@ export const convertDBToGCal = (event) => {
 export const convertGCalToDB = (gcalEvent) => {};
 
 export const addEventToGCal = async (event) => {
+  console.log(event);
   try {
     await gapi.client.calendar.events.insert({
       calendarId: 'primary',
@@ -986,9 +988,11 @@ export const performEventDiscrepancyCheck = async (userUID) => {
   const allDBEvents = await fetchAllUserEvents(userUID);
   console.log(allGCalEvents);
   console.log(allDBEvents);
-  const allGCalEventsFormatted = allGCalEvents.map((gcalEvent) =>
-    h.formatGCalEventAsDBEvent(userUID, gcalEvent)
-  );
+  const allGCalEventsFormatted = allGCalEvents
+    ? allGCalEvents.map((gcalEvent) =>
+        h.formatGCalEventAsDBEvent(userUID, gcalEvent)
+      )
+    : [];
   /*
     { bothButDiff: [
         { eventID: 1, schejr: {}, gcal: {}, changedFields: [], keep: null // either 'schejr' or 'gcal' },
@@ -1006,6 +1010,7 @@ export const performEventDiscrepancyCheck = async (userUID) => {
     allDBEvents,
     allGCalEventsFormatted
   );
+  console.log(discrepancies);
   const { bothButDiff, schejrNotGCal, gcalNotSchejr } = discrepancies;
   if (!bothButDiff.length && !schejrNotGCal.length && !gcalNotSchejr.length) {
     return null;
