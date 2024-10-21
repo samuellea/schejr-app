@@ -971,7 +971,6 @@ export const fetchGCalEventByDBEventID = async (eventID) => {
     });
 
     const events = response.result.items;
-    console.log(events);
     // Check if we have a match and return the event
     if (events && events.length > 0) {
       return events[0]; // Return the event that matches the eventID

@@ -316,6 +316,20 @@ function Home() {
       console.log(eventsMinusDeleted);
       setEvents(eventsMinusDeleted);
     }
+    // final step - delete corresp. GCal event
+    if (syncWithGCal) {
+      try {
+        console.log(data);
+        console.log(relatedEvent);
+        const correspGCalEvent = await u.fetchGCalEventByDBEventID(
+          data.eventID
+        );
+        console.log(correspGCalEvent);
+        await u.removeEventFromGCal(correspGCalEvent);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const deleteTagFromEntities = async (tagID) => {
