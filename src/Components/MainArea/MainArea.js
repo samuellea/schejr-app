@@ -34,6 +34,7 @@ function MainArea({
   discrepanciesChecked,
   eventDiscrepancies,
   handleSubmitFixes,
+  fixingDiscrepancies,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
@@ -125,6 +126,7 @@ function MainArea({
         <EventDiscrepancies
           evDiscs={eventDiscrepancies}
           handleSubmitFixes={handleSubmitFixes}
+          fixingDiscrepancies={fixingDiscrepancies}
         />
       ) : null}
 

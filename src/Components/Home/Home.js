@@ -31,8 +31,8 @@ function Home() {
   const [eventDiscrepancies, setEventDiscrepancies] = useState(null);
   const [discrepanciesChecked, setDiscrepanciesChecked] = useState(false);
   const [discrDisable, setDiscrDisable] = useState(true);
-  const [fixes, setFixes] = useState(null);
   const [showFixModal, setShowFixModal] = useState(false);
+  const [fixingDiscrepancies, setFixingDiscrepancies] = useState(false);
 
   useEffect(() => {
     console.log(`discrepanciesChecked: ${discrepanciesChecked}`);
@@ -137,6 +137,12 @@ function Home() {
       updatedListItem.listItemID,
       listItemMinusExplicit
     );
+    // final step - if syncWithGCal turned on, create corresp. GCal event
+    if (syncWithGCal) {
+      const dbToGCal = u.convertDBToGCal(newEventPlusExplicit);
+      await u.addEventToGCal(dbToGCal);
+    }
+
     return newEventID;
   };
 
@@ -944,6 +950,7 @@ function Home() {
   };
 
   const handleSubmitFixes = async (updatedEvDiscs) => {
+    setFixingDiscrepancies(true);
     console.log(updatedEvDiscs);
     const { bothButDiff, schejrNotGCal, gcalNotSchejr } = updatedEvDiscs;
     const gcalPatch = [];
@@ -982,8 +989,6 @@ function Home() {
       return u.updateEventOnGCal(e.event, e.gcalEventID);
     });
 
-    await Promise.all(gcalPatchPromises);
-
     const dbPatchPromises = dbPatch.map((event) => {
       return handleEntities.updateEventAndDates(
         ['title', 'tags', 'startDateTime'],
@@ -991,20 +996,14 @@ function Home() {
       );
     });
 
-    await Promise.all(dbPatchPromises);
-
     const gcalAddPromises = gcalAdd.map((event) => {
       const dbToGCal = u.convertDBToGCal(event);
       return u.addEventToGCal(dbToGCal);
     });
 
-    await Promise.all(gcalAddPromises);
-
     const dbDeletePromises = dbDelete.map((e) => {
       return deleteEventAndDate(e);
     });
-
-    await Promise.all(dbDeletePromises);
 
     const createEventAndDateThenUpdateGCalEvent = async ({
       gcalEventID,
@@ -1027,14 +1026,25 @@ function Home() {
       return createEventAndDateThenUpdateGCalEvent(e);
     });
 
-    await Promise.all(dbAddPromises);
-
     const gcalDeletePromises = gcalDelete.map((e) => {
       const gcalEventIDKeyAsID = { ...e, id: e.gcalEventID };
       return u.removeEventFromGCal(gcalEventIDKeyAsID);
     });
 
-    await Promise.all(gcalDeletePromises);
+    try {
+      await Promise.all(gcalPatchPromises);
+      await Promise.all(dbPatchPromises);
+      await Promise.all(gcalAddPromises);
+      await Promise.all(dbDeletePromises);
+      await Promise.all(dbAddPromises);
+      await Promise.all(gcalDeletePromises);
+      setEventDiscrepancies(null);
+      setDiscrepanciesChecked(false);
+      setDiscrDisable(false);
+      setFixingDiscrepancies(false);
+    } catch (error) {
+      console.log(error);
+    }
 
     /*---------------------------------------------*/
   };
@@ -1090,6 +1100,7 @@ function Home() {
             discrepanciesChecked={discrepanciesChecked}
             eventDiscrepancies={eventDiscrepancies}
             handleSubmitFixes={handleSubmitFixes}
+            fixingDiscrepancies={fixingDiscrepancies}
             // setModalBackground={setModalBackground}
             // handleEvents={handleEvents}
             // handleOtherEventFields={handleOtherEventFields}
