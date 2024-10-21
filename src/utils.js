@@ -912,7 +912,6 @@ export const updateEventOnGCal = async (newData, gcalEventID = null) => {
       targetGCalEventID = correspGCalEvent.id;
     }
     const updatedGCalEventObj = convertDBToGCal(newData);
-    console.log(updatedGCalEventObj);
     const response = await gapi.client.calendar.events.patch({
       calendarId: 'primary', // Change this to your calendar ID if needed
       eventId: targetGCalEventID,
@@ -964,22 +963,24 @@ export const fetchAllEventsFromGCal = async () => {
 
 export const fetchGCalEventByDBEventID = async (eventID) => {
   try {
+    // Query the events list, filtering by the specific extendedProperties.private key-value pair
     const response = await gapi.client.calendar.events.list({
-      calendarId: 'primary', // Change this to your calendar ID if needed
-      singleEvents: true,
-      maxResults: 1,
+      calendarId: 'primary', // 'primary' or the calendar's ID
+      privateExtendedProperty: `eventID=${eventID}`, // Filter by the private extended property
+      // don't specify maxResults - for some reason, this was causing it to break
     });
+
     const events = response.result.items;
-    const matchingEvent = events.find(
-      (event) =>
-        event.extendedProperties &&
-        event.extendedProperties.private &&
-        event.extendedProperties.private.eventID === eventID
-    );
-    return matchingEvent || null;
+    console.log(events);
+    // Check if we have a match and return the event
+    if (events && events.length > 0) {
+      return events[0]; // Return the event that matches the eventID
+    } else {
+      throw new Error(`No event found with eventID: ${eventID}`);
+    }
   } catch (error) {
-    console.error('Error fetching GCal event:', error);
-    throw error; // Re-throw the error for further handling
+    console.error('Error fetching event by eventID:', error);
+    throw error;
   }
 };
 

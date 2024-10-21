@@ -274,6 +274,18 @@ function Home() {
       updatedEventIDs,
       updatedEventsNoID
     );
+
+    // final step - patch the corresp. GCal events for these updated events.
+    if (syncWithGCal) {
+      try {
+        const updateGCalEventsPromises = updatedEvents.map((event) => {
+          return u.updateEventOnGCal(event);
+        });
+        return await Promise.all(updateGCalEventsPromises);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   // data = (Event.js?) Event obj, (DateSelector.js?) LI .dates date obj
