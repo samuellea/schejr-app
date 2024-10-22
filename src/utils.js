@@ -795,21 +795,40 @@ export const convertDBToGCal = (event) => {
     },
   };
   if (!event.timeSet) {
+    // startDateTime comes in as UTC Zulu (no time zone offset)
+    // if no timeSet, this will just be midnight on a given date IN A TIMEZONE -
+    // - but in UTC, midnight will be adjusted to remove timezone: cld be 11pm prev. day, for example
+
+    // When you convert this event to a GCal event, need to
+
     // if no specific time set, make an All Day Event on GCal
     const startDateTimeObject = new Date(event.startDateTime);
     const endDateTimeObject = new Date(event.startDateTime);
     endDateTimeObject.setDate(endDateTimeObject.getDate() + 1); // Add one day to endDateTimeObject
-    const formattedStart = startDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
-    const formattedEnd = endDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    // const formattedStart = startDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    // const formattedEnd = endDateTimeObject.toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+
+    // convert BACK to user's timezone first before creating a YYYY-MM-DD simple date (which GCal then treats as an all-day event)
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const options = {
+      timeZone: userTimeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+
+    const localStartDate = startDateTimeObject.toLocaleString('en-CA', options); // en-CA format is YYYY-MM-DD
+    const localEndDate = endDateTimeObject.toLocaleString('en-CA', options); // en-CA format is YYYY-MM-DD
+
     gcalEventObj.start = {
-      date: formattedStart,
+      date: localStartDate,
       dateTime: null,
-      timeZone: null,
+      timeZone: userTimeZone,
     };
     gcalEventObj.end = {
-      date: formattedEnd,
+      date: localEndDate,
       dateTime: null,
-      timeZone: null,
+      timeZone: userTimeZone,
     };
   } else {
     // console.log(event.startDateTime);
@@ -924,10 +943,6 @@ export const updateEventOnGCal = async (newData, gcalEventID = null) => {
   }
 }; // 1 or more
 
-export const removeGCalEventsByListItemID = async () => {};
-
-export const removeGCalEventsByListID = async () => {};
-
 export const fetchAllEventsFromGCal = async () => {
   try {
     // Make the API request to list events with specific private extended property
@@ -983,16 +998,42 @@ export const fetchGCalEventByDBEventID = async (eventID) => {
   }
 };
 
+export const removeGCalEventsByListItemID = async (listItemID) => {
+  console.log(listItemID, ' ------');
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary', // e.g., 'primary' or the calendar's ID
+      privateExtendedProperty: `listItemID=${listItemID}`, // Filter by the private extended property
+      maxResults: 2500, // Retrieve up to 2500 results at once (API limit per request)
+    });
+
+    const events = response.result.items;
+    // Check if we have any events that match the extended property
+    if (events && events.length > 0) {
+      console.log(events);
+    } else {
+      throw new Error(`No events found with listItemID: ${listItemID}`);
+    }
+  } catch (error) {
+    console.error('Error fetching events by listItemID:', error);
+    throw error;
+  }
+};
+
+export const removeGCalEventsByListID = async () => {};
+
 export const performEventDiscrepancyCheck = async (userUID) => {
   const allGCalEvents = await fetchAllEventsFromGCal();
   const allDBEvents = await fetchAllUserEvents(userUID);
   console.log(allGCalEvents);
   console.log(allDBEvents);
+  // ensure when GCal evs converted to DB evs, if their start date is just YYYY-MM-DD, its converted .startDateTime will need to be converted to user's local time
   const allGCalEventsFormatted = allGCalEvents
     ? allGCalEvents.map((gcalEvent) =>
         h.formatGCalEventAsDBEvent(userUID, gcalEvent)
       )
     : [];
+  console.log(allGCalEventsFormatted);
   /*
     { bothButDiff: [
         { eventID: 1, schejr: {}, gcal: {}, changedFields: [], keep: null // either 'schejr' or 'gcal' },

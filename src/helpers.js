@@ -494,9 +494,14 @@ export const getEventsForDate = (targetDateStr, events) => {
 export const formatGCalEventAsDBEvent = (userUID, gcalEvent) => {
   const { eventID, listID, listItemID } = gcalEvent.extendedProperties.private;
   let startDateTime;
-  // if startDateTime hasn't had a TIME SPECIFIED, on GCal it will just be YYYY-MM-DD: add midnight UTC time to startDateTime string
-  if (gcalEvent.start.date)
-    startDateTime = `${gcalEvent.start.date}T00:00:00.000Z`; // ie. NOT gcalEvent.start.dateTime (which is a specified TIME as well as date)
+  // if startDateTime hasn't had a TIME SPECIFIED, on GCal it will just be YYYY-MM-DD: this needs to become midnight on that date (in user's local tz), THEN convert THAT to UTC
+  if (gcalEvent.start.date) {
+    // we need to append the YYYY-MM-DD with midnight as it would be in the user's local tz, then set startDateTime as THIS but converted to UTC!
+    const startDateAsLocalMidnight = `${gcalEvent.start.date}T00:00:00.000`; // ie. NOT gcalEvent.start.dateTime (which is a specified TIME as well as date)
+    // JS Date object, when created without an explicit tz, is detected automatically from the browser using the system's settings
+    const localDateTime = new Date(`${startDateAsLocalMidnight}`);
+    startDateTime = localDateTime.toISOString(); // local midnight now represented as a UTC dateTime
+  }
   if (gcalEvent.start.dateTime) {
     // GCal events have time offset at end, rather than being represented in UTC Z time - convert these.
     const dateObj = new Date(gcalEvent.start.dateTime);
@@ -592,15 +597,16 @@ export const composeDiscrepancies = (allDBEvents, allGCalEventsFormatted) => {
 };
 
 export const formatDateTimeDiscrepancyCard = (dateTime, timeSet) => {
+  // Get the user's local timezone
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // Convert the UTC date string to the user's local timezone
+  const zonedDate = toZonedTime(dateTime, userTimeZone);
   if (timeSet) {
-    // Get the user's local timezone
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    // Convert the UTC date string to the user's local timezone
-    const zonedDate = toZonedTime(dateTime, userTimeZone);
-    // Format the date in the desired format
+    // Format the date including the TIME, with @ seperator
     return format(zonedDate, "EEE, MMM do yyyy '@' h:mm a");
   } else {
-    return dateTime.substring(0, dateTime.indexOf('T'));
+    // Format the date removing the midnight time (this is an all-day)
+    return format(zonedDate, 'EEE, MMM do yyyy');
   }
 };
 

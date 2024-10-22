@@ -299,7 +299,6 @@ function Home() {
       ...relatedListItem.obj,
       dates: listItemDatesMinusDeleted,
     };
-    console.log(updatedListItem);
     await u.patchListItem(userUID, data.listItemID, updatedListItem);
     await u.deleteEventByID(userUID, data.eventID);
     if (relatedListItem.inState) {
@@ -313,18 +312,14 @@ function Home() {
       const eventsMinusDeleted = events.filter(
         (e) => e.eventID !== data.eventID
       );
-      console.log(eventsMinusDeleted);
       setEvents(eventsMinusDeleted);
     }
     // final step - delete corresp. GCal event
     if (syncWithGCal) {
       try {
-        console.log(data);
-        console.log(relatedEvent);
         const correspGCalEvent = await u.fetchGCalEventByDBEventID(
           data.eventID
         );
-        console.log(correspGCalEvent);
         await u.removeEventFromGCal(correspGCalEvent);
       } catch (error) {
         console.log(error);
@@ -367,13 +362,21 @@ function Home() {
       ...e,
       manualOrder: i + 1,
     }));
-    setListItems(updatedManualOrders);
+    // setListItems(updatedManualOrders);
     const eventsMinusDeleted = events.filter(
       (e) => e.listItemID !== listItemID
     );
-    setEvents(eventsMinusDeleted);
-    await u.deleteListItemByID(userUID, listItemID);
-    await u.deleteEventsByListItemID(userUID, listItemID);
+    // setEvents(eventsMinusDeleted);
+    // await u.deleteListItemByID(userUID, listItemID);
+    // await u.deleteEventsByListItemID(userUID, listItemID);
+    // final step - delete all GCal events corresp. to this ListItem
+    if (syncWithGCal) {
+      try {
+        await u.removeGCalEventsByListItemID(listItemID);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const deleteListAndRelated = async (listID) => {
