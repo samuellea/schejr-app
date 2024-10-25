@@ -999,7 +999,7 @@ export const fetchGCalEventByDBEventID = async (eventID) => {
 };
 
 export const removeGCalEventsByListItemID = async (listItemID) => {
-  console.log(listItemID, ' ------');
+  // console.log(listItemID, ' ------');
   try {
     const response = await gapi.client.calendar.events.list({
       calendarId: 'primary', // e.g., 'primary' or the calendar's ID
@@ -1010,7 +1010,11 @@ export const removeGCalEventsByListItemID = async (listItemID) => {
     const events = response.result.items;
     // Check if we have any events that match the extended property
     if (events && events.length > 0) {
-      console.log(events);
+      // console.log(events);
+      const deletePromises = events.map((event) => {
+        return removeEventFromGCal(event);
+      });
+      return await Promise.all(deletePromises);
     } else {
       throw new Error(`No events found with listItemID: ${listItemID}`);
     }
@@ -1020,7 +1024,29 @@ export const removeGCalEventsByListItemID = async (listItemID) => {
   }
 };
 
-export const removeGCalEventsByListID = async () => {};
+export const removeGCalEventsByListID = async (listID) => {
+  try {
+    const response = await gapi.client.calendar.events.list({
+      calendarId: 'primary', // e.g., 'primary' or the calendar's ID
+      privateExtendedProperty: `listID=${listID}`, // Filter by the private extended property
+      maxResults: 2500, // Retrieve up to 2500 results at once (API limit per request)
+    });
+    const events = response.result.items;
+    // Check if we have any events that match the extended property
+    if (events && events.length > 0) {
+      // console.log(events);
+      const deletePromises = events.map((event) => {
+        return removeEventFromGCal(event);
+      });
+      return await Promise.all(deletePromises);
+    } else {
+      throw new Error(`No events found with listID: ${listID}`);
+    }
+  } catch (error) {
+    console.error('Error fetching events by listID:', error);
+    throw error;
+  }
+};
 
 export const performEventDiscrepancyCheck = async (userUID) => {
   const allGCalEvents = await fetchAllEventsFromGCal();

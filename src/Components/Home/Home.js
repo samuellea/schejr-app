@@ -362,13 +362,13 @@ function Home() {
       ...e,
       manualOrder: i + 1,
     }));
-    // setListItems(updatedManualOrders);
+    setListItems(updatedManualOrders);
     const eventsMinusDeleted = events.filter(
       (e) => e.listItemID !== listItemID
     );
-    // setEvents(eventsMinusDeleted);
-    // await u.deleteListItemByID(userUID, listItemID);
-    // await u.deleteEventsByListItemID(userUID, listItemID);
+    setEvents(eventsMinusDeleted);
+    await u.deleteListItemByID(userUID, listItemID);
+    await u.deleteEventsByListItemID(userUID, listItemID);
     // final step - delete all GCal events corresp. to this ListItem
     if (syncWithGCal) {
       try {
@@ -402,6 +402,14 @@ function Home() {
       (e) => !relatedEventIDs.includes(e.eventID)
     );
     setEvents(eventsMinusDeleted);
+    // final step - delete all GCal events corresp. to this ListItem
+    if (syncWithGCal) {
+      try {
+        await u.removeGCalEventsByListID(listID);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const patchListItemNotes = async (updatedListItem) => {
