@@ -7,6 +7,7 @@ function EventDiscrepancies({
   evDiscs,
   handleSubmitFixes,
   fixingDiscrepancies,
+  handleSetSyncWithGCal,
 }) {
   console.log(evDiscs);
   const [bothButDiff, setBothButDiff] = useState(evDiscs.bothButDiff);
@@ -69,6 +70,10 @@ function EventDiscrepancies({
       gcalNotSchejr: gcalNotSchejr,
     };
     handleSubmitFixes(updatedEvDiscs);
+  };
+
+  const handleUnsync = () => {
+    handleSetSyncWithGCal();
   };
 
   return (
@@ -284,12 +289,21 @@ function EventDiscrepancies({
             </div>
           ) : null}
           <button
-            className={styles.submitButton}
+            className={styles.actionButton}
+            id={styles.submit}
             type="button"
             onClick={handleSubmit}
             disabled={!canSubmit}
           >
             Submit
+          </button>
+          <button
+            className={styles.actionButton}
+            id={styles.unsync}
+            type="button"
+            onClick={handleUnsync}
+          >
+            Unsync & Continue
           </button>
         </>
       )}

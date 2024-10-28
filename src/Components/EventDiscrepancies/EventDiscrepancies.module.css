@@ -82,9 +82,9 @@
   justify-content: center;
 }
 
-.submitButton {
+.actionButton {
   height: 30px;
-  width: 100px;
+  min-width: 100px;
   margin-top: 20px;
 }
 
@@ -95,4 +95,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#submit {
+}
+
+#unsync {
 }

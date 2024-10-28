@@ -941,9 +941,7 @@ function Home() {
     patchSyncAndAddAllEvents();
   };
 
-  const handleDeleteAllEventsFromGcal = () => {
-    setShowGCalDeleteModal(false);
-    setSyncWithGCal(false);
+  const handleDeleteAllEventsFromGcal = async () => {
     const patchSyncAndDeleteAllEvents = async () => {
       try {
         await u.patchSyncStateByUserID(userUID, false);
@@ -952,7 +950,19 @@ function Home() {
         // Handle error deleting all events
       }
     };
-    patchSyncAndDeleteAllEvents();
+
+    if (eventDiscrepancies !== null) {
+      setShowGCalDeleteModal(false);
+      setFixingDiscrepancies(true);
+      setSyncWithGCal(false);
+      await patchSyncAndDeleteAllEvents();
+      setFixingDiscrepancies(false);
+      setEventDiscrepancies(null);
+    } else {
+      setShowGCalDeleteModal(false);
+      setSyncWithGCal(false);
+      await patchSyncAndDeleteAllEvents();
+    }
   };
 
   const handleCancelGCalAdd = () => {
@@ -1163,10 +1173,10 @@ function Home() {
       ) : null}
       {showGCalDeleteModal ? (
         <ConfirmDeleteModal
-          message={`Delete all your Events from Google Calendar?`}
+          message={`Stop syncing? This will delete all Schejr events from Google Calendar`}
           handleConfirm={() => handleDeleteAllEventsFromGcal()}
           handleCancel={() => handleCancelGCalDelete()}
-          confirmLabel="Delete"
+          confirmLabel="Stop syncing"
         />
       ) : null}
     </DragDropContext>

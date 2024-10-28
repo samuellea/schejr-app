@@ -127,6 +127,7 @@ function MainArea({
           evDiscs={eventDiscrepancies}
           handleSubmitFixes={handleSubmitFixes}
           fixingDiscrepancies={fixingDiscrepancies}
+          handleSetSyncWithGCal={handleSetSyncWithGCal}
         />
       ) : null}
 
