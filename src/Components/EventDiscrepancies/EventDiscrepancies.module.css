@@ -4,6 +4,7 @@
   border: 5px solid orange;
   box-sizing: border-box;
   color: white;
+  overflow-y: scroll;
 }
 
 .section {

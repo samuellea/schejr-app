@@ -16,7 +16,7 @@ function EventOptions({
 
   const handleClickOutside = (event) => {
     if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-      setShowOptions({ show: false });
+      setShowOptions({ show: false, position: '' });
     }
   };
 

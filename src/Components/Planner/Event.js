@@ -50,12 +50,16 @@ function Event({
   };
 
   const handleEdit = () => {
-    setShowOptions({ show: false });
     setEditEvent(true);
   };
 
+  // close the EventOptions menu when 'Edit' option clicked
+  useEffect(() => {
+    setShowOptions({ show: false, position: '' });
+  }, [editEvent]);
+
   const handleDuplicate = async () => {
-    setShowOptions({ show: false });
+    setShowOptions({ show: false, position: '' });
     // const listItemForEvent = await u.fetchListItemById(event.listItemID);
     // const { eventID, ...restOfEvent } = event;
     // const duplicateEventObj = { ...restOfEvent };
@@ -63,10 +67,11 @@ function Event({
     const { eventID, ...rest } = event;
     const eventMinusExplicit = { ...rest };
     await handleEntities.createEventAndDate(eventMinusExplicit);
+    setShowOptions({ show: false, position: '' });
   };
 
   const handleStartDelete = () => {
-    setShowOptions({ show: false });
+    setShowOptions({ show: false, position: '' });
     setShowDeleteModal(true);
   };
 

@@ -9,7 +9,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 4;
+  z-index: 45;
   box-sizing: border-box;
   pointer-events: auto;
   /* border: 3px solid blue; */
