@@ -41,15 +41,16 @@ function TagSelector({
 
   const tagColorOptions = [
     '#373737', // lightgray
-    '#5a5a5a', // gray
-    '#603b2c', // brown
-    '#654c1c', // orange
-    '#835e33', // yellow
-    '#2b5940', // green
-    '#28456c', // blue
+    '#5A5A5A', // gray
+    '#603B2C', // brown
+    '#654C1C', // orange
+    '#835E33', // yellow
+    '#2B5940', // green
+    '#28456C', // blue
     '#493064', // purple
     '#69314C', // pink
     '#6E3630', // red
+    '#377175', // cyan
   ];
 
   useEffect(() => {
@@ -143,28 +144,36 @@ function TagSelector({
   };
 
   const handleUpdateExistingTag = async (tag, field, value) => {
+    console.log(tagOptions);
     // only run if field value has actually changed
-    if (tagOptions[field] !== value) {
-      const { tagID: unneededTagID, ...rest } = tag;
-      const updatedTag = { ...rest, [field]: value };
-      try {
-        // update tags in app state
-        const updatedTagPlusID = { ...updatedTag, tagID: unneededTagID };
-        const existingTagsMinusThisTag = existingTags.filter(
-          (e) => e.tagID !== unneededTagID
-        );
-        const updatedExistingTags = [
-          ...existingTagsMinusThisTag,
-          updatedTagPlusID,
-        ];
-        setExistingTags(updatedExistingTags);
-        // then patch this tag on the db
-        const tagUpdated = await u.patchTag(userUID, tag.tagID, updatedTag);
-      } catch (error) {
-        console.error('Failed to update tag:', error);
-        if (tagOptions) setTagOptions(null); // close the Options menu if it's open
-      }
+    // if (tagOptions[field] !== value) {
+    const { tagID: unneededTagID, ...rest } = tag;
+    const updatedTag = { ...rest, [field]: value };
+    console.log(updatedTag);
+    try {
+      // update tags in app state
+      const updatedTagPlusID = { ...updatedTag, tagID: unneededTagID };
+      const existingTagsMinusThisTag = existingTags.filter(
+        (e) => e.tagID !== unneededTagID
+      );
+      const updatedExistingTags = [
+        ...existingTagsMinusThisTag,
+        updatedTagPlusID,
+      ];
+      const sortedUpdatedExistingTags = updatedExistingTags.sort((a, b) => {
+        const indexA = existingTags.findIndex((tag) => tag.tagID === a.tagID);
+        const indexB = existingTags.findIndex((tag) => tag.tagID === b.tagID);
+        return indexA - indexB; // Ascending order
+      });
+      // Update the state with the sorted tags
+      setExistingTags(sortedUpdatedExistingTags);
+      // then patch this tag on the db
+      const tagUpdated = await u.patchTag(userUID, tag.tagID, updatedTag);
+    } catch (error) {
+      console.error('Failed to update tag:', error);
+      if (tagOptions) setTagOptions(null); // close the Options menu if it's open
     }
+    // }
   };
 
   const handleDeleteTag = async (tagID) => {
@@ -314,6 +323,7 @@ function TagSelector({
               .filter((e) =>
                 e.name.toLowerCase().includes(inputText.toLowerCase())
               )
+              // .sort
               .map((tag) => (
                 <div
                   className={styles.existingTagButton}

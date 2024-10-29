@@ -33,15 +33,16 @@ function TagOptions({
 
   const colorNameLookup = {
     '#373737': 'Light Gray',
-    '#5a5a5a': 'Gray',
-    '#603b2c': 'Brown',
-    '#654c1c': 'Orange',
-    '#835e33': 'Yellow',
-    '#2b5940': 'Green',
-    '#28456c': 'Blue',
+    '#5A5A5A': 'Gray',
+    '#603B2C': 'Brown',
+    '#654C1C': 'Orange',
+    '#835E33': 'Yellow',
+    '#2B5940': 'Green',
+    '#28456C': 'Blue',
     '#493064': 'Purple',
     '#69314C': 'Pink',
     '#6E3630': 'Red',
+    '#377175': 'Cyan',
   };
 
   const hitEnter = (event) => {
@@ -83,8 +84,8 @@ function TagOptions({
   }, [onChildClickOutside]); // Depend on onChildClickOutside
 
   const handleChangeTagColor = (color) => {
+    console.log(color);
     setSelectedColor(color);
-
     handleUpdateExistingTag(tag, 'color', color); // tag, field, value
   };
 
