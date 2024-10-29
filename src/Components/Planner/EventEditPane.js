@@ -102,9 +102,20 @@ function EventEditPane({
   };
 
   const handleTagsChange = (updatedTags) => {
+    // ALSO NEED TO UPDATE .tags on the ListItem in STATE here (which is being passed into TagSelector), otherwise that's always gonna stay fixed and therefore stale values be used!
     console.log(updatedTags);
+    // console.log(updatedTags);
     setEventTags(updatedTags);
   };
+
+  useEffect(() => {
+    console.log(listItem);
+    if (listItem !== null) {
+      const updatedListItem = { ...listItem, tags: eventTags };
+      console.log(updatedListItem);
+      setListItem(updatedListItem); // update local listItem (in state here) if tags change
+    }
+  }, [eventTags]);
 
   const handleStartSave = () => {
     console.log('!');

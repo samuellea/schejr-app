@@ -86,6 +86,10 @@ function TagSelector({
 
   useEffect(() => {}, [listItems]);
 
+  useEffect(() => {
+    console.log(listItem);
+  }, []);
+
   const handleClickOutsideParent = () => {
     if (!childClickedOutside) {
       // Prevent the parent logic from firing until the child's logic has executed
@@ -185,6 +189,7 @@ function TagSelector({
   };
 
   const handleSelectExistingTag = async (tag) => {
+    // if ListItem / Event already has this tag, don't add again, and just return
     if (listItem?.tags?.find((e) => e === tag.tagID)) return;
     // add this tag to this List's tags
     try {
