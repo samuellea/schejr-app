@@ -33,6 +33,7 @@ function Planner({
   setPlannerRange,
   setModalBackground,
   showSidebar,
+  eventDiscrepancies,
 }) {
   const [dates, setDates] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(true);
@@ -124,6 +125,12 @@ function Planner({
     // when anchorDate changes, calculate date range based on viewMode, set in Home state
     makeDatesFetchEvents();
   }, [anchorDate]);
+
+  useEffect(() => {
+    if (eventDiscrepancies === null) {
+      makeDatesFetchEvents();
+    }
+  }, [eventDiscrepancies]);
 
   useEffect(() => {
     const dateResetToToday = new Date();

@@ -192,6 +192,7 @@ function MainArea({
         setPlannerRange={setPlannerRange}
         // setModalBackground={setModalBackground}
         showSidebar={showSidebar}
+        eventDiscrepancies={eventDiscrepancies}
       />
       {/* ) : null} */}
     </div>

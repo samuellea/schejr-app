@@ -18,6 +18,16 @@
   color: black;
 }
 
+.checkAllContainer {
+  border: 4px solid purple;
+  background-color: lightgray;
+  box-sizing: border-box;
+  color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .comparer {
   border: 4px solid rgb(151, 151, 151);
   height: 100px;
@@ -63,6 +73,7 @@
   flex-direction: column; /* Stack children vertically */
   align-items: center; /* Center align items */
   justify-content: center; /* Center vertically */
+  border: 2px solid yellow;
 }
 
 .checkboxContainer input {

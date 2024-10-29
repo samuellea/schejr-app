@@ -25,6 +25,43 @@ function EventDiscrepancies({
     if (!allChecked) setCanSubmit(false);
   }, [bothButDiff, schejrNotGCal, gcalNotSchejr]);
 
+  const handleAllSectionCheckboxes = (event, arr, choice) => {
+    const checked = event.target.checked;
+    /*
+    schejrNotGCal ? choice = 'true' / 'false'
+    gcalNotSchejr ? choice = 'true' / 'false'
+    bothButDiff ? choice = 'schejr' / 'gcal'
+    */
+    if (arr === 'bothButDiff') {
+      const updatedArr = [...bothButDiff].map((e) =>
+        checked ? { ...e, keep: choice } : { ...e, keep: null }
+      );
+      const updatedAndSorted = updatedArr.sort(
+        (a, b) =>
+          new Date(a.schejr.startDateTime) - new Date(b.schejr.startDateTime)
+      );
+      setBothButDiff(updatedAndSorted);
+    }
+    if (arr === 'schejrNotGCal') {
+      const updatedArr = [...schejrNotGCal].map((e) =>
+        checked ? { ...e, keep: choice } : { ...e, keep: null }
+      );
+      const updatedAndSorted = updatedArr.sort(
+        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+      );
+      setSchejrNotGCal(updatedAndSorted);
+    }
+    if (arr === 'gcalNotSchejr') {
+      const updatedArr = [...gcalNotSchejr].map((e) =>
+        checked ? { ...e, keep: choice } : { ...e, keep: null }
+      );
+      const updatedAndSorted = updatedArr.sort(
+        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+      );
+      setGcalNotSchejr(updatedAndSorted);
+    }
+  };
+
   const handleCheckbox = (arr, choice, eventID) => {
     if (arr === 'bothButDiff') {
       const updatedObj = bothButDiff.find((e) => e.eventID === eventID);
@@ -47,6 +84,7 @@ function EventDiscrepancies({
       const updatedAndSorted = updatedArr.sort(
         (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
       );
+      console.log(updatedObj);
       setSchejrNotGCal(updatedAndSorted);
     }
     if (arr === 'gcalNotSchejr') {
@@ -69,6 +107,7 @@ function EventDiscrepancies({
       schejrNotGCal: schejrNotGCal,
       gcalNotSchejr: gcalNotSchejr,
     };
+    // console.log(updatedEvDiscs);
     handleSubmitFixes(updatedEvDiscs);
   };
 
@@ -89,6 +128,26 @@ function EventDiscrepancies({
             <div className={styles.section}>
               <div className={styles.header}>
                 Event on both, but different details:
+              </div>
+              <div className={styles.checkAllContainer}>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(event, 'bothButDiff', 'schejr')
+                    }
+                    checked={bothButDiff.every((obj) => obj.keep === 'schejr')}
+                  />
+                </div>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(event, 'bothButDiff', 'gcal')
+                    }
+                    checked={bothButDiff.every((obj) => obj.keep === 'gcal')}
+                  />
+                </div>
               </div>
               {bothButDiff.map((obj) => {
                 const objInState = bothButDiff.find(
@@ -146,6 +205,30 @@ function EventDiscrepancies({
             <div className={styles.section}>
               <div className={styles.header}>
                 Event on Schejr, but not Google Calendar:
+              </div>
+              <div className={styles.checkAllContainer}>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(event, 'schejrNotGCal', 'true')
+                    }
+                    checked={schejrNotGCal.every((obj) => obj.keep === 'true')}
+                  />
+                </div>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(
+                        event,
+                        'schejrNotGCal',
+                        'false'
+                      )
+                    }
+                    checked={schejrNotGCal.every((obj) => obj.keep === 'false')}
+                  />
+                </div>
               </div>
               {schejrNotGCal.map((obj) => {
                 const objInState = schejrNotGCal.find(
@@ -219,6 +302,30 @@ function EventDiscrepancies({
             <div className={styles.section}>
               <div className={styles.header}>
                 Event on Google Calendar, but not Schejr:
+              </div>
+              <div className={styles.checkAllContainer}>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(event, 'gcalNotSchejr', 'true')
+                    }
+                    checked={gcalNotSchejr.every((obj) => obj.keep === 'true')}
+                  />
+                </div>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(
+                        event,
+                        'gcalNotSchejr',
+                        'false'
+                      )
+                    }
+                    checked={gcalNotSchejr.every((obj) => obj.keep === 'false')}
+                  />
+                </div>
               </div>
               {gcalNotSchejr.map((obj) => {
                 const objInState = gcalNotSchejr.find(
