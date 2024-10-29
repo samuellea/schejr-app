@@ -10,9 +10,15 @@ function EventDiscrepancies({
   handleSetSyncWithGCal,
 }) {
   console.log(evDiscs);
-  const [bothButDiff, setBothButDiff] = useState(evDiscs.bothButDiff);
-  const [schejrNotGCal, setSchejrNotGCal] = useState(evDiscs.schejrNotGCal);
-  const [gcalNotSchejr, setGcalNotSchejr] = useState(evDiscs.gcalNotSchejr);
+  const [bothButDiff, setBothButDiff] = useState(
+    evDiscs.bothButDiff.map((e, i) => ({ ...e, origOrder: i }))
+  );
+  const [schejrNotGCal, setSchejrNotGCal] = useState(
+    evDiscs.schejrNotGCal.map((e, i) => ({ ...e, origOrder: i }))
+  );
+  const [gcalNotSchejr, setGcalNotSchejr] = useState(
+    evDiscs.gcalNotSchejr.map((e, i) => ({ ...e, origOrder: i }))
+  );
   const [canSubmit, setCanSubmit] = useState(false);
 
   useEffect(() => {
@@ -37,8 +43,7 @@ function EventDiscrepancies({
         checked ? { ...e, keep: choice } : { ...e, keep: null }
       );
       const updatedAndSorted = updatedArr.sort(
-        (a, b) =>
-          new Date(a.schejr.startDateTime) - new Date(b.schejr.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
       setBothButDiff(updatedAndSorted);
     }
@@ -47,7 +52,7 @@ function EventDiscrepancies({
         checked ? { ...e, keep: choice } : { ...e, keep: null }
       );
       const updatedAndSorted = updatedArr.sort(
-        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
       setSchejrNotGCal(updatedAndSorted);
     }
@@ -56,7 +61,7 @@ function EventDiscrepancies({
         checked ? { ...e, keep: choice } : { ...e, keep: null }
       );
       const updatedAndSorted = updatedArr.sort(
-        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
       setGcalNotSchejr(updatedAndSorted);
     }
@@ -64,13 +69,13 @@ function EventDiscrepancies({
 
   const handleCheckbox = (arr, choice, eventID) => {
     if (arr === 'bothButDiff') {
+      console.log(bothButDiff);
       const updatedObj = bothButDiff.find((e) => e.eventID === eventID);
       updatedObj.keep = choice;
       const arrMinusUpdated = bothButDiff.filter((e) => e.eventID !== eventID);
       const updatedArr = [...arrMinusUpdated, updatedObj];
       const updatedAndSorted = updatedArr.sort(
-        (a, b) =>
-          new Date(a.schejr.startDateTime) - new Date(b.schejr.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
       setBothButDiff(updatedAndSorted);
     }
@@ -82,9 +87,8 @@ function EventDiscrepancies({
       );
       const updatedArr = [...arrMinusUpdated, updatedObj];
       const updatedAndSorted = updatedArr.sort(
-        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
-      console.log(updatedObj);
       setSchejrNotGCal(updatedAndSorted);
     }
     if (arr === 'gcalNotSchejr') {
@@ -95,17 +99,27 @@ function EventDiscrepancies({
       );
       const updatedArr = [...arrMinusUpdated, updatedObj];
       const updatedAndSorted = updatedArr.sort(
-        (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+        (a, b) => a.origOrder - b.origOrder
       );
       setGcalNotSchejr(updatedAndSorted);
     }
   };
 
   const handleSubmit = () => {
+    const bothButDiffStripOrderKey = bothButDiff.map(
+      ({ origOrder, ...rest }) => rest
+    );
+    const schejrNotGCalStripOrderKey = schejrNotGCal.map(
+      ({ origOrder, ...rest }) => rest
+    );
+    const gcalNotSchejrStripOrderKey = gcalNotSchejr.map(
+      ({ origOrder, ...rest }) => rest
+    );
+
     const updatedEvDiscs = {
-      bothButDiff: bothButDiff,
-      schejrNotGCal: schejrNotGCal,
-      gcalNotSchejr: gcalNotSchejr,
+      bothButDiff: bothButDiffStripOrderKey,
+      schejrNotGCal: schejrNotGCalStripOrderKey,
+      gcalNotSchejr: gcalNotSchejrStripOrderKey,
     };
     // console.log(updatedEvDiscs);
     handleSubmitFixes(updatedEvDiscs);
