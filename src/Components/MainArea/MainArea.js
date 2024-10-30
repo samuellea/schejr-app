@@ -8,6 +8,7 @@ import EditIcon from '../Icons/EditIcon';
 import Planner from '../Planner/Planner';
 import ChevronIcon from '../Icons/ChevronIcon';
 import EventDiscrepancies from '../EventDiscrepancies/EventDiscrepancies';
+import Spinner from '../Spinner/Spinner';
 
 function MainArea({
   userUID,
@@ -146,7 +147,7 @@ function MainArea({
           handleEntities={handleEntities}
           lists={lists}
         />
-      ) : !eventDiscrepancies ? (
+      ) : discrepanciesChecked ? (
         <div className={styles.emptyMessage}>
           <p className={styles.emptyMessageSpan}>
             Select a list or create one with
@@ -155,7 +156,11 @@ function MainArea({
             </span>
           </p>
         </div>
-      ) : null}
+      ) : (
+        <div className={styles.waitForDiscrepanciesSpinner}>
+          <Spinner />
+        </div>
+      )}
       {listItemEditID &&
       listItems.find((e) => e.listItemID === listItemEditID) ? (
         <ListItemEditPane

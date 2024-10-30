@@ -48,6 +48,9 @@ function EventEditPane({
   }, []);
 
   useEffect(() => {
+    console.log(eventStartDateTime);
+    console.log(event.startDateTime);
+
     if (
       eventTitle !== event.title ||
       eventStartDateTime !== event.startDateTime ||
