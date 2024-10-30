@@ -1,45 +1,31 @@
 .listContainerWrapper {
-  border: 2px solid red;
-  /* overflow-y: scroll; */
-  overflow-y: overlay;
-  /* padding: 28px 0px 20px 28px; */
-  /* padding: 4% 4% 4% 4%; */
+  /* border: 5px solid pink; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* scroll-padding-right: 150px; */
-  /* transition: height 0.2s ease; */
   box-sizing: border-box;
-  /* width: 100%; */
-  flex-grow: 1;
-}
-
-.listContainerWrapper::-webkit-scrollbar {
-  width: 12px !important;
-}
-
-.listContainerWrapper::-webkit-scrollbar-track {
-  background: #2c2c2c !important;
-  border-radius: 10px !important;
-}
-
-.listContainerWrapper::-webkit-scrollbar-thumb {
-  background: #6b6b6b !important;
-  border-radius: 6px !important;
-  width: 8px !important;
-  min-height: 30px !important; /* Ensures minimum height */
-  height: 30px !important; /* Forces the thumb height to always be fixed */
-}
-
-.listContainerWrapper::-webkit-scrollbar-thumb:hover {
-  background: #939393 !important;
-}
-
-.container {
-  border: 2px solid blue;
   /* height: 100%; */
   width: 100%;
-  /* max-width: 1000px; */
+  /* overflow-y: hidden; */
+  /* flex-grow: 1; */
+}
+
+/* .listScrollWrapper {
+  border: 5px solid green;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+} */
+
+.container {
+  border: 2px solid cyan;
+  /* height: 100%; */
+  width: 100%;
+  max-width: 1000px;
   /* max-width: 90%; */
   /* padding: 0px 10px; */
   box-sizing: border-box;
@@ -126,33 +112,4 @@
 }
 
 .listsHeaderButton:hover {
-}
-
-.showPlannerWrapper {
-  height: 70px;
-  width: 100%;
-  border-top: 1px solid rgba(155, 155, 155, 0.151);
-  box-sizing: border-box;
-  margin-top: auto;
-  padding: 12px 12px;
-  /* border: 1px solid red; */
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.showPlannerLabel {
-  margin-left: 12px;
-  color: rgb(155, 155, 155);
-  font-size: 12px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.showPlannerLabel span {
-  margin-left: 8px;
-  margin-top: 1px;
 }

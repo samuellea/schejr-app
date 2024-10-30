@@ -3,18 +3,20 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  border: 3px solid white;
+  /* border: 3px solid white; */
   max-width: 100vw;
+  max-height: 100vh;
 }
 
 .container {
-  flex-grow: 1;
-  box-sizing: border-box;
-  background-color: #191919;
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  /* overflow: hidden; */
-  max-width: 100vw;
-  border: 3px solid cyan;
+  /* border: 3px solid hotpink; */
+  flex-grow: 1; /* Allow the container to grow and fill remaining space */
+  box-sizing: border-box; /* Include padding and border in width calculation */
+  background-color: #191919; /* Background color */
+  position: relative; /* Relative positioning for child elements */
+  display: flex; /* Enable flexbox layout */
+  flex-direction: row; /* Arrange children in a row */
+  max-width: 100vw; /* Limit max width to viewport width */
+  max-height: 100%; /* Fill parent's height but do not exceed it */
+  overflow-y: auto; /* Add vertical scrollbar if content exceeds available height */
 }

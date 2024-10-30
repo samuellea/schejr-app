@@ -110,33 +110,42 @@ function MainArea({
         />
       ) : null}
 
-      {selectedList && listAndItemsLoaded ? (
-        <List
-          selectedList={selectedList}
-          updateList={updateList}
-          listItems={listItems}
-          setListItems={setListItems}
-          handleEditListItem={handleEditListItem}
-          existingTags={existingTags}
-          showPlanner={showPlanner}
-          togglePlanner={togglePlanner}
-          handleEntities={handleEntities}
-          lists={lists}
-        />
-      ) : discrepanciesChecked && !eventDiscrepancies ? (
-        <div className={styles.emptyMessage}>
-          <p className={styles.emptyMessageSpan}>
-            Select a list or create one with
-            <span>
-              <EditIcon fill="#9b9b9b" width="20px" />
-            </span>
-          </p>
-        </div>
-      ) : !discrepanciesChecked && !eventDiscrepancies ? (
-        <div className={styles.waitForDiscrepanciesSpinner}>
-          <Spinner />
-        </div>
-      ) : null}
+      <div
+        className={styles.listSection}
+        style={{
+          height: !showPlanner ? '100%' : plannerMax ? '0%' : '50%',
+          transition: 'height 0.2s ease',
+        }}
+      >
+        {selectedList && listAndItemsLoaded ? (
+          <List
+            selectedList={selectedList}
+            updateList={updateList}
+            listItems={listItems}
+            setListItems={setListItems}
+            handleEditListItem={handleEditListItem}
+            existingTags={existingTags}
+            showPlanner={showPlanner}
+            togglePlanner={togglePlanner}
+            handleEntities={handleEntities}
+            lists={lists}
+          />
+        ) : discrepanciesChecked && !eventDiscrepancies ? (
+          <div className={styles.emptyMessage}>
+            <p className={styles.emptyMessageSpan}>
+              Select a list or create one with
+              <span>
+                <EditIcon fill="#9b9b9b" width="20px" />
+              </span>
+            </p>
+          </div>
+        ) : !discrepanciesChecked && !eventDiscrepancies ? (
+          <div className={styles.waitForDiscrepanciesSpinner}>
+            <Spinner />
+          </div>
+        ) : null}
+      </div>
+
       {listItemEditID &&
       listItems.find((e) => e.listItemID === listItemEditID) ? (
         <ListItemEditPane
@@ -152,21 +161,44 @@ function MainArea({
           handleEntities={handleEntities}
         />
       ) : null}
-      <Planner
-        showPlanner={showPlanner}
-        togglePlanner={togglePlanner}
-        plannerMax={plannerMax}
-        toggleExpand={toggleExpand}
-        events={events}
-        setEvents={setEvents}
-        existingTags={existingTags}
-        setExistingTags={setExistingTags}
-        handleEntities={handleEntities}
-        plannerRange={plannerRange}
-        setPlannerRange={setPlannerRange}
-        showSidebar={showSidebar}
-        eventDiscrepancies={eventDiscrepancies}
-      />
+      <div
+        className={styles.plannerSection}
+        style={{
+          // height: '50%',
+          height: !showPlanner ? '70px' : plannerMax ? '100%' : '50%',
+          transition: 'height 0.2s ease',
+          borderTop: !plannerMax
+            ? '1px solid rgba(155, 155, 155, 0.151)'
+            : 'none',
+
+          // padding: !showPlanner
+          //   ? '0px'
+          //   : plannerMax
+          //   ? '0px 0px 0px 0px'
+          //   : '0px 0px 0px 0px',
+          // borderTop: plannerMax
+          //   ? 'none'
+          //   : '1px solid rgba(155, 155, 155, 0.151)',
+        }}
+      >
+        {selectedList && listAndItemsLoaded ? (
+          <Planner
+            showPlanner={showPlanner}
+            togglePlanner={togglePlanner}
+            plannerMax={plannerMax}
+            toggleExpand={toggleExpand}
+            events={events}
+            setEvents={setEvents}
+            existingTags={existingTags}
+            setExistingTags={setExistingTags}
+            handleEntities={handleEntities}
+            plannerRange={plannerRange}
+            setPlannerRange={setPlannerRange}
+            showSidebar={showSidebar}
+            eventDiscrepancies={eventDiscrepancies}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }

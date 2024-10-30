@@ -15,7 +15,14 @@ function TopBar({
 }) {
   return (
     <div className={styles.container}>
-      <div className={styles.listsHeader}>
+      <div
+        className={styles.listsHeader}
+        style={{
+          borderRight: showSidebar
+            ? '1px solid rgba(155, 155, 155, 0.151)'
+            : 'none',
+        }}
+      >
         <div
           role="button"
           className={styles.topbarButton}

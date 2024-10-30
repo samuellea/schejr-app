@@ -17,6 +17,7 @@ import {
 } from 'date-fns';
 import MonthIcon from '../Icons/MonthIcon';
 import WeekIcon from '../Icons/WeekIcons';
+import DateIcon from '../Icons/DateIcon';
 
 function Planner({
   showPlanner,
@@ -146,29 +147,28 @@ function Planner({
   const scrollRef = useRef(null);
 
   return (
-    <div
-      className={styles.container}
-      style={{
-        height: !showPlanner ? '0%' : plannerMax ? '100%' : '50%',
-        padding: !showPlanner
-          ? '0px'
-          : plannerMax
-          ? '0px 0px 0px 0px'
-          : '0px 0px 0px 0px',
-        borderTop: plannerMax ? 'none' : '1px solid rgba(155, 155, 155, 0.151)',
-      }}
-    >
-      {/* {showSidebar ? <div className={styles.sidebarSpacer} /> : null} */}
-      {/* <div className={styles.sidebarSpacer} /> */}
+    <div className={styles.container}>
+      {!showPlanner ? (
+        <div className={styles.showPlannerWrapper}>
+          <div
+            role="button"
+            className={styles.listsHeaderButton}
+            onClick={togglePlanner}
+          >
+            <ChevronIcon fill="white" width="20px" flip={90} />
+          </div>
+          <div className={styles.showPlannerLabel}>
+            <DateIcon fill="white" width="16px" marginBottom="0px" />
+            <span>Show Planner</span>
+          </div>
+        </div>
+      ) : null}
+
       {showPlanner ? (
         <div className={styles.plannerContentWrapper}>
           <div className={styles.contentAndControls}>
             <div className={styles.contentContainer}>
-              <div
-                className={styles.datesArea}
-                ref={scrollRef}
-                // onScroll={handleScroll}
-              >
+              <div className={styles.datesArea} ref={scrollRef}>
                 {eventsLoaded
                   ? dates.map((date, i) => {
                       const eventsForThisDate = h.getEventsForDate(
@@ -199,6 +199,7 @@ function Planner({
             </div>
 
             <div className={styles.controlsContainer}>
+              {/* <p>CONTROLS</p> */}
               <div className={styles.expandButtonsContainer}>
                 {!plannerMax ? (
                   <div
@@ -273,3 +274,9 @@ function Planner({
 }
 
 export default Planner;
+
+/*
+
+
+
+*/

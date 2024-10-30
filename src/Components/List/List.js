@@ -126,14 +126,7 @@ function List({
   };
 
   return (
-    <div
-      className={styles.listContainerWrapper}
-      style={{
-        // padding: showPlanner ? '28px 13px 0px 28px' : '28px 20px 0px 28px',
-        height: showPlanner ? '50%' : '100%',
-        display: showPlanner ? null : 'flex',
-      }}
-    >
+    <div className={styles.listContainerWrapper}>
       <Droppable droppableId={`list-${selectedList.listID}`} type="list-item">
         {(provided) => (
           <div
@@ -215,27 +208,8 @@ function List({
           </div>
         )}
       </Droppable>
-      {!showPlanner ? (
-        <div className={styles.showPlannerWrapper}>
-          <div
-            role="button"
-            className={styles.listsHeaderButton}
-            onClick={togglePlanner}
-          >
-            <ChevronIcon fill="white" width="20px" flip={90} />
-          </div>
-          <div className={styles.showPlannerLabel}>
-            <DateIcon fill="white" width="16px" marginBottom="0px" />
-            <span>Show Planner</span>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
 
 export default List;
-
-/*
-
-*/
