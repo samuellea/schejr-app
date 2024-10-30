@@ -1,7 +1,7 @@
 .container {
   height: 100%;
   width: 100%;
-  border: 5px solid orange;
+  border: 5px solid purple;
   box-sizing: border-box;
   color: white;
   overflow-y: scroll;

@@ -1086,7 +1086,7 @@ function Home() {
       await Promise.all(dbAddPromises);
       await Promise.all(gcalDeletePromises);
       setEventDiscrepancies(null);
-      setDiscrepanciesChecked(false);
+      setDiscrepanciesChecked(true);
       setDiscrDisable(false);
       setFixingDiscrepancies(false);
     } catch (error) {

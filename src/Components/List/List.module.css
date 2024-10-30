@@ -1,5 +1,5 @@
 .listContainerWrapper {
-  /* border: 2px solid red; */
+  border: 2px solid red;
   /* overflow-y: scroll; */
   overflow-y: overlay;
   /* padding: 28px 0px 20px 28px; */
@@ -36,10 +36,11 @@
 }
 
 .container {
-  /* border: 2px solid blue; */
+  border: 2px solid blue;
   /* height: 100%; */
   width: 100%;
-  max-width: 1000px;
+  /* max-width: 1000px; */
+  /* max-width: 90%; */
   /* padding: 0px 10px; */
   box-sizing: border-box;
   display: flex;

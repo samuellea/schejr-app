@@ -1,10 +1,11 @@
 .container {
-  /* border: 2px solid orange; */
+  border: 5px solid orange;
   /* border-left: 1px solid rgba(155, 155, 155, 0.151); */
   /* border-top: 1px solid rgba(155, 155, 155, 0.151); */
   background-color: #202020;
   color: white;
   width: 100%;
+  max-width: 100%;
   position: absolute;
   /* margin-top: auto; */
   /* height: 50%; */

@@ -1,8 +1,9 @@
 .container {
-  /* border: 1px solid green; */
+  border: 1px solid green;
   height: 30px;
-  width: 100%;
+  /* width: 100%; */
   min-width: 100%;
+  /* max-width: 100%; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -45,10 +46,10 @@
 }
 
 .listItemTitle {
-  /* border: 1px solid white; */
   /* background-color: red; */
   background: none;
   border: none;
+  /* border: 1px solid white; */
   outline: none;
   font-size: 17px;
   font-weight: 500;
@@ -64,6 +65,7 @@
   text-overflow: ellipsis; /* Apply ellipsis if content overflows max width */
   padding: 0px;
   flex-shrink: 1; /* Allow to shrink if necessary */
+  flex-grow: 1; /* Allow to grow and fill remaining space */
 }
 
 .deleteListItemButton,

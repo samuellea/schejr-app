@@ -16,8 +16,6 @@ function MainArea({
   selectedList,
   updateList,
   handleEntities,
-  // updateListItem,
-  // handleEvents,
   listItems,
   setListItems,
   listAndItemsLoaded,
@@ -28,9 +26,6 @@ function MainArea({
   setEvents,
   plannerRange,
   setPlannerRange,
-  setModalBackground,
-  // handleOtherEventFields,
-  toggleSidebar,
   lists,
   discrepanciesChecked,
   eventDiscrepancies,
@@ -81,7 +76,6 @@ function MainArea({
       prevListIDRef.current = selectedList.listID;
       fetchListItems();
       setListItemEditID(null);
-      // fetchTags();
     }
   }, [selectedList]);
 
@@ -106,23 +100,7 @@ function MainArea({
   };
 
   return (
-    <div
-      className={styles.container}
-      // style={{ width: showSidebar ? '80%' : '100%' }}
-    >
-      {/* {showSidebar ? <div className={styles.sidebarSpacer} /> : null} */}
-      {/* <div className={styles.sidebarSpacer} /> */}
-
-      {/* {!showSidebar ? (
-        <div
-          role="button"
-          className={styles.openSidebarButton}
-          onClick={toggleSidebar}
-        >
-          <ChevronIcon fill="white" width="16px" flip="180" />
-        </div>
-      ) : null} */}
-
+    <div className={styles.container}>
       {discrepanciesChecked && eventDiscrepancies ? (
         <EventDiscrepancies
           evDiscs={eventDiscrepancies}
@@ -136,18 +114,16 @@ function MainArea({
         <List
           selectedList={selectedList}
           updateList={updateList}
-          // updateListItem={updateListItem}
           listItems={listItems}
           setListItems={setListItems}
           handleEditListItem={handleEditListItem}
           existingTags={existingTags}
           showPlanner={showPlanner}
           togglePlanner={togglePlanner}
-          // handleEvents={handleEvents}
           handleEntities={handleEntities}
           lists={lists}
         />
-      ) : discrepanciesChecked ? (
+      ) : discrepanciesChecked && !eventDiscrepancies ? (
         <div className={styles.emptyMessage}>
           <p className={styles.emptyMessageSpan}>
             Select a list or create one with
@@ -156,23 +132,19 @@ function MainArea({
             </span>
           </p>
         </div>
-      ) : (
+      ) : !discrepanciesChecked && !eventDiscrepancies ? (
         <div className={styles.waitForDiscrepanciesSpinner}>
           <Spinner />
         </div>
-      )}
+      ) : null}
       {listItemEditID &&
       listItems.find((e) => e.listItemID === listItemEditID) ? (
         <ListItemEditPane
-          // listItemEditID={listItemEditID}
           listItem={listItems.find((e) => e.listItemID === listItemEditID)}
           listItems={listItems}
           setListItems={setListItems}
           handleCloseEditPane={handleCloseEditPane}
           userUID={userUID}
-          // updateListItem={updateListItem}
-          // handleEvents={handleEvents}
-          // fetchTags={fetchTags}
           existingTags={existingTags}
           setExistingTags={setExistingTags}
           syncWithGCal={syncWithGCal}
@@ -180,7 +152,6 @@ function MainArea({
           handleEntities={handleEntities}
         />
       ) : null}
-      {/* {showPlanner ? ( */}
       <Planner
         showPlanner={showPlanner}
         togglePlanner={togglePlanner}
@@ -188,18 +159,14 @@ function MainArea({
         toggleExpand={toggleExpand}
         events={events}
         setEvents={setEvents}
-        // handleEvents={handleEvents}
         existingTags={existingTags}
         setExistingTags={setExistingTags}
-        // handleOtherEventFields={handleOtherEventFields}
         handleEntities={handleEntities}
         plannerRange={plannerRange}
         setPlannerRange={setPlannerRange}
-        // setModalBackground={setModalBackground}
         showSidebar={showSidebar}
         eventDiscrepancies={eventDiscrepancies}
       />
-      {/* ) : null} */}
     </div>
   );
 }

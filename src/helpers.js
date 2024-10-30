@@ -571,22 +571,25 @@ export const composeDiscrepancies = (allDBEvents, allGCalEventsFormatted) => {
       (gcalEvent) => gcalEvent.eventID === dbEvent.eventID
     );
     if (correspGCalEvent) {
+      const keysToCompare = ['startDateTime', 'timeSet', 'title'];
       Object.entries(dbEvent).forEach(([key, value]) => {
-        if (correspGCalEvent[key] !== dbEvent[key]) {
-          const diffObjIndex = discrepancies.bothButDiff.findIndex(
-            (e) => e.eventID === dbEvent.eventID
-          );
-          if (diffObjIndex !== -1) {
-            discrepancies.bothButDiff[diffObjIndex].changedFields.push(key);
-          } else {
-            const newDiffObj = {
-              eventID: dbEvent.eventID,
-              schejr: dbEvent,
-              gcal: correspGCalEvent,
-              changedFields: [key],
-              keep: null,
-            };
-            discrepancies.bothButDiff.push(newDiffObj);
+        if (keysToCompare.includes(key)) {
+          if (correspGCalEvent[key] !== dbEvent[key]) {
+            const diffObjIndex = discrepancies.bothButDiff.findIndex(
+              (e) => e.eventID === dbEvent.eventID
+            );
+            if (diffObjIndex !== -1) {
+              discrepancies.bothButDiff[diffObjIndex].changedFields.push(key);
+            } else {
+              const newDiffObj = {
+                eventID: dbEvent.eventID,
+                schejr: dbEvent,
+                gcal: correspGCalEvent,
+                changedFields: [key],
+                keep: null,
+              };
+              discrepancies.bothButDiff.push(newDiffObj);
+            }
           }
         }
       });

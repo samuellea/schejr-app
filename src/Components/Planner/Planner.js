@@ -139,21 +139,9 @@ function Planner({
 
   useEffect(() => {
     if (events !== null) {
-      // console.log(events);
       setEventsLoaded(true);
     }
   }, [events]);
-
-  /*
-      const datesForMonth = h.generateMonthlyDays(viewMonth);
-      setDates(datesForMonth);
-      getAndSetMonthUserEvents(viewMonth);
-
-      const weekData = h.generateWeeklyDays(viewWeek).dates;
-      const {datesForWeek, weekNum} = weekData;
-      setDates(datesForWeek);
-      getAndSetWeekUserEvents(datesForWeek);
-  */
 
   const scrollRef = useRef(null);
 

@@ -3,15 +3,18 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  border: 3px solid white;
+  max-width: 100vw;
 }
 
 .container {
-  /* border: 3px solid green; */
   flex-grow: 1;
   box-sizing: border-box;
   background-color: #191919;
   position: relative;
   display: flex;
   flex-direction: row;
-  overflow: hidden;
+  /* overflow: hidden; */
+  max-width: 100vw;
+  border: 3px solid cyan;
 }
