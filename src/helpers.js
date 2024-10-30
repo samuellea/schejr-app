@@ -364,17 +364,37 @@ export const dateTimeTo12Hour = (dateTime) => {
   }
 };
 
-export const formatDateForListItem = (startDateTime) => {
+export const formatDateForListItem = (listItem) => {
+  const soonestDate = listItem.dates.sort((a, b) =>
+    a.startDateTime.localeCompare(b.startDateTime)
+  )[0];
+  const { startDateTime, timeSet } = soonestDate;
   const date = new Date(startDateTime);
 
+  let formattedDate;
   // Check if the year is the current year
   if (isThisYear(date)) {
     // Format as 'Sep 16'
-    return format(date, 'MMM d');
+    formattedDate = format(date, 'MMM d');
   } else {
     // Format as 'Sep 16, 2025'
-    return format(date, 'MMM d, yyyy');
+    formattedDate = format(date, 'MMM d, yyyy');
   }
+  // If it has a specified time, append this.
+  if (timeSet) {
+    let formattedTimePortion = format(date, 'h:mm a');
+    if (date.getMinutes() === 0) {
+      // Remove the minutes if it's on the hour
+      formattedTimePortion = formattedTimePortion.replace(/:00/, '').trim(); // e.g., '1 pm'
+    }
+    formattedTimePortion = formattedTimePortion;
+    // .toLowerCase()
+    // .replace(/\s+/g, '');
+    formattedDate = formattedDate + ' @ ' + formattedTimePortion;
+    // Check if it's on the hour and adjust the format
+  }
+
+  return formattedDate;
 };
 
 export const formatDateString = (dateString) => {
@@ -497,7 +517,7 @@ export const formatGCalEventAsDBEvent = (userUID, gcalEvent) => {
   let startDateTime;
   // if startDateTime hasn't had a TIME SPECIFIED, on GCal it will just be YYYY-MM-DD: this needs to become midnight on that date (in user's local tz), THEN convert THAT to UTC
   if (gcalEvent.start.date) {
-    // we need to append the YYYY-MM-DD with midnight as it would be in the user's local tz, then set startDateTime as THIS but converted to UTC!
+    // we need to append the YYYY-MM-DD with midnight as it would be in the user's local tz, then set formatDateForListItemtartDateTime as THIS but converted to UTC!
     // const startDateAsLocalMidnight = `${gcalEvent.start.date}T00:00:00.000`;
     const startDateAsLocalMidnight = `${gcalEvent.start.date}T00:00:00.000Z`;
     // ie. NOT gcalEvent.start.dateTime (which is a specified TIME as well as date)

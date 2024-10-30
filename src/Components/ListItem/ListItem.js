@@ -129,11 +129,7 @@ function ListItem({
           <div className={styles.dateContainer} id="flexidiv">
             <DateIcon />
             <span>
-              {h.formatDateForListItem(
-                listItem.dates.sort((a, b) =>
-                  a.startDateTime.localeCompare(b.startDateTime)
-                )[0]?.startDateTime
-              )}
+              {h.formatDateForListItem(listItem)}
               {listItem.dates?.length > 1 ? '...' : null}
             </span>
             {listItem.dates?.length > 1 ? (

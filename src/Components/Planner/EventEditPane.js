@@ -10,6 +10,7 @@ import * as u from '../../utils';
 import TagSelector from '../TagSelector/TagSelector';
 import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import Spinner from '../Spinner/Spinner';
+import toast from 'react-hot-toast';
 
 function EventEditPane({
   event,
@@ -133,13 +134,24 @@ function EventEditPane({
       startDateTime: eventStartDateTime,
       timeSet: eventTimeSet,
     };
+    try {
+      await handleEntities.updateEventAndDates(
+        ['title', 'tags', 'startDateTime'],
+        updatedEvent
+      );
+      setSaving(false);
+      handleStopEditing();
+      toast(`Saved event details`, {
+        duration: 2000,
+      });
+    } catch (error) {
+      setSaving(false);
+      handleStopEditing();
+      toast(`Error saving event details`, {
+        duration: 2000,
+      });
+    }
     // console.log(updatedEvent);
-    await handleEntities.updateEventAndDates(
-      ['title', 'tags', 'startDateTime'],
-      updatedEvent
-    );
-    setSaving(false);
-    handleStopEditing();
   };
 
   return (
