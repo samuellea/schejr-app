@@ -845,9 +845,10 @@ export const convertDBToGCal = (event) => {
 
     gcalEventObj.start = {
       dateTime: startDateTime,
+      date: null, // you have to SPECIFICALLY nullify .date, if changing an all-day event to timed!
       timeZone,
     };
-    gcalEventObj.end = { dateTime: endDateTime, timeZone };
+    gcalEventObj.end = { dateTime: endDateTime, date: null, timeZone };
     // console.log(gcalEventObj);
   }
   return gcalEventObj;
@@ -926,11 +927,15 @@ export const updateEventOnGCal = async (newData, gcalEventID = null) => {
   try {
     let targetGCalEventID = gcalEventID;
     // if gcalEventID not passed in when called, find gcalEventID of corresp event obj
+    const correspGCalEvent = await fetchGCalEventByDBEventID(newData.eventID);
+    console.log(correspGCalEvent);
+
     if (!gcalEventID) {
-      const correspGCalEvent = await fetchGCalEventByDBEventID(newData.eventID);
       targetGCalEventID = correspGCalEvent.id;
     }
     const updatedGCalEventObj = convertDBToGCal(newData);
+    console.log(updatedGCalEventObj);
+    // console.log(JSON.stringify(updatedGCalEventObj));
     const response = await gapi.client.calendar.events.patch({
       calendarId: 'primary', // Change this to your calendar ID if needed
       eventId: targetGCalEventID,

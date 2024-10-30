@@ -121,7 +121,7 @@ function EventDiscrepancies({
       schejrNotGCal: schejrNotGCalStripOrderKey,
       gcalNotSchejr: gcalNotSchejrStripOrderKey,
     };
-    // console.log(updatedEvDiscs);
+    console.log(updatedEvDiscs);
     handleSubmitFixes(updatedEvDiscs);
   };
 
