@@ -18,7 +18,7 @@
 }
 
 .listSection {
-  /* border: 5px solid red;  */
+  /* border: 5px solid red; */
   box-sizing: border-box; /* Include padding and border in width calculation */
   flex-grow: 1; /* Allow to grow and fill remaining space */
   overflow-y: auto; /* Show scrollbar only when needed */

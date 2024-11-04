@@ -1,21 +1,22 @@
 .container {
-  /* border: 1px solid green; */
-  height: 30px;
+  border: 1px solid #373737;
+  /* height: 80px; */
   /* width: 100%; */
   min-width: 100%;
   /* max-width: 100%; */
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   border-radius: 5px;
-  padding: 0px 6px 0px 4px;
+  padding: 0px 0px 0px 4px;
   color: white;
   box-sizing: border-box;
   margin: 0;
   overflow: hidden; /* Prevent overflow from the container */
   pointer-events: none;
   /* background-color: #2a2a2a; */
+  margin-top: 10px;
   background-color: #191919;
 }
 .container:hover {
@@ -30,13 +31,12 @@
   min-width: 0; /* Prevent children from forcing min-widths */
 }
 
-.titleTagsDatesWrapper {
+.titleTagsDatesSegment {
   /* border: 3px solid hotpink; */
-  height: 30px;
-
+  /* height: 90px; */
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
   border-radius: 5px;
   color: white;
@@ -44,14 +44,73 @@
   margin: 0;
   overflow: hidden; /* Ensure content does not overflow */
   padding-left: 1%;
+  width: 70%;
+}
+
+.titleCell {
+  /* border: 2px solid red; */
   width: 100%;
+  height: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.tagsCell {
+  /* border: 2px solid yellow; */
+  width: 100%;
+  max-width: 100%;
+  height: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 6px;
+}
+
+.restCell {
+  /* border: 3px solid green; */
+  width: 100%;
+  height: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.buttonsSegment {
+  width: 30%;
+  /* border: 3px solid yellow; */
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+}
+
+.buttonsWrapper {
+  /* border: 1px solid white; */
+  height: 100%;
+  /* width: 300px; */
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .listItemTitle {
   /* background-color: red; */
   background: none;
   border: none;
-  /* border: 1px solid yellow; */
+  /* border: 1px dotted white; */
   outline: none;
   font-size: 17px;
   font-weight: 500;
@@ -68,13 +127,15 @@
   padding: 0px;
   flex-shrink: 1; /* Allow to shrink if necessary */
   flex-grow: 1; /* Allow to grow and fill remaining space */
+  border-radius: 5px;
 }
 
 .deleteListItemButton,
 .editListItemButton {
   /* background-color: #2a2a2a; */
   background: none;
-  border: 1px solid #2a2a2a;
+  /* border: 1px solid #2a2a2a; */
+  border: none;
   margin-left: 4px;
   border-radius: 4px;
   width: 31px;
@@ -91,12 +152,6 @@
 }
 
 .tagsContainer {
-  /* border: 1px solid cyan; */
-  flex-grow: 0; /* Grow to take available space */
-  flex-shrink: 1; /* Allow to shrink if necessary */
-  flex-basis: 1; /* Start from zero and grow as needed */
-  min-width: 0; /* Prevent from growing beyond available space */
-  margin-left: auto; /* Push it to the right */
   /* background-color: blue; */
   display: inline-flex;
   flex-direction: row;
@@ -114,7 +169,7 @@
 .tag {
   color: white;
   padding: 0px 6px;
-  margin: 0px 0px 0px 6px;
+  margin: 0px 6px 0px 0px;
   border-radius: 3px;
   height: 20px;
   display: flex;
@@ -135,8 +190,8 @@
 
   /* border: 1px solid #7948469f; */
   background: #79484611;
-  padding: 0px 6px;
-  margin: 0px 0px 0px 6px;
+  padding: 0px 0px;
+  margin: 0px 0px 0px 0px;
   border-radius: 3px;
   height: 20px;
   display: flex;
@@ -191,8 +246,8 @@
 
 .listItemDragHandle {
   width: 10px;
-  height: 80%;
-  /* border: 1px solid white; */
+  height: 100%;
+  border: 1px solid #2a2a2a;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -205,6 +260,9 @@
   padding: 0px 5px;
   position: relative;
   border-radius: 4px;
+  padding-right: 10px;
+  margin-left: 4px;
+  background-color: rgb(38, 38, 38);
 }
 
 .listItemDragHandle:hover {

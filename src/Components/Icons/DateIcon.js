@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DateIcon({ fill = 'rgba(255, 255, 255, 0.81)' }) {
+function DateIcon({ width = '16px', fill = 'rgba(255, 255, 255, 0.81)' }) {
   return (
     <div>
       <svg
@@ -8,8 +8,8 @@ function DateIcon({ fill = 'rgba(255, 255, 255, 0.81)' }) {
         viewBox="0 0 16 16"
         className="typesDate"
         style={{
-          width: '16px',
-          height: '16px',
+          width: width,
+          height: width,
           display: 'block',
           fill: fill,
           flexShrink: '0',

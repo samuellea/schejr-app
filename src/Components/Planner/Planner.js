@@ -158,7 +158,11 @@ function Planner({
             <ChevronIcon fill="white" width="20px" flip={90} />
           </div>
           <div className={styles.showPlannerLabel}>
-            <DateIcon fill="white" width="16px" marginBottom="0px" />
+            <DateIcon
+              fill="white"
+              width={window.innerWidth < 768 ? '20px' : '16px'}
+              marginBottom="0px"
+            />
             <span>Show Planner</span>
           </div>
         </div>
@@ -274,9 +278,3 @@ function Planner({
 }
 
 export default Planner;
-
-/*
-
-
-
-*/

@@ -4,6 +4,7 @@ import * as h from '../../helpers';
 import randomEmoji from 'random-emoji';
 import styles from './List.module.css';
 import ListItem from '../ListItem/ListItem';
+import ListItemMobile from '../ListItem/ListItemMobile';
 import { Droppable, Draggable } from '@hello-pangea/dnd'; // Updated imports
 import Sort from '../Sort/Sort';
 import Search from '../Search/Search';
@@ -134,7 +135,9 @@ function List({
             ref={provided.innerRef}
             {...provided.droppableProps}
             style={{
-              padding: showPlanner ? '28px 3px 0px 28px' : '28px 15px 0px 28px',
+              padding: showPlanner
+                ? '28px 3px 28px 28px'
+                : '28px 15px 28px 28px',
             }}
           >
             <input
@@ -184,17 +187,31 @@ function List({
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <ListItem
-                        listItem={listItem}
-                        handleEditListItem={handleEditListItem}
-                        existingTags={existingTags}
-                        deleteListItem={deleteListItem}
-                        updateListItem={updateListItem}
-                        key={`list-item-${listItem.listItemID}`}
-                        provided={provided}
-                        handleEntities={handleEntities}
-                        searching={searchString.length > 0}
-                      />
+                      {window.innerWidth < 768 ? (
+                        <ListItemMobile
+                          listItem={listItem}
+                          handleEditListItem={handleEditListItem}
+                          existingTags={existingTags}
+                          deleteListItem={deleteListItem}
+                          updateListItem={updateListItem}
+                          key={`list-item-${listItem.listItemID}`}
+                          provided={provided}
+                          handleEntities={handleEntities}
+                          searching={searchString.length > 0}
+                        />
+                      ) : (
+                        <ListItem
+                          listItem={listItem}
+                          handleEditListItem={handleEditListItem}
+                          existingTags={existingTags}
+                          deleteListItem={deleteListItem}
+                          updateListItem={updateListItem}
+                          key={`list-item-${listItem.listItemID}`}
+                          provided={provided}
+                          handleEntities={handleEntities}
+                          searching={searchString.length > 0}
+                        />
+                      )}
                     </div>
                   )}
                 </Draggable>

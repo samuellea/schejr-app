@@ -22,7 +22,7 @@
 } */
 
 .container {
-  border: 2px solid cyan;
+  /* border: 2px solid cyan; */
   /* height: 100%; */
   width: 100%;
   max-width: 1000px;
@@ -71,10 +71,11 @@
   align-items: center;
   justify-content: flex-start;
   border-radius: 5px;
-  padding-left: 28px;
+  padding-left: 7px;
   color: rgb(164, 164, 164);
   border: none;
   /* border: 1px solid white; */
+  /* background-color: #2a2a2a; */
 }
 
 .newListItemButton:hover {

@@ -1,6 +1,7 @@
 .container {
   /* border: 2px solid cyan; */
-  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
   width: 100%;
   box-sizing: border-box;
   /* background-color: #2d2d2d; */
@@ -36,6 +37,7 @@
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis;
+  max-width: 140px;
 }
 
 #sidebarHeader {
@@ -88,8 +90,8 @@
 .logoutContainer {
   margin-left: auto;
   height: 100%;
-  width: 20%;
-  min-width: 200px;
+  /* width: 20%; */
+  /* min-width: 200px; */
   /* border: 1px solid orange; */
   box-sizing: border-box;
   display: flex;
@@ -133,4 +135,13 @@
 
 #logout {
   /* margin-left: 8px; */
+}
+
+@media (max-width: 768px) {
+  #showListsLabel {
+    font-size: 14px;
+    margin-left: 10px;
+    /* border: 1px solid yellow; */
+    padding-top: 0px;
+  }
 }

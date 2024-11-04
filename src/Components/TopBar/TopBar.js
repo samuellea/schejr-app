@@ -38,7 +38,7 @@ function TopBar({
         {showSidebar ? (
           <>
             <p className={styles.topbarText} id={styles.sidebarHeader}>
-              {displayName}'s lists
+              {displayName.match(/^[^ ]+/)[0]}'s lists
             </p>
 
             <div

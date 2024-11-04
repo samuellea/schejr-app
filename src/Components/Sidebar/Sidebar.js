@@ -26,7 +26,14 @@ function Sidebar({
   return (
     <div
       className={styles.container}
-      style={{ pointerEvents: discrDisable ? 'none' : null }}
+      style={{
+        pointerEvents: discrDisable ? 'none' : null,
+        height: selectedListID
+          ? window.innerWidth < 768
+            ? 'calc(100% - 80px)'
+            : '100%'
+          : '100%',
+      }}
       // style={{ zIndex: listDeleteBackground ? 9 : 1 }}
     >
       {/* Sidebar Droppable */}

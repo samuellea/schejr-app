@@ -99,6 +99,10 @@ function MainArea({
     setPlannerMax((prev) => !prev);
   };
 
+  const plannerClosed = {
+    height: window.innerWidth < 768 ? '100px' : '70px',
+  };
+
   return (
     <div className={styles.container}>
       {discrepanciesChecked && eventDiscrepancies ? (
@@ -161,44 +165,49 @@ function MainArea({
           handleEntities={handleEntities}
         />
       ) : null}
-      <div
-        className={styles.plannerSection}
-        style={{
-          // height: '50%',
-          height: !showPlanner ? '70px' : plannerMax ? '100%' : '50%',
-          transition: 'height 0.2s ease',
-          borderTop: !plannerMax
-            ? '1px solid rgba(155, 155, 155, 0.151)'
-            : 'none',
-
-          // padding: !showPlanner
-          //   ? '0px'
-          //   : plannerMax
-          //   ? '0px 0px 0px 0px'
-          //   : '0px 0px 0px 0px',
-          // borderTop: plannerMax
-          //   ? 'none'
-          //   : '1px solid rgba(155, 155, 155, 0.151)',
-        }}
-      >
-        {selectedList && listAndItemsLoaded ? (
-          <Planner
-            showPlanner={showPlanner}
-            togglePlanner={togglePlanner}
-            plannerMax={plannerMax}
-            toggleExpand={toggleExpand}
-            events={events}
-            setEvents={setEvents}
-            existingTags={existingTags}
-            setExistingTags={setExistingTags}
-            handleEntities={handleEntities}
-            plannerRange={plannerRange}
-            setPlannerRange={setPlannerRange}
-            showSidebar={showSidebar}
-            eventDiscrepancies={eventDiscrepancies}
-          />
-        ) : null}
-      </div>
+      {selectedList ? (
+        <div
+          className={styles.plannerSection}
+          style={{
+            // height: '50%',
+            height: !showPlanner
+              ? plannerClosed.height
+              : plannerMax
+              ? '100%'
+              : '50%',
+            transition: 'height 0.2s ease',
+            borderTop: !plannerMax
+              ? '1px solid rgba(155, 155, 155, 0.151)'
+              : 'none',
+            // padding: !showPlanner
+            //   ? '0px'
+            //   : plannerMax
+            //   ? '0px 0px 0px 0px'
+            //   : '0px 0px 0px 0px',
+            // borderTop: plannerMax
+            //   ? 'none'
+            //   : '1px solid rgba(155, 155, 155, 0.151)',
+          }}
+        >
+          {selectedList && listAndItemsLoaded ? (
+            <Planner
+              showPlanner={showPlanner}
+              togglePlanner={togglePlanner}
+              plannerMax={plannerMax}
+              toggleExpand={toggleExpand}
+              events={events}
+              setEvents={setEvents}
+              existingTags={existingTags}
+              setExistingTags={setExistingTags}
+              handleEntities={handleEntities}
+              plannerRange={plannerRange}
+              setPlannerRange={setPlannerRange}
+              showSidebar={showSidebar}
+              eventDiscrepancies={eventDiscrepancies}
+            />
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

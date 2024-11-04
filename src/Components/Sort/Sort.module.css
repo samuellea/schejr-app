@@ -1,6 +1,6 @@
 .container {
   /* border: 2px solid purple; */
-  height: 30px;
+  /* height: 30px; */
   width: 100%;
   color: white;
   margin: 8px 0px 4px 0px;
@@ -200,7 +200,7 @@
   border: 1px solid;
   height: 100%;
   width: 100%;
-  max-width: 250px;
+  /* max-width: 250px; */
   box-sizing: border-box; /* Add this line */
   border-radius: 22px;
   display: flex;
@@ -208,10 +208,12 @@
   align-items: center;
   justify-content: flex-start;
   padding-left: 10px;
+  /* border: 5px solid cyan; */
+  flex-grow: 1;
 }
 
 .searchInput {
-  /* border: 1px solid blue; */
+  /* border: 5px solid blue; */
   border: none;
   outline: none;
   user-select: none;
@@ -221,7 +223,7 @@
   justify-content: center;
   white-space: nowrap;
   height: 100%;
-  width: 85%; /* Set to 100% to take full width of parent */
+  width: 100%;
   max-width: 100%; /* This ensures it doesn't grow larger than its parent */
   line-height: 24px;
   margin-left: 4px;
@@ -246,4 +248,47 @@
   background-color: #8b9898;
   /* padding-top: 1px; */
   box-sizing: border-box;
+}
+
+.sortWrapper {
+  /* border: 1px solid green; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 0;
+}
+
+.searchWrapper {
+  /* border: 1px solid yellow; */
+  width: 100%;
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .container {
+    align-items: flex-start;
+    padding: 0px;
+    margin: 8px 0px 0px 0px;
+  }
+
+  .sortContainer {
+    padding: 0px;
+    margin: 0px;
+    flex-grow: 0;
+  }
+
+  .searchWrapper {
+    /* border: 1px solid yellow; */
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .searchContainer {
+    /* border: 1px solid red; */
+    padding: 0px;
+    width: 100%;
+    max-width: none;
+    flex-grow: 1;
+  }
 }
