@@ -1,3 +1,12 @@
+.container {
+  /* border: 1px solid white; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
 input[type='checkbox'] {
   height: 0;
   width: 0;
@@ -9,11 +18,13 @@ label {
   height: 20px; /* Height of the toggle switch 100 */
   cursor: pointer;
   text-indent: -9999px; /* Hide text for accessibility */
-  background: grey; /* Background color when not toggled */
+  background: #202020; /* Background color when not toggled */
   display: block;
   border-radius: 100px; /* Fully rounded corners */
   position: relative; /* Positioning for the pseudo-element */
   transition: background 0.3s; /* Smooth transition for background */
+  margin-bottom: 6px;
+  border: 1px solid white;
 }
 
 label:after {
@@ -29,10 +40,11 @@ label:after {
 }
 
 input:checked + label {
-  background: #bada55; /* Change background color when checked */
+  background: white; /* Change background color when checked */
 }
 
 input:checked + label:after {
+  background: #202020;
   left: calc(
     100% - 20px
   ); /* Move slider to the right while keeping it inside 100% - 95px */
