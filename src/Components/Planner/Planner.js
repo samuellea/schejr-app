@@ -80,40 +80,11 @@ function Planner({
   const getAndSetRangeUserEvents = async (start, end) => {
     setEventsLoaded(false);
     try {
-      // const rangeUserEvents = await u.fetchUserEventsByRange(
-      //   userUID,
-      //   start,
-      //   end
-      // );
-      const rangeUserEvents = [
-        {
-          eventID: '-OASfYVhVswibhvgr_Ea',
-          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
-          listID: '-OAO0Xq28jvnTVW8Qm13',
-          listItemID: '-OASfXkg-kYgZLlm8J3b',
-          startDateTime: '2024-11-01T00:10:00.000Z',
-          tags: [
-            '-OANexL1bSFCp02vdudB',
-            '-OANexnV7WBmw9gmF9eG',
-            '-OANey9rQ8aUGC_aID1f',
-            '-OANezDianf1hQIQnj2A',
-            '-OANf-UYiGQdZgD389v6',
-            '-OANf0-jYcQIeMbVR_1k',
-            '-OANzqcxeT0-t15iQUHY',
-          ],
-          timeSet: true,
-          title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
-        },
-        {
-          eventID: '-OAro_6wtAAOUqS37P3c',
-          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
-          listID: '-OAO0Xq28jvnTVW8Qm13',
-          listItemID: '-OAT93N2IDA3H0LK_Vdg',
-          startDateTime: '2024-11-05T00:00:00.000Z',
-          timeSet: false,
-          title: 'Untitled 🍏',
-        },
-      ];
+      const rangeUserEvents = await u.fetchUserEventsByRange(
+        userUID,
+        start,
+        end
+      );
       console.log(rangeUserEvents);
       // need to set in state now
       setEvents(rangeUserEvents, 'setAll');

@@ -11,7 +11,7 @@
     Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   /* border: 5px dotted yellow; */
   max-height: 100vh;
-  border: 8px solid red;
+  /* border: 8px solid red; */
 }
 
 @media (max-width: 768px) {
@@ -19,6 +19,6 @@
   .App {
     height: var(--app-height);
     width: 100vw;
-    border: 8px solid blue;
+    /* border: 8px solid blue; */
   }
 }

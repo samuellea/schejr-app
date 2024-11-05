@@ -41,10 +41,10 @@ function App({ auth, database }) {
   return (
     <div id="app" className="App">
       <Routes>
-        {/* <Route exact path="/" element={<PrivateRoute />}> */}
-        <Route exact path="/" element={<Home />} />
-        {/* </Route> */}
-        {/* <Route
+        <Route exact path="/" element={<PrivateRoute />}>
+          <Route exact path="/" element={<Home />} />
+        </Route>
+        <Route
           exact
           path="/login"
           element={
@@ -56,7 +56,7 @@ function App({ auth, database }) {
               GoogleAuthProvider={GoogleAuthProvider}
             />
           }
-        /> */}
+        />
       </Routes>
     </div>
   );
