@@ -68,13 +68,13 @@
 }
 
 .dropPlaceholder {
-  border: 3px solid red;
   height: 38px;
   width: 100%;
   /* border: 2px solid hotpink; */
   /* height: 50px; */
   /* background-color: rgb(136, 136, 136); */
   border: 1px solid rgb(61, 61, 61);
+  border: 3px solid red;
   border-radius: 11px;
   display: flex;
   flex-direction: row;

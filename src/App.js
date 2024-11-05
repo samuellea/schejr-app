@@ -43,20 +43,6 @@ function App({ auth, database }) {
 
   return (
     <div id="app" className="App">
-      {/* <div className={styles.fieldWrapper}>
-        <div className={styles.fieldIndent} />
-        <div className={styles.wrapperLabel}>
-          <SyncIcon fill="#7f7f7f" />
-          <p className={styles.fieldLabelP}>Sync</p>
-        </div>
-        <div className={styles.toggleSwitchWrapper}>
-          <ToggleSwitch toggleValue={() => {}} setToggleValue={() => {}} />
-        </div>
-        <span className={styles.syncExplanation}>
-          'Synchronizing all your dates with Google Calendar'
-        </span>
-      </div> */}
-
       <Routes>
         <Route exact path="/" element={<PrivateRoute />}>
           <Route exact path="/" element={<Home />} />
