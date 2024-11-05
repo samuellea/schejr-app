@@ -1,7 +1,6 @@
 .container {
   /* height: 20px; */
   width: 100%;
-  /* border: 1px solid white; */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -9,6 +8,7 @@
   padding: 0px 20px;
   margin-top: 28px;
   height: auto;
+  border: 1px solid white;
 }
 
 .dayHeader {
