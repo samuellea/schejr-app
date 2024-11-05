@@ -11,13 +11,14 @@
     Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   /* border: 5px dotted yellow; */
   max-height: 100vh;
-  /* border: 2px solid red; */
+  border: 8px solid red;
 }
 
 @media (max-width: 768px) {
   /* Mobile styles via media queries */
   .App {
+    height: var(--app-height);
     width: 100vw;
-    /* border: 2px solid blue; */
+    border: 8px solid blue;
   }
 }

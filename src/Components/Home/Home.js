@@ -13,16 +13,367 @@ import ConfirmDeleteModal from '../ConfirmDeleteModal/ConfirmDeleteModal';
 import randomEmoji from 'random-emoji';
 
 function Home() {
-  const [lists, setLists] = useState([]);
-  const [listItems, setListItems] = useState([]);
-  const [events, setEvents] = useState([]);
+  // const [lists, setLists] = useState([]);
+  // const [listItems, setListItems] = useState([]);
+  // const [events, setEvents] = useState([]);
+  const [lists, setLists] = useState([
+    {
+      listID: '-OASkw2gp_LGGxDz1Yji',
+      createdAt: 1730297446371,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      order: 'ascending',
+      sidebarIndex: 0,
+      sortOn: 'manualOrder',
+      title: 'Untitled 🔫',
+    },
+    {
+      listID: '-OAO0Xq28jvnTVW8Qm13',
+      createdAt: 1730217913271,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      order: 'ascending',
+      sidebarIndex: 1,
+      sortOn: 'manualOrder',
+      title: 'Untitled 💶 Xylophonist',
+    },
+  ]);
+  const [blerg, setListItems] = useState([]);
+  const [listItems, setMyListItems] = useState([
+    {
+      listItemID: '-OAO0YvQUV2mFJ48dtoi',
+      createdAt: 1730217917711,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      dates: [
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OAP-LsvoUyUYYRzrB1_',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OAO0YvQUV2mFJ48dtoi',
+          startDateTime: '2024-10-29T10:00:00.000Z',
+          timeSet: true,
+          title:
+            'Untitled 🌛 I Am A Moonman With A Big Plan For All The things I seek to do.',
+        },
+      ],
+      manualOrder: 1,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title:
+        'Untitled 🌛 I Am A Moonman With A Big Plan For All The things I seek to do.',
+    },
+    {
+      listItemID: '-OASfXkg-kYgZLlm8J3b',
+      createdAt: 1730296032106,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      dates: [
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OAweCDmkrB0IcL2EeOD',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OASfXkg-kYgZLlm8J3b',
+          startDateTime: '2024-04-30T23:00:00.000Z',
+          tags: [
+            '-OANexL1bSFCp02vdudB',
+            '-OANexnV7WBmw9gmF9eG',
+            '-OANey9rQ8aUGC_aID1f',
+            '-OANezDianf1hQIQnj2A',
+            '-OANf-UYiGQdZgD389v6',
+            '-OANf0-jYcQIeMbVR_1k',
+            '-OANzqcxeT0-t15iQUHY',
+          ],
+          timeSet: false,
+          title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
+        },
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OASkJXb86Gm1AUBqRLg',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OASfXkg-kYgZLlm8J3b',
+          startDateTime: '2024-09-30T00:00:00.000Z',
+          tags: [
+            '-OANexL1bSFCp02vdudB',
+            '-OANexnV7WBmw9gmF9eG',
+            '-OANey9rQ8aUGC_aID1f',
+            '-OANezDianf1hQIQnj2A',
+            '-OANf-UYiGQdZgD389v6',
+            '-OANf0-jYcQIeMbVR_1k',
+            '-OANzqcxeT0-t15iQUHY',
+          ],
+          timeSet: false,
+          title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
+        },
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OASfYVhVswibhvgr_Ea',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OASfXkg-kYgZLlm8J3b',
+          startDateTime: '2024-11-01T00:10:00.000Z',
+          tags: [
+            '-OANexL1bSFCp02vdudB',
+            '-OANexnV7WBmw9gmF9eG',
+            '-OANey9rQ8aUGC_aID1f',
+            '-OANezDianf1hQIQnj2A',
+            '-OANf-UYiGQdZgD389v6',
+            '-OANf0-jYcQIeMbVR_1k',
+            '-OANzqcxeT0-t15iQUHY',
+          ],
+          timeSet: true,
+          title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
+        },
+      ],
+      manualOrder: 2,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      tags: [
+        '-OANexL1bSFCp02vdudB',
+        '-OANexnV7WBmw9gmF9eG',
+        '-OANey9rQ8aUGC_aID1f',
+        '-OANezDianf1hQIQnj2A',
+        '-OANf-UYiGQdZgD389v6',
+        '-OANf0-jYcQIeMbVR_1k',
+        '-OANzqcxeT0-t15iQUHY',
+      ],
+      title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
+    },
+    {
+      listItemID: '-OASi8g-gBLNkod3QxTm',
+      createdAt: 1730296715767,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      dates: [
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OASi9im0T_Yuzf2nXm_',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OASi8g-gBLNkod3QxTm',
+          startDateTime: '2025-01-01T00:00:00.000Z',
+          timeSet: false,
+          title: 'Untitled ↙️ Time for A big mac whopper ',
+        },
+      ],
+      manualOrder: 3,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled ↙️ Time for A big mac whopper ',
+    },
+    {
+      listItemID: '-OASyeUAE8AYYa_vFLOz',
+      createdAt: 1730301044334,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 4,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 💔',
+    },
+    {
+      listItemID: '-OASye9fl6uJ97XhvY1V',
+      createdAt: 1730301043021,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 5,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 💈',
+    },
+    {
+      listItemID: '-OASyeKotwZVu6VV_NZ2',
+      createdAt: 1730301043734,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 6,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🌷',
+    },
+    {
+      listItemID: '-OASyeauMqGPAEc9WeX8',
+      createdAt: 1730301044829,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 7,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 📄',
+    },
+    {
+      listItemID: '-OASyeqGuM4XXzQmz2wn',
+      createdAt: 1730301045812,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 8,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 💪',
+    },
+    {
+      listItemID: '-OASye-rUOO7gR1aCWMv',
+      createdAt: 1730301042393,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 9,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🙎',
+    },
+    {
+      listItemID: '-OASyej-uYa-kprPwm1W',
+      createdAt: 1730301045347,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 10,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled ✉️',
+    },
+    {
+      listItemID: '-OASyfjDnZEd7GRc0a15',
+      createdAt: 1730301049457,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 11,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🐧',
+    },
+    {
+      listItemID: '-OASyfrnAfapBP4YR3Ef',
+      createdAt: 1730301050006,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 12,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🈂',
+    },
+    {
+      listItemID: '-OAT93N2IDA3H0LK_Vdg',
+      createdAt: 1730304033996,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      dates: [
+        {
+          createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+          eventID: '-OAro_6wtAAOUqS37P3c',
+          listID: '-OAO0Xq28jvnTVW8Qm13',
+          listItemID: '-OAT93N2IDA3H0LK_Vdg',
+          startDateTime: '2024-11-05T00:00:00.000Z',
+          timeSet: false,
+          title: 'Untitled 🍏',
+        },
+      ],
+      manualOrder: 14,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🍏',
+    },
+    {
+      listItemID: '-OAT8c3jxpGiSZ8SL8Cm',
+      createdAt: 1730303918066,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 18,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🔽',
+    },
+    {
+      listItemID: '-OAY20JV1doegvLTf6yT',
+      createdAt: 1730386072873,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 19,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 💶',
+    },
+    {
+      listItemID: '-OAT0UhvrKSKatT7o4IO',
+      createdAt: 1730301786654,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 20,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🕡',
+    },
+    {
+      listItemID: '-OAT93XBwP9nqPEx5Csk',
+      createdAt: 1730304034647,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 20,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🐒',
+    },
+    {
+      listItemID: '-OAY206zsebL7EOLswzy',
+      createdAt: 1730386072072,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 20,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled ⚓️',
+    },
+    {
+      listItemID: '-OAT0UvXuyBGD7y2OdXT',
+      createdAt: 1730301787525,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 21,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 😿',
+    },
+    {
+      listItemID: '-OAsHgeT8s4kFtBuRN5D',
+      createdAt: 1730742501628,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 21,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🚤',
+    },
+    {
+      listItemID: '-OATlDnFg1hJQoomOwf5',
+      createdAt: 1730314300658,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 22,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🔳',
+    },
+    {
+      listItemID: '-OAs08nsSTBa0g1C4nbd',
+      createdAt: 1730737902508,
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      manualOrder: 22,
+      notes: '',
+      parentID: '-OAO0Xq28jvnTVW8Qm13',
+      title: 'Untitled 🙋',
+    },
+  ]);
+  const [events, setEvents] = useState([
+    {
+      eventID: '-OASfYVhVswibhvgr_Ea',
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      listID: '-OAO0Xq28jvnTVW8Qm13',
+      listItemID: '-OASfXkg-kYgZLlm8J3b',
+      startDateTime: '2024-11-01T00:10:00.000Z',
+      tags: [
+        '-OANexL1bSFCp02vdudB',
+        '-OANexnV7WBmw9gmF9eG',
+        '-OANey9rQ8aUGC_aID1f',
+        '-OANezDianf1hQIQnj2A',
+        '-OANf-UYiGQdZgD389v6',
+        '-OANf0-jYcQIeMbVR_1k',
+        '-OANzqcxeT0-t15iQUHY',
+      ],
+      timeSet: true,
+      title: 'Police Car Chases Vol. 2 - The Revenge Of Cralhastanathon 🚔',
+    },
+    {
+      eventID: '-OAro_6wtAAOUqS37P3c',
+      createdBy: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+      listID: '-OAO0Xq28jvnTVW8Qm13',
+      listItemID: '-OAT93N2IDA3H0LK_Vdg',
+      startDateTime: '2024-11-05T00:00:00.000Z',
+      timeSet: false,
+      title: 'Untitled 🍏',
+    },
+  ]);
   const [sidebarListSortOn, setSidebarListSortOn] = useState('createdAt');
   const [sidebarListAscending, setSidebarListAscending] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
   const [syncWithGCal, setSyncWithGCal] = useState(false);
+  // const [selectedListID, setSelectedListID] = useState(null);
   const [selectedListID, setSelectedListID] = useState(null);
-  const [listItemEditID, setListItemEditID] = useState(null);
+  const [listItemEditID, setListItemEditID] = useState('-OAO0Xq28jvnTVW8Qm13');
   // const [isFirstRender, setIsFirstRender] = useState(true);
   const [plannerRange, setPlannerRange] = useState({ start: null, end: null });
   // const [modalBackground, setModalBackground] = useState(false);
@@ -785,22 +1136,22 @@ function Home() {
     }
   }, [gapiInit, syncFetched]);
 
-  useEffect(() => {
-    const expires = localStorage.getItem('expires');
-    const currentTime = Date.now();
-    const timeUntilExpiration = expires - currentTime;
-    if (timeUntilExpiration <= 0) {
-      // Token is already expired, log out immediately
-      handleLogout();
-    } else {
-      // Set a timeout to log out the user when the token expires
-      const logoutTimer = setTimeout(() => {
-        handleLogout();
-      }, timeUntilExpiration);
-      // Clean up the timer if the component unmounts
-      return () => clearTimeout(logoutTimer);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const expires = localStorage.getItem('expires');
+  //   const currentTime = Date.now();
+  //   const timeUntilExpiration = expires - currentTime;
+  //   if (timeUntilExpiration <= 0) {
+  //     // Token is already expired, log out immediately
+  //     handleLogout();
+  //   } else {
+  //     // Set a timeout to log out the user when the token expires
+  //     const logoutTimer = setTimeout(() => {
+  //       handleLogout();
+  //     }, timeUntilExpiration);
+  //     // Clean up the timer if the component unmounts
+  //     return () => clearTimeout(logoutTimer);
+  //   }
+  // }, []);
 
   const syncStateFetched = useRef(false);
 
@@ -831,25 +1182,21 @@ function Home() {
     getAndSetUserSyncState();
   }, [userUID]);
 
-  useEffect(() => {
-    // const userUID = localStorage.getItem('firebaseID');
-    console.log(userUID);
-    console.log(syncWithGCal);
-    //
-    const fetchLists = async () => {
-      try {
-        const allUserLists = await u.fetchAllUserLists(userUID);
-        const allUserListsWithIDs = Object.entries(allUserLists).map((e) => ({
-          listID: e[0],
-          ...e[1],
-        }));
-        setLists(allUserListsWithIDs);
-      } catch {
-        // Handle error fetching lists
-      }
-    };
-    fetchLists();
-  }, []);
+  // useEffect(() => {
+  //   const fetchLists = async () => {
+  //     try {
+  //       const allUserLists = await u.fetchAllUserLists(userUID);
+  //       const allUserListsWithIDs = Object.entries(allUserLists).map((e) => ({
+  //         listID: e[0],
+  //         ...e[1],
+  //       }));
+  //       setLists(allUserListsWithIDs);
+  //     } catch {
+  //       // Handle error fetching lists
+  //     }
+  //   };
+  //   fetchLists();
+  // }, []);
 
   const handleLogout = () => {
     // Perform your logout logic here

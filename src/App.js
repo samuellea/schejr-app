@@ -22,13 +22,29 @@ function App({ auth, database }) {
     //
   };
 
+  const setAppHeight = () => {
+    const appElement = document.getElementById('app');
+    const vh = window.innerHeight * 0.01; // Calculate 1vh in pixels
+    appElement.style.setProperty('--app-height', `${vh * 100}px`); // Set a CSS variable
+  };
+
+  // Call on load and on resize
+  useEffect(() => {
+    setAppHeight(); // Set height on initial load
+    window.addEventListener('resize', setAppHeight); // Update on resize
+
+    return () => {
+      window.removeEventListener('resize', setAppHeight); // Clean up listener on unmount
+    };
+  }, []);
+
   return (
-    <div className="App">
+    <div id="app" className="App">
       <Routes>
-        <Route exact path="/" element={<PrivateRoute />}>
-          <Route exact path="/" element={<Home />} />
-        </Route>
-        <Route
+        {/* <Route exact path="/" element={<PrivateRoute />}> */}
+        <Route exact path="/" element={<Home />} />
+        {/* </Route> */}
+        {/* <Route
           exact
           path="/login"
           element={
@@ -40,7 +56,7 @@ function App({ auth, database }) {
               GoogleAuthProvider={GoogleAuthProvider}
             />
           }
-        />
+        /> */}
       </Routes>
     </div>
   );

@@ -36,7 +36,52 @@ function MainArea({
   setShowSidebar,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
-  const [existingTags, setExistingTags] = useState([]);
+  // const [existingTags, setExistingTags] = useState([]);
+  const [existingTags, setExistingTags] = useState([
+    {
+      tagID: '-OANexL1bSFCp02vdudB',
+      color: '#377175',
+      name: 'Fish',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANexnV7WBmw9gmF9eG',
+      color: '#6E3630',
+      name: 'Meat',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANey9rQ8aUGC_aID1f',
+      color: '#654c1c',
+      name: 'Veg',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANezDianf1hQIQnj2A',
+      color: '#493064',
+      name: 'Lavender',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANf-UYiGQdZgD389v6',
+      color: '#28456c',
+      name: 'Water',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANf0-jYcQIeMbVR_1k',
+      color: '#2b5940',
+      name: 'Grass',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+    {
+      tagID: '-OANzqcxeT0-t15iQUHY',
+      color: '#835e33',
+      name: 'Cheese',
+      userUID: 'GNDBLXRv70VzzUafFrhviH2GM9J3',
+    },
+  ]);
+
   const [showPlanner, setShowPlanner] = useState(false);
   const [plannerMax, setPlannerMax] = useState(false);
 
@@ -81,9 +126,9 @@ function MainArea({
     }
   }, [selectedList]);
 
-  useEffect(() => {
-    fetchTags();
-  }, []);
+  // useEffect(() => {
+  //   fetchTags();
+  // }, []);
 
   const handleEditListItem = (listItemID) => {
     setListItemEditID(listItemID);
