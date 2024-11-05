@@ -15,6 +15,7 @@
 }
 
 .eventEditPane {
+  /* border: 3px solid red; */
   /* box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12); */
   background-color: rgb(38, 38, 38);
   /* background: none; */
@@ -34,9 +35,16 @@
   line-height: 1.5;
   color: white;
   pointer-events: auto;
-  /* border: 3px solid red; */
   position: relative;
   padding: 20px 20px 16px 12px;
+}
+
+@media (max-width: 768px) {
+  .eventEditPane {
+    width: 95%;
+    min-width: 95%;
+    max-width: 95%;
+  }
 }
 
 .topButtons {

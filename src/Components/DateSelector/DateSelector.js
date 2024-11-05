@@ -184,7 +184,9 @@ function DateSelector({
                 >
                   <CloseIcon fill="#FFFFFFBF" width="12px" />
                 </div>
-              ) : null}
+              ) : (
+                <div className={styles.noCloseButtonPadder} />
+              )}
             </div>
             {timeSet && (
               <div className={styles.timeLabel}>

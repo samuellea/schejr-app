@@ -132,7 +132,7 @@
   align-items: center; /* Center items vertically */
   justify-content: space-between;
   box-sizing: border-box;
-  width: 160px;
+  /* width: 160px; */
 }
 
 .timeLabel {
@@ -342,22 +342,26 @@
 
 @media (max-width: 768px) {
   .container {
-    /* border: 1px solid red; */
-    width: 20%;
+    /* border: 1px solid green; */
+    width: 100%;
   }
-  /* Mobile styles via media queries */
   .dateLabels {
     padding: 0px 5px 0px 5px;
-    width: 160px;
+    /* width: 160px; */
   }
   .startLabel {
     margin-left: 4px;
   }
   .timeLabel {
     font-size: 12px;
-    width: 82px;
+    /* width: 82px; */
   }
   .timeLabel p {
-    margin-left: 0px;
+    margin-left: 4px;
   }
+}
+
+.noCloseButtonPadder {
+  /* border: 1px solid red; */
+  width: 2px;
 }
