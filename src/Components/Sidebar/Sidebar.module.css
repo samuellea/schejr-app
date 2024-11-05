@@ -159,3 +159,9 @@
 .hiddenPlaceholder {
   display: none;
 }
+
+.listButtonMobileDivider {
+  height: 1px;
+  width: 100%;
+  border-top: 1px solid rgba(155, 155, 155, 0.151);
+}

@@ -82,6 +82,9 @@ function Sidebar({
                               deleteListAndRelated={deleteListAndRelated}
                               setListDeleteBackground={setListDeleteBackground}
                             />
+                            {window.innerWidth < 768 ? (
+                              <div className={styles.listButtonMobileDivider} />
+                            ) : null}
                             {/* Render the placeholder here */}
                             <div className={styles.hiddenPlaceholder}>
                               {droppableProvided.placeholder}

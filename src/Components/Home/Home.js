@@ -22,6 +22,7 @@ function Home() {
   const [listAndItemsLoaded, setListAndItemsLoaded] = useState(false);
   const [syncWithGCal, setSyncWithGCal] = useState(false);
   const [selectedListID, setSelectedListID] = useState(null);
+  const [listItemEditID, setListItemEditID] = useState(null);
   // const [isFirstRender, setIsFirstRender] = useState(true);
   const [plannerRange, setPlannerRange] = useState({ start: null, end: null });
   // const [modalBackground, setModalBackground] = useState(false);
@@ -860,7 +861,7 @@ function Home() {
     navigate('/login');
   };
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (set) => {
     setShowSidebar(!showSidebar);
   };
 
@@ -1106,6 +1107,7 @@ function Home() {
           setShowLogoutModal={setShowLogoutModal}
           createList={createList}
           discrDisable={discrDisable}
+          listItemEditID={listItemEditID}
         />
         <div className={styles.container}>
           {showSidebar ? (
@@ -1127,9 +1129,11 @@ function Home() {
           ) : null}
           <MainArea
             userUID={userUID}
-            toggleSidebar={toggleSidebar}
             showSidebar={showSidebar}
+            setShowSidebar={setShowSidebar}
             selectedList={lists?.find((e) => e.listID === selectedListID)}
+            listItemEditID={listItemEditID}
+            setListItemEditID={setListItemEditID}
             updateList={updateList}
             // updateListItem={updateListItem}
             handleEntities={handleEntities}

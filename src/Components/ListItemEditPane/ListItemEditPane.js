@@ -44,28 +44,41 @@ function ListItemEditPane({
     const updatedListItem = { ...listItem, notes: notesText };
     await handleEntities.patchListItemNotes(updatedListItem);
   };
-  const textareaRef = useRef(null);
+  const textarea1Ref = useRef(null);
+  const textarea2Ref = useRef(null);
 
   // Function to adjust the height based on content
-  const adjustHeight = (element) => {
-    if (element) {
-      element.style.height = 'auto'; // Reset height to auto to get the full content height
-      element.style.height = `${element.scrollHeight}px`; // Set height to scrollHeight
-    }
-  };
+  // const adjustHeight = (element) => {
+  //   if (element) {
+  //     element.style.height = 'auto'; // Reset height to auto to get the full content height
+  //     element.style.height = `${element.scrollHeight}px`; // Set height to scrollHeight
+  //   }
+  // };
 
   // Handle input to adjust height
   const handleInput = (e) => {
-    if (textareaRef.current) {
-      adjustHeight(textareaRef.current);
-    }
+    // if (textareaRef.current) {
+    //   adjustHeight(textareaRef.current);
+    // }
     setNotesText(e.target.value);
   };
 
   // Adjust height on mount and whenever content changes
+  // useEffect(() => {
+  //   adjustHeight(textareaRef.current);
+  // }, []);
+
+  const adjustHeight = () => {
+    const textarea = textarea1Ref.current;
+    if (textarea) {
+      textarea.style.height = 'auto'; // Reset the height
+      textarea.style.height = `${textarea.scrollHeight}px`; // Set height to scroll height
+    }
+  };
+
   useEffect(() => {
-    adjustHeight(textareaRef.current);
-  }, []);
+    adjustHeight();
+  }, [listItemRenameText]);
 
   return (
     <div className={styles.container}>
@@ -79,14 +92,20 @@ function ListItemEditPane({
             <ChevronIcon fill="white" width="28px" />
           </div>
         </div>
-        <input
+        <textarea
+          ref={textarea1Ref}
           className={styles.listItemTitleInput}
           type="text"
           id="listItemTitle"
           onChange={(event) => handleTitleChange(event)}
           value={listItemRenameText}
           onBlur={handleTitleOnBlur}
-        ></input>
+          style={{
+            width: '100%',
+            resize: 'none', // Prevents manual resizing
+            overflow: 'hidden', // Prevents scrollbars
+          }}
+        ></textarea>
       </div>
       <div className={styles.fieldWrapper}>
         <div className={styles.fieldIndent} />
@@ -166,10 +185,12 @@ function ListItemEditPane({
           <SyncIcon fill="#7f7f7f" />
           <p className={styles.fieldLabelP}>Sync</p>
         </div>
-        <ToggleSwitch
-          toggleValue={syncWithGCal}
-          setToggleValue={handleSetSyncWithGCal}
-        />
+        <div className={styles.toggleSwitchWrapper}>
+          <ToggleSwitch
+            toggleValue={syncWithGCal}
+            setToggleValue={handleSetSyncWithGCal}
+          />
+        </div>
         <span className={styles.syncExplanation}>
           {syncWithGCal
             ? 'Synchronizing all your dates with Google Calendar'
@@ -196,7 +217,7 @@ function ListItemEditPane({
           <textarea
             className={styles.notesTextArea}
             placeholder="Add notes..."
-            ref={textareaRef}
+            ref={textarea2Ref}
             onInput={handleInput}
             value={notesText}
             onBlur={handleNotesOnBlur}

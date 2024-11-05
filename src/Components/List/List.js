@@ -25,6 +25,7 @@ function List({
   // handleEvents,
   handleEntities,
   lists,
+  setShowSidebar,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
@@ -135,9 +136,7 @@ function List({
             ref={provided.innerRef}
             {...provided.droppableProps}
             style={{
-              padding: showPlanner
-                ? '28px 3px 28px 28px'
-                : '28px 15px 28px 28px',
+              padding: window.innerWidth < 768 ? '14px' : '28px',
             }}
           >
             <input
@@ -198,6 +197,7 @@ function List({
                           provided={provided}
                           handleEntities={handleEntities}
                           searching={searchString.length > 0}
+                          setShowSidebar={setShowSidebar}
                         />
                       ) : (
                         <ListItem

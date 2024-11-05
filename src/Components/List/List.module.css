@@ -8,6 +8,7 @@
   width: 100%;
   /* overflow-y: hidden; */
   /* flex-grow: 1; */
+  overflow-x: hidden;
 }
 
 /* .listScrollWrapper {
@@ -113,4 +114,12 @@
 }
 
 .listsHeaderButton:hover {
+}
+
+@media (max-width: 768px) {
+  .container {
+  }
+  .newListItemButtonDivier {
+    margin-top: 10px;
+  }
 }

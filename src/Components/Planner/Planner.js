@@ -170,6 +170,31 @@ function Planner({
 
       {showPlanner ? (
         <div className={styles.plannerContentWrapper}>
+          {window.innerWidth < 768 ? (
+            <div className={styles.monthNavMobileDisplay}>
+              <div className={styles.monthNavigatorContainer}>
+                <div className={styles.monthNavigator}>
+                  <div
+                    className={styles.navButton}
+                    onClick={() => handleNav('-')}
+                  >
+                    <div className={styles.navIconL}></div>
+                  </div>
+                  <div className={styles.monthNavLabel}>
+                    <span>
+                      <h4>{navLabel}</h4>
+                    </span>
+                  </div>
+                  <div
+                    className={styles.navButton}
+                    onClick={() => handleNav('+')}
+                  >
+                    <div className={styles.navIconR}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
           <div className={styles.contentAndControls}>
             <div className={styles.contentContainer}>
               <div className={styles.datesArea} ref={scrollRef}>
@@ -227,27 +252,29 @@ function Planner({
                 </div>
               </div>
 
-              <div className={styles.monthNavigatorContainer}>
-                <div className={styles.monthNavigator}>
-                  <div
-                    className={styles.navButton}
-                    onClick={() => handleNav('-')}
-                  >
-                    <div className={styles.navIconL}></div>
-                  </div>
-                  <div className={styles.monthNavLabel}>
-                    <span>
-                      <h4>{navLabel}</h4>
-                    </span>
-                  </div>
-                  <div
-                    className={styles.navButton}
-                    onClick={() => handleNav('+')}
-                  >
-                    <div className={styles.navIconR}></div>
+              {window.innerWidth >= 768 ? (
+                <div className={styles.monthNavigatorContainer}>
+                  <div className={styles.monthNavigator}>
+                    <div
+                      className={styles.navButton}
+                      onClick={() => handleNav('-')}
+                    >
+                      <div className={styles.navIconL}></div>
+                    </div>
+                    <div className={styles.monthNavLabel}>
+                      <span>
+                        <h4>{navLabel}</h4>
+                      </span>
+                    </div>
+                    <div
+                      className={styles.navButton}
+                      onClick={() => handleNav('+')}
+                    >
+                      <div className={styles.navIconR}></div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : null}
 
               <div className={styles.viewModeContainer}>
                 <div

@@ -14,6 +14,8 @@ function MainArea({
   userUID,
   showSidebar,
   selectedList,
+  listItemEditID,
+  setListItemEditID,
   updateList,
   handleEntities,
   listItems,
@@ -31,10 +33,10 @@ function MainArea({
   eventDiscrepancies,
   handleSubmitFixes,
   fixingDiscrepancies,
+  setShowSidebar,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
-  const [listItemEditID, setListItemEditID] = useState(null);
   const [showPlanner, setShowPlanner] = useState(false);
   const [plannerMax, setPlannerMax] = useState(false);
 
@@ -133,6 +135,7 @@ function MainArea({
             togglePlanner={togglePlanner}
             handleEntities={handleEntities}
             lists={lists}
+            setShowSidebar={setShowSidebar}
           />
         ) : discrepanciesChecked && !eventDiscrepancies ? (
           <div className={styles.emptyMessage}>

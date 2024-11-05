@@ -169,7 +169,7 @@ function DateSelector({
           isInFocus ? styles.isInFocus : ''
         }`}
         onClick={() => setIsInFocus(true)}
-        style={{ width: type === 'listItem' ? '75%' : null }}
+        style={{ width: type === 'listItem' ? '100%' : null }}
       >
         {startDateTime ? (
           <>

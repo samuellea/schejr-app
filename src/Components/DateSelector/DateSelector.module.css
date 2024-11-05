@@ -1,16 +1,16 @@
 .container {
-  /* width: 100%; */
   /* border: 2px solid green; */
   position: relative;
   /* height: 100%; */
   user-select: none;
   cursor: pointer;
-  flex-grow: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
   height: 40px;
+  flex-grow: 1;
+  width: 100%;
 }
 
 .inputContainer {
@@ -132,6 +132,7 @@
   align-items: center; /* Center items vertically */
   justify-content: space-between;
   box-sizing: border-box;
+  width: 160px;
 }
 
 .timeLabel {
@@ -155,6 +156,12 @@
   justify-content: space-between;
   box-sizing: border-box;
   margin-left: 8px;
+}
+
+.timeLabel p {
+  margin: 0;
+  margin-left: 3px;
+  padding: 0px 2px 0px 0px;
 }
 
 .dateLabels p {
@@ -190,7 +197,7 @@
   justify-content: space-evenly;
   box-sizing: border-box;
   /* padding: 5px; */
-  /* border: 1px solid green; */
+  /* border: 1px solid r; */
   box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px,
     rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px;
 }
@@ -306,12 +313,6 @@
   margin-left: 8px;
 }
 
-.timeLabel p {
-  margin: 0;
-  margin-left: 3px;
-  padding: 0px 2px 0px 0px;
-}
-
 .closeButtonContainer {
   /* border: 1px solid red; */
   /* height: 20px; */
@@ -337,4 +338,26 @@
 
 .closeButton:hover {
   background-color: #454444;
+}
+
+@media (max-width: 768px) {
+  .container {
+    /* border: 1px solid red; */
+    width: 20%;
+  }
+  /* Mobile styles via media queries */
+  .dateLabels {
+    padding: 0px 5px 0px 5px;
+    width: 160px;
+  }
+  .startLabel {
+    margin-left: 4px;
+  }
+  .timeLabel {
+    font-size: 12px;
+    width: 82px;
+  }
+  .timeLabel p {
+    margin-left: 0px;
+  }
 }

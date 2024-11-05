@@ -1,34 +1,35 @@
 .event {
-  width: 100%;
-  /* border: 2px solid hotpink; */
-  /* height: 50px; */
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12);
-  background-color: rgb(38, 38, 38);
-  border: 1px solid rgb(61, 61, 61);
-  border-radius: 11px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
+  width: 100%;
+  min-height: 46px; /* Minimum starting height */
+  /* border: 2px solid hotpink; */
   box-sizing: border-box;
-  color: white;
-  align-items: stretch; /* Stretch children to match the parent's height */
-  height: auto;
-  /* padding: 3px 8px 3px 4px; */
-  margin-bottom: 4px;
+  align-items: stretch; /* Stretch children to fill parent's height */
+  /* overflow: hidden; */
   /* position: relative; */
+
+  background-color: rgb(38, 38, 38);
+  border: 1px solid rgb(61, 61, 61);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 11px;
+  margin-bottom: 4px;
 }
+/* height: auto; */
+
+/* justify-content: flex-start; */
+/* color: white; */
 
 .eventGrabContainer {
-  /* border: 1px solid blue; */
+  width: 25px; /* Fixed width */
+  /* border: 1px solid cyan; */
+  flex-shrink: 0; /* Prevents it from shrinking */
+  box-sizing: border-box;
+  align-self: stretch;
   display: flex;
-  /* height: 100%; */
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  /* margin-right: 8px; */
-  padding: 0px 4px 0px 0px;
-  /* background-color: #4c4c4c71; */
+  align-items: center;
   background: #4c4c4c71;
   box-sizing: border-box;
   padding: 3px 3px 4px 3px;
@@ -67,34 +68,74 @@
   pointer-events: auto;
 }
 
-.eventDetailsContainer {
-  /* border: 1px solid red; */
-  /* border-left: 1px solid rgba(162, 162, 162, 0.468); */
-  margin-left: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 100%;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 3px 8px 3px 8px;
-}
-
-.titleAndEditContainer {
-  /* border: 1px solid green; */
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
 .duplicateButton {
   margin-left: auto;
 }
 
+.eventDetailsContainer {
+  /* border: 2px solid yellow; */
+  flex-grow: 1; /* Occupies remaining width */
+  box-sizing: border-box;
+  overflow-wrap: break-word; /* Ensures long words break within container */
+  word-break: break-word; /* Ensures long strings wrap within bounds */
+  max-width: 100%;
+
+  /* padding: 3px 8px 3px 8px; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0px 8px 0px 8px;
+  color: white;
+}
+/* height: 100%; */
+/* min-height: 46px; */
+/* margin-left: 0px; */
+/* flex: 1; */
+/* position: relative; */
+
+.titleAndEditContainer {
+  /* border: 3px solid green; */
+  box-sizing: border-box;
+  display: grid; /* Enable grid layout */
+  grid-template-columns: 1fr 32px; /* Define two columns: 90% and 10% */
+  width: 100%; /* Make the container full width */
+  height: 32px;
+}
+
+.eventTitle {
+  /* border: 2px solid red; */
+  grid-column: 1 / 2;
+  height: 100%;
+  max-height: 100%;
+  /* background-color: lightblue; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  position: relative;
+  line-height: 18px;
+}
+
+.eventMoreContainer {
+  /* border: 2px dashed white; */
+  grid-column: 2 / 3; /* Start at column 2 and end before column 3 */
+  height: 100%;
+  max-height: 100%;
+  /* background-color: lightcoral; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+}
 .eventMoreButton {
-  margin-left: auto;
   height: 28px;
   width: 28px;
   box-sizing: border-box;
@@ -102,13 +143,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* padding-bottom: 2px; */
   background: none;
-  /* border: 1px solid #4c4c4c71; */
   border-radius: 4px;
   pointer-events: auto;
-  position: relative;
-  /* border: 3px solid hotpink; */
+  /* border: 1px solid hotpink; */
 }
 
 .eventMoreButton:hover {
@@ -116,34 +154,43 @@
   cursor: pointer;
 }
 
-.eventTitle {
+/* .eventTitle {
+  border: 1px solid cyan;
   font-size: 14px;
-  /* border: 1px solid white; */
   min-height: 28px;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding-bottom: 2px;
   box-sizing: border-box;
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow text */
+  max-width: 80%;
+} */
+
+.eventTitle span {
+  /* border: 1px dashed white; */
+  /* position: absolute; */
+  /* left: 0; */
+  /* top: 0; */
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
+  font-size: 14px;
+  /* display: flex; */
 }
 
 .eventTime {
   font-size: 11px;
   border: 1px solid #a14bb49f;
   background: #a14bb42a;
-  display: flex;
+  display: inline-flex; /* Change to inline-flex to fit the content */
   flex-direction: row;
   align-items: center;
-  /* justify-content: center; */
-  /* height: 18px; */
-  padding: 2px 5px 2px 2px;
+  padding: 2px 5px; /* Keep padding to maintain internal spacing */
   border-radius: 4px;
   box-sizing: border-box;
-  margin-top: 4px;
-  margin-bottom: 3px;
+  margin: 0px 0 6px 0;
 }
 
 .eventTime span {
@@ -161,26 +208,20 @@
 }
 
 .tagsContainer {
-  /* border: 1px solid cyan; */
-  min-width: 0; /* Prevent from growing beyond available space */
-  /* background-color: blue; */
-  display: inline-flex;
-  flex-direction: row;
+  /* border: 2px solid red; */
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
   align-items: center;
-  height: 100%;
-  /* padding: 0px 6px; */
-  /* margin-right: 8px; */
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow text */
-  text-overflow: ellipsis;
+  width: 100%; /* Fills available width of the parent */
   box-sizing: border-box;
-  margin-bottom: 4px;
+  /* margin-bottom: 4px; */
+  overflow: hidden;
 }
 
 .tag {
   color: white;
   padding: 0px 6px;
-  margin: 0px 6px 0px 0px;
+  margin: 0px 6px 6px 0px;
   border-radius: 3px;
   height: 20px;
   display: flex;
@@ -188,4 +229,8 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  /* Mobile styles via media queries */
 }

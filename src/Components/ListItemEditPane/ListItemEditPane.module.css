@@ -21,20 +21,20 @@
   /* border: 2px solid red; */
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 0;
   width: 100%;
-  height: 41px;
+  /* height: 41px; */
   margin-top: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   /* padding: 0% 2%; */
   box-sizing: border-box;
 }
 
 .closeWrapper {
-  /* border: 1px solid white; */
-  width: 10%;
+  /* border: 2px solid yellow; */
+  width: 60px;
   min-width: 60px;
 }
 
@@ -50,14 +50,19 @@
 .listItemTitleInput {
   border: none;
   /* border: 1px solid white; */
-  font-size: 32px;
   background: none;
   color: #d9d9d9;
-  font-weight: 700;
   outline: none;
   width: 100%;
+  /* height: 100%; */
   /* padding-left: 4%; */
   cursor: pointer;
+  padding-top: 4px;
+  font-size: 30px;
+  font-weight: 700;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
+    Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .fieldIndent {
@@ -70,12 +75,9 @@
   /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
-  align-items: stretch; /* Ensure the child grows and aligns properly */
   width: 100%;
   box-sizing: border-box;
   /* min-height: 40px;  */
-  display: flex;
-  flex-direction: row;
   align-items: center;
 }
 
@@ -125,15 +127,17 @@
 
 .notesContainer {
   /* border: 1px solid red; */
-  width: 75%;
+  width: 100%;
   margin-left: 3px;
   box-sizing: border-box;
   position: relative;
   height: 300px;
+  display: flex;
+  flex-direction: row;
 }
 
 .notesTextArea {
-  margin-left: 8px;
+  /* margin-left: 8px; */
   /* width: 100%; */
   /* width: 250px; */
   background: none;
@@ -149,15 +153,39 @@
   /* border: none; */
   border-radius: 6px;
   border: 1px solid #7f7f7f30;
+  /* border: 3px solid hotpink; */
   font-size: 14px;
   cursor: pointer;
-  min-width: 310px;
-  width: 100%;
+  /* min-width: 310px; */
+  /* width: 10%; */
+  width: 75%;
   height: 100%; /* Ensure the textarea height is 100% of its own height */
   min-height: 50px;
   overflow: hidden; /* Hide scrollbars */
   box-sizing: border-box; /* Include padding and border in width/height calculation */
   resize: none; /* Optional: Prevent manual resizing by the user */
+  overflow-y: auto;
+}
+
+.notesTextArea::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.notesTextArea::-webkit-scrollbar-track {
+  background: #2c2c2c !important;
+  border-radius: 10px !important;
+}
+
+.notesTextArea::-webkit-scrollbar-thumb {
+  background: #6b6b6b !important;
+  border-radius: 6px !important;
+  width: 8px !important;
+  min-height: 30px !important; /* Ensures minimum height */
+  height: 30px !important; /* Forces the thumb height to always be fixed */
+}
+
+.notesTextArea::-webkit-scrollbar-thumb:hover {
+  background: #939393 !important;
 }
 
 .notesTextArea:active,
@@ -182,4 +210,49 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.toggleSwitchWrapper {
+  /* border: 1px solid red; */
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 4px;
+}
+
+@media (max-width: 768px) {
+  .wrapperLabel {
+    /* border: 1px solid red; */
+    min-width: 62px;
+    max-width: 62px;
+    margin-right: 10px;
+  }
+  .notesContainer {
+    /* border: 1px solid red; */
+    width: 100%;
+    margin-left: 0px;
+    box-sizing: border-box;
+    position: relative;
+    height: 300px;
+  }
+
+  .notesTextArea {
+    margin: 5px 0px 0px 0px;
+    width: 100%;
+  }
+
+  .listItemTitleInput {
+    font-size: 28px;
+    padding-top: 4px;
+    font-weight: 700;
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+      'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
+      Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  }
+
+  .toggleSwitchWrapper {
+    padding-left: 6px;
+  }
 }

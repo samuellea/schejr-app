@@ -17,6 +17,7 @@ function ListItem({
   updateListItem,
   handleEntities,
   searching,
+  toggleSidebar,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

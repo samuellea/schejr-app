@@ -17,6 +17,7 @@ function ListItemMobile({
   updateListItem,
   handleEntities,
   searching,
+  setShowSidebar,
 }) {
   const [listItemRenameText, setListItemRenameText] = useState(listItem.title);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -82,6 +83,11 @@ function ListItemMobile({
     }
   };
 
+  const listItemEditHandler = (listItemID) => {
+    setShowSidebar(false);
+    handleEditListItem(listItemID);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.titleTagsDatesSegment}>
@@ -97,28 +103,6 @@ function ListItemMobile({
             onKeyDown={(event) => handleKeyDown(event)}
           />
         </div>
-
-        <div className={styles.restCell}>
-          {listItem.dates?.length ? (
-            <div className={styles.dateContainer} id="flexidiv">
-              <DateIcon />
-              <span>
-                {h.formatDateForListItem(listItem)}
-                {listItem.dates?.length > 1 ? '...' : null}
-              </span>
-              {listItem.dates?.length > 1 ? (
-                <span>
-                  {`+`}
-                  <span id={styles.dateCount}>
-                    {listItem.dates?.length - 1}
-                  </span>
-                  {``}
-                </span>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-
         {listItem?.tags?.length ? (
           <div className={styles.tagsCell}>
             <div className={styles.tagsContainer} id="flexidiv">
@@ -139,15 +123,38 @@ function ListItemMobile({
             </div>
           </div>
         ) : null}
+
+        {listItem.dates?.length || listItem.tags?.length ? (
+          <div className={styles.restCell}>
+            {listItem.dates?.length ? (
+              <div className={styles.dateContainer} id="flexidiv">
+                <DateIcon />
+                <span>
+                  {h.formatDateForListItem(listItem)}
+                  {listItem.dates?.length > 1 ? '...' : null}
+                </span>
+                {listItem.dates?.length > 1 ? (
+                  <span>
+                    {`+`}
+                    <span id={styles.dateCount}>
+                      {listItem.dates?.length - 1}
+                    </span>
+                    {``}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className={styles.buttonsSegment}>
         <div className={styles.buttonsWrapper}>
           <button
             className={styles.editListItemButton}
-            onClick={() => handleEditListItem(listItem.listItemID)}
+            onClick={() => listItemEditHandler(listItem.listItemID)}
           >
-            <EditIcon fill="#9b9b9b" width="16px" marginTop="1px" />
+            <EditIcon fill="#9b9b9b" width="16px" marginTop="0px" />
           </button>
           <button
             className={styles.deleteListItemButton}

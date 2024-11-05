@@ -109,46 +109,53 @@ function Event({
               <DragIcon fill="#9b9b9b" width="20px" />
             </div>
           </div>
+
           <div className={styles.eventDetailsContainer}>
             <div className={styles.titleAndEditContainer}>
-              <div className={styles.eventTitle}>{title}</div>
-              <div
-                className={styles.eventMoreButton}
-                role="button"
-                onClick={() => handleOptions(event.eventID)}
-              >
-                <EllipsisIcon fill="#9b9b9b" width="16px" />
-                {showOptions.show && event.eventID === eventEditID ? (
-                  <EventOptions
-                    handleEdit={handleEdit}
-                    handleDuplicate={handleDuplicate}
-                    handleStartDelete={handleStartDelete}
-                    showOptions={showOptions}
-                    setShowOptions={setShowOptions}
-                    key={`eventOptions-${event.eventID}`}
-                    optionsPosition={optionsPosition}
-                  />
-                ) : null}
+              <div className={styles.eventTitle}>
+                <span>{title}</span>
+              </div>
+              <div className={styles.eventMoreContainer}>
+                <div
+                  className={styles.eventMoreButton}
+                  role="button"
+                  onClick={() => handleOptions(event.eventID)}
+                >
+                  <EllipsisIcon fill="#9b9b9b" width="16px" />
+                  {showOptions.show && event.eventID === eventEditID ? (
+                    <EventOptions
+                      handleEdit={handleEdit}
+                      handleDuplicate={handleDuplicate}
+                      handleStartDelete={handleStartDelete}
+                      showOptions={showOptions}
+                      setShowOptions={setShowOptions}
+                      key={`eventOptions-${event.eventID}`}
+                      optionsPosition={optionsPosition}
+                    />
+                  ) : null}
+                </div>
               </div>
             </div>
-            <div className={styles.tagsContainer} id="flexidiv">
-              {event.tags?.length
-                ? event.tags?.map((tag) => {
-                    const matchingTag = existingTags?.find(
-                      (existingTag) => existingTag.tagID === tag
-                    );
-                    return (
-                      <div
-                        className={styles.tag}
-                        key={`list-item-inner-${tag}`}
-                        style={{ backgroundColor: matchingTag?.color }}
-                      >
-                        {matchingTag?.name}
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
+            {event.tags?.length ? (
+              <div className={styles.tagsContainer}>
+                {event.tags?.length
+                  ? event.tags?.map((tag) => {
+                      const matchingTag = existingTags?.find(
+                        (existingTag) => existingTag.tagID === tag
+                      );
+                      return (
+                        <div
+                          className={styles.tag}
+                          key={`list-item-inner-${tag}`}
+                          style={{ backgroundColor: matchingTag?.color }}
+                        >
+                          {matchingTag?.name}
+                        </div>
+                      );
+                    })
+                  : null}
+              </div>
+            ) : null}
             {timeSet ? (
               <div className={styles.eventTime}>
                 <ClockIcon width="16px" fill="white" />
@@ -156,6 +163,7 @@ function Event({
               </div>
             ) : null}
           </div>
+
           {editEvent && event.eventID === eventEditID ? (
             <EventEditPane
               event={event}
