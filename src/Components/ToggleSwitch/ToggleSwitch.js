@@ -6,14 +6,13 @@ function ToggleSwitch({ toggleValue, setToggleValue }) {
   const sliderCombined = `${styles.slider} ${styles.round}`;
   return (
     <div className={styles.container}>
-      <label className={styles.switch}>
-        <input
-          type="checkbox"
-          checked={toggleValue}
-          onChange={setToggleValue}
-        />
-        <span className={sliderCombined}></span>
-      </label>
+      <input
+        type="checkbox"
+        checked={toggleValue}
+        onChange={setToggleValue}
+        id="switch"
+      />
+      <label htmlFor="switch"></label>
     </div>
   );
 }

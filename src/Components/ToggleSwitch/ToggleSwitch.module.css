@@ -1,85 +1,47 @@
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-  /* height: 34px; */
-  /* height: 100%; */
-  /* border: 1px solid red; */
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
+input[type='checkbox'] {
   height: 0;
+  width: 0;
+  visibility: hidden; /* Hide the checkbox */
 }
 
-/* The slider */
-.slider {
-  position: absolute;
+label {
+  width: 40px; /* Width of the toggle switch 200 */
+  height: 20px; /* Height of the toggle switch 100 */
   cursor: pointer;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  background-color: #202020;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-  border: 1px solid yellow;
+  text-indent: -9999px; /* Hide text for accessibility */
+  background: grey; /* Background color when not toggled */
+  display: block;
+  border-radius: 100px; /* Fully rounded corners */
+  position: relative; /* Positioning for the pseudo-element */
+  transition: background 0.3s; /* Smooth transition for background */
 }
 
-.slider:before {
-  position: absolute;
+label:after {
+  width: 18px; /* Width of the slider 90 */
+  height: 18px; /* Height of the slider 90 */
   content: '';
-  /* height: 26px; */
-  height: 14px;
-  width: 14px;
-  left: 2px;
-  bottom: 0px;
-  background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-  border: 1px solid white;
+  position: absolute;
+  top: 1px; /* Align the slider vertically within the label */
+  left: 2px; /* Initial position of the slider */
+  background: #fff; /* Background color of the slider */
+  border-radius: 90px; /* Fully rounded slider */
+  transition: left 0.3s ease; /* Smooth transition for the slider */
 }
 
-input:checked + .slider {
-  background-color: white;
-  border: 1px solid whitered;
+input:checked + label {
+  background: #bada55; /* Change background color when checked */
+}
+
+input:checked + label:after {
+  left: calc(
+    100% - 20px
+  ); /* Move slider to the right while keeping it inside 100% - 95px */
+  /* 95px = total width of the slider (90px) + 5px for padding */
+}
+
+/* body {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* align-items: center; */
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196f3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(18px);
-  -ms-transform: translateX(18px);
-  transform: translateX(18px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-  border: 1px solid hotpink;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.slider.round:before {
-  border: 1px solid #202020;
-  background-color: white;
-  border-radius: 50%;
-  margin-bottom: 1px;
-}
-
-input:checked + .slider.round:before {
-  background-color: #202020;
-}
+  height: 100vh;
+} */
