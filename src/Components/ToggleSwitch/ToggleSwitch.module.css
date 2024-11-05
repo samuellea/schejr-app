@@ -3,7 +3,7 @@
   position: relative;
   display: inline-block;
   width: 40px;
-  height: 19px;
+  height: 20px;
   /* height: 34px; */
   /* height: 100%; */
   /* border: 1px solid red; */
@@ -34,7 +34,7 @@
   position: absolute;
   content: '';
   /* height: 26px; */
-  height: 13px;
+  height: 14px;
   width: 14px;
   left: 2px;
   bottom: 1px;
@@ -66,7 +66,7 @@ input:checked + .slider:before {
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
-  border: 1px solid red;
+  border: 1px solid green;
   display: flex;
   flex-direction: column;
   justify-content: center;
