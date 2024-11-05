@@ -34,10 +34,12 @@ function MainArea({
   handleSubmitFixes,
   fixingDiscrepancies,
   setShowSidebar,
+  showPlanner,
+  setShowPlanner,
+  togglePlanner,
 }) {
   // Will show either the selected List, or if a list item is selected, a List Item expanded view
   const [existingTags, setExistingTags] = useState([]);
-  const [showPlanner, setShowPlanner] = useState(false);
   const [plannerMax, setPlannerMax] = useState(false);
 
   const fetchListItems = async () => {
@@ -93,10 +95,6 @@ function MainArea({
     setListItemEditID(null);
   };
 
-  const togglePlanner = async () => {
-    setShowPlanner((prev) => !prev);
-  };
-
   const toggleExpand = async () => {
     setPlannerMax((prev) => !prev);
   };
@@ -104,6 +102,10 @@ function MainArea({
   const plannerClosed = {
     height: window.innerWidth < 768 ? '100px' : '70px',
   };
+
+  useEffect(() => {
+    if (!showPlanner) setPlannerMax(false);
+  }, [showPlanner]);
 
   return (
     <div className={styles.container}>

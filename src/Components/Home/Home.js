@@ -35,6 +35,7 @@ function Home() {
   const [discrDisable, setDiscrDisable] = useState(true);
   const [showFixModal, setShowFixModal] = useState(false);
   const [fixingDiscrepancies, setFixingDiscrepancies] = useState(false);
+  const [showPlanner, setShowPlanner] = useState(false);
 
   useEffect(() => {
     console.log(`discrepanciesChecked: ${discrepanciesChecked}`);
@@ -859,12 +860,18 @@ function Home() {
   };
 
   const toggleSidebar = (set) => {
+    if (window.innerWidth < 768) {
+      if (!showSidebar && showPlanner) setShowPlanner(false);
+    }
     setShowSidebar(!showSidebar);
   };
 
   const handleSelectListButton = (listID) => {
-    // setListAndItemsLoaded(false);
     setSelectedListID(listID);
+    if (window.innerWidth < 768) {
+      setShowSidebar(false);
+    }
+    // setListAndItemsLoaded(false);
   };
 
   // const handleDeleteList = async (listID) => {
@@ -1094,6 +1101,13 @@ function Home() {
     /*---------------------------------------------*/
   };
 
+  const togglePlanner = async () => {
+    if (window.innerWidth < 768 && !showPlanner) {
+      setShowSidebar(false);
+    }
+    setShowPlanner((prev) => !prev);
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.wrapper}>
@@ -1152,6 +1166,9 @@ function Home() {
             // setModalBackground={setModalBackground}
             // handleEvents={handleEvents}
             // handleOtherEventFields={handleOtherEventFields}
+            showPlanner={showPlanner}
+            setShowPlanner={setShowPlanner}
+            togglePlanner={togglePlanner}
           />
         </div>
       </div>

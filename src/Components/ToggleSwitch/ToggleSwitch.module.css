@@ -3,7 +3,7 @@
   position: relative;
   display: inline-block;
   width: 40px;
-  height: 19px;
+  height: 20px;
   /* height: 34px; */
   /* height: 100%; */
   /* border: 1px solid red; */
@@ -34,7 +34,7 @@
   position: absolute;
   content: '';
   /* height: 26px; */
-  height: 13px;
+  height: 14px;
   width: 14px;
   left: 2px;
   bottom: 1px;
@@ -63,14 +63,17 @@ input:checked + .slider:before {
 .slider.round {
   border-radius: 34px;
   border: 1px solid white;
+  /* border: 1px solid red; */
 }
 
 .slider.round:before {
   border: 1px solid #202020;
   background-color: white;
+  /* background-color: yellow; */
   border-radius: 50%;
 }
 
 input:checked + .slider.round:before {
   background-color: #202020;
+  /* background-color: green; */
 }
