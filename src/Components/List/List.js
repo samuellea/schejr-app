@@ -128,104 +128,104 @@ function List({
   };
 
   return (
-    <div className={styles.listContainerWrapper}>
-      <Droppable droppableId={`list-${selectedList.listID}`} type="list-item">
-        {(provided) => (
-          <div
-            className={styles.container}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            style={{
-              padding: window.innerWidth < 768 ? '14px' : '28px',
-            }}
-          >
-            <input
-              className={styles.listTitleInput}
-              type="text"
-              id="listTitle"
-              onChange={handleTitleChange} // Directly pass the handler
-              onBlur={handleTitleOnBlur}
-              value={listTitle}
-              onKeyDown={(event) => handleKeyDown(event)}
-            />
-            <Sort
-              selectedList={selectedList}
-              updateList={updateList}
-              sortOn={sortOn}
-              setSortOn={setSortOn}
-              order={order}
-              setOrder={setOrder}
-              handleToggleOrder={handleToggleOrder}
-              existingTags={existingTags}
-              searchString={searchString}
-              setSearchString={setSearchString}
-            />
-            {/* <Search
+    // <div className={styles.listContainerWrapper}>
+    <Droppable droppableId={`list-${selectedList.listID}`} type="list-item">
+      {(provided) => (
+        <div
+          className={styles.container}
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          style={{
+            padding: window.innerWidth < 768 ? '14px' : '28px',
+          }}
+        >
+          <input
+            className={styles.listTitleInput}
+            type="text"
+            id="listTitle"
+            onChange={handleTitleChange} // Directly pass the handler
+            onBlur={handleTitleOnBlur}
+            value={listTitle}
+            onKeyDown={(event) => handleKeyDown(event)}
+          />
+          <Sort
+            selectedList={selectedList}
+            updateList={updateList}
+            sortOn={sortOn}
+            setSortOn={setSortOn}
+            order={order}
+            setOrder={setOrder}
+            handleToggleOrder={handleToggleOrder}
+            existingTags={existingTags}
+            searchString={searchString}
+            setSearchString={setSearchString}
+          />
+          {/* <Search
               searchString={searchString}
               setSearchString={setSearchString}
             /> */}
-            {h
-              .sortItems(listItems, sortOn, order, existingTags)
-              ?.filter((sortItem) =>
-                searchResults.some(
-                  (searchResult) =>
-                    searchResult.listItemID === sortItem.listItemID
-                )
+          {h
+            .sortItems(listItems, sortOn, order, existingTags)
+            ?.filter((sortItem) =>
+              searchResults.some(
+                (searchResult) =>
+                  searchResult.listItemID === sortItem.listItemID
               )
-              ?.map((listItem, index) => (
-                <Draggable
-                  key={`draggable-${listItem.listItemID}`}
-                  draggableId={listItem.listItemID}
-                  type="list-item"
-                  index={index}
-                >
-                  {(provided) => (
-                    <div
-                      className={styles.listItem}
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      {window.innerWidth < 768 ? (
-                        <ListItemMobile
-                          listItem={listItem}
-                          handleEditListItem={handleEditListItem}
-                          existingTags={existingTags}
-                          deleteListItem={deleteListItem}
-                          updateListItem={updateListItem}
-                          key={`list-item-${listItem.listItemID}`}
-                          provided={provided}
-                          handleEntities={handleEntities}
-                          searching={searchString.length > 0}
-                          setShowSidebar={setShowSidebar}
-                        />
-                      ) : (
-                        <ListItem
-                          listItem={listItem}
-                          handleEditListItem={handleEditListItem}
-                          existingTags={existingTags}
-                          deleteListItem={deleteListItem}
-                          updateListItem={updateListItem}
-                          key={`list-item-${listItem.listItemID}`}
-                          provided={provided}
-                          handleEntities={handleEntities}
-                          searching={searchString.length > 0}
-                        />
-                      )}
-                    </div>
-                  )}
-                </Draggable>
-              )) || null}
-            {provided.placeholder}
-            <div className={styles.newListItemButtonDivier} />
-            <div className={styles.newListItemButton} onClick={createListItem}>
-              <PlusIcon fill="white" width="16px" />
-              <span>New</span>
-            </div>
+            )
+            ?.map((listItem, index) => (
+              <Draggable
+                key={`draggable-${listItem.listItemID}`}
+                draggableId={listItem.listItemID}
+                type="list-item"
+                index={index}
+              >
+                {(provided) => (
+                  <div
+                    className={styles.listItem}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    {window.innerWidth < 768 ? (
+                      <ListItemMobile
+                        listItem={listItem}
+                        handleEditListItem={handleEditListItem}
+                        existingTags={existingTags}
+                        deleteListItem={deleteListItem}
+                        updateListItem={updateListItem}
+                        key={`list-item-${listItem.listItemID}`}
+                        provided={provided}
+                        handleEntities={handleEntities}
+                        searching={searchString.length > 0}
+                        setShowSidebar={setShowSidebar}
+                      />
+                    ) : (
+                      <ListItem
+                        listItem={listItem}
+                        handleEditListItem={handleEditListItem}
+                        existingTags={existingTags}
+                        deleteListItem={deleteListItem}
+                        updateListItem={updateListItem}
+                        key={`list-item-${listItem.listItemID}`}
+                        provided={provided}
+                        handleEntities={handleEntities}
+                        searching={searchString.length > 0}
+                      />
+                    )}
+                  </div>
+                )}
+              </Draggable>
+            )) || null}
+          {provided.placeholder}
+          <div className={styles.newListItemButtonDivier} />
+          <div className={styles.newListItemButton} onClick={createListItem}>
+            <PlusIcon fill="white" width="16px" />
+            <span>New</span>
           </div>
-        )}
-      </Droppable>
-    </div>
+        </div>
+      )}
+    </Droppable>
+    // </div>
   );
 }
 

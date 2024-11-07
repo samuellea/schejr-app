@@ -118,42 +118,42 @@ function MainArea({
         />
       ) : null}
 
-      <div
+      {/* <div
         className={styles.listSection}
         style={{
           height: !showPlanner ? '100%' : plannerMax ? '0%' : '50%',
           transition: 'height 0.2s ease',
         }}
-      >
-        {selectedList && listAndItemsLoaded ? (
-          <List
-            selectedList={selectedList}
-            updateList={updateList}
-            listItems={listItems}
-            setListItems={setListItems}
-            handleEditListItem={handleEditListItem}
-            existingTags={existingTags}
-            showPlanner={showPlanner}
-            togglePlanner={togglePlanner}
-            handleEntities={handleEntities}
-            lists={lists}
-            setShowSidebar={setShowSidebar}
-          />
-        ) : discrepanciesChecked && !eventDiscrepancies ? (
-          <div className={styles.emptyMessage}>
-            <p className={styles.emptyMessageSpan}>
-              Select a list or create one with
-              <span>
-                <EditIcon fill="#9b9b9b" width="20px" />
-              </span>
-            </p>
-          </div>
-        ) : !discrepanciesChecked && !eventDiscrepancies ? (
-          <div className={styles.waitForDiscrepanciesSpinner}>
-            <Spinner />
-          </div>
-        ) : null}
-      </div>
+      > */}
+      {selectedList && listAndItemsLoaded ? (
+        <List
+          selectedList={selectedList}
+          updateList={updateList}
+          listItems={listItems}
+          setListItems={setListItems}
+          handleEditListItem={handleEditListItem}
+          existingTags={existingTags}
+          showPlanner={showPlanner}
+          togglePlanner={togglePlanner}
+          handleEntities={handleEntities}
+          lists={lists}
+          setShowSidebar={setShowSidebar}
+        />
+      ) : discrepanciesChecked && !eventDiscrepancies ? (
+        <div className={styles.emptyMessage}>
+          <p className={styles.emptyMessageSpan}>
+            Select a list or create one with
+            <span>
+              <EditIcon fill="#9b9b9b" width="20px" />
+            </span>
+          </p>
+        </div>
+      ) : !discrepanciesChecked && !eventDiscrepancies ? (
+        <div className={styles.waitForDiscrepanciesSpinner}>
+          <Spinner />
+        </div>
+      ) : null}
+      {/* </div> */}
 
       {listItemEditID &&
       listItems.find((e) => e.listItemID === listItemEditID) ? (
