@@ -52,7 +52,12 @@ const Day = forwardRef(
     }, [dateIsToday]);
 
     return (
-      <Droppable droppableId={`planner-${date.date}`} key={date.date}>
+      <Droppable
+        droppableId={`planner-${date.date}`}
+        key={date.date}
+        // key={`day-${date.date}`}
+        type="list-item"
+      >
         {(provided, snapshot) => (
           <div
             className={styles.container}

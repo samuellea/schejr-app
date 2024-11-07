@@ -99,10 +99,11 @@ function Event({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           key={`event-${event.eventID}`}
-          ref={(el) => {
-            elementRef.current = el; // Assign the DOM node to elementRef
-            provided.innerRef(el); // Also pass the DOM node to provided.innerRef
-          }}
+          // ref={(el) => {
+          //   elementRef.current = el; // Assign the DOM node to elementRef
+          //   provided.innerRef(el); // Also pass the DOM node to provided.innerRef
+          // }}
+          ref={provided.innerRef}
         >
           <div className={styles.eventGrabContainer}>
             <div className={styles.listItemDragHandle}>
