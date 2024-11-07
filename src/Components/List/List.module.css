@@ -23,9 +23,9 @@
 } */
 
 .container {
-  /* border: 2px solid cyan; */
+  /* border: 5px solid yellow; */
   /* height: 100%; */
-  width: 100%;
+  max-width: 100%;
   max-width: 1000px;
   /* max-width: 90%; */
   /* padding: 0px 10px; */
@@ -38,6 +38,28 @@
   /* padding: 3% 2%; */
   box-sizing: border-box;
   /* height: 100%; */
+  overflow-y: auto;
+}
+
+.container::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.container::-webkit-scrollbar-track {
+  background: #2c2c2c !important;
+  border-radius: 10px !important;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #6b6b6b !important;
+  border-radius: 6px !important;
+  width: 8px !important;
+  min-height: 30px !important; /* Ensures minimum height */
+  height: 30px !important; /* Forces the thumb height to always be fixed */
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #939393 !important;
 }
 
 .listTitleInput {

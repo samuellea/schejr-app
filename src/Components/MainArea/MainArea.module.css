@@ -1,11 +1,10 @@
 .container {
-  /* border: 4px dotted lime;  */
+  /* border: 4px dotted lime; */
   bottom: 0; /* Stick to the bottom of the parent */
   height: 100%; /* Fill the height of the parent */
   flex-grow: 1; /* Allow to grow within the parent */
   box-sizing: border-box; /* Include padding and border in width calculation */
   background-color: #191919; /* Background color */
-
   /* Important Changes */
   width: 100%; /* Set width to 100% of the parent */
   max-width: 100vw; /* Limit max width to viewport width */
@@ -14,7 +13,7 @@
   overflow-y: hidden;
   display: flex; /* Enable flexbox layout */
   flex-direction: column; /* Arrange children in a row */
-  justify-content: center; /* Center align children */
+  justify-content: flex-end; /* Center align children */
 }
 
 .listSection {

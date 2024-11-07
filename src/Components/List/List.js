@@ -26,14 +26,29 @@ function List({
   handleEntities,
   lists,
   setShowSidebar,
+  plannerMax,
 }) {
   const [sortOn, setSortOn] = useState(selectedList.sortOn);
   const [order, setOrder] = useState(selectedList.order);
   const [listTitle, setListTitle] = useState(selectedList.title);
   const [searchString, setSearchString] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [paddingApplied, setPaddingApplied] = useState(true);
+  const [overflowApplied, setOverflowApplied] = useState(true);
 
   const userUID = localStorage.getItem('firebaseID');
+
+  useEffect(() => {
+    if (plannerMax) {
+      // Remove padding after the height transition ends
+      setOverflowApplied(false);
+      setTimeout(() => setPaddingApplied(false), 200); // 200ms delay matches height transition
+    } else {
+      // Reapply padding immediately when plannerMax is false
+      setPaddingApplied(true);
+      setTimeout(() => setOverflowApplied(true), 200);
+    }
+  }, [plannerMax]);
 
   useEffect(() => {
     setSortOn(selectedList.sortOn);
@@ -127,6 +142,13 @@ function List({
     }
   };
 
+  /*
+          style={{
+          height: !showPlanner ? '100%' : plannerMax ? '0%' : '50%',
+          transition: 'height 0.2s ease',
+        }}
+  */
+
   return (
     // <div className={styles.listContainerWrapper}>
     <Droppable droppableId={`list-${selectedList.listID}`} type="list-item">
@@ -136,7 +158,15 @@ function List({
           ref={provided.innerRef}
           {...provided.droppableProps}
           style={{
-            padding: window.innerWidth < 768 ? '14px' : '28px',
+            padding: paddingApplied
+              ? window.innerWidth < 768
+                ? '14px'
+                : '28px'
+              : '0px',
+            height: !showPlanner ? '100%' : plannerMax ? '0%' : '50%',
+            transition: 'height 0.2s ease',
+            overflowY: overflowApplied ? 'auto' : 'hidden',
+            overflowX: 'hidden',
           }}
         >
           <input

@@ -138,6 +138,7 @@ function MainArea({
           handleEntities={handleEntities}
           lists={lists}
           setShowSidebar={setShowSidebar}
+          plannerMax={plannerMax}
         />
       ) : discrepanciesChecked && !eventDiscrepancies ? (
         <div className={styles.emptyMessage}>
