@@ -4,6 +4,7 @@
   height: 100%; /* Fill the height of the parent */
   flex-grow: 1; /* Allow to grow within the parent */
   box-sizing: border-box; /* Include padding and border in width calculation */
+
   background-color: #191919; /* Background color */
   /* Important Changes */
   width: 100%; /* Set width to 100% of the parent */

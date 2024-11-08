@@ -7,15 +7,15 @@
   box-sizing: border-box;
   align-items: stretch; /* Stretch children to fill parent's height */
   /* overflow: hidden; */
-  /* position: relative; */
 
   background-color: rgb(38, 38, 38);
   border: 1px solid rgb(61, 61, 61);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1), 0 6px 3px rgba(0, 0, 0, 0.12);
   border-radius: 11px;
   margin-bottom: 4px;
+  /* height: auto; */
+  position: relative;
 }
-/* height: auto; */
 
 /* justify-content: flex-start; */
 /* color: white; */
