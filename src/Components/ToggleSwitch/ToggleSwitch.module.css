@@ -1,5 +1,4 @@
 .container {
-  /* border: 1px solid white; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,46 +6,43 @@
   box-sizing: border-box;
 }
 
-.toggleInput[type='checkbox'] {
+.toggleInput {
   height: 0;
   width: 0;
   visibility: hidden; /* Hide the checkbox */
 }
 
 .toggleLabel {
-  width: 40px; /* Width of the toggle switch 200 */
-  height: 20px; /* Height of the toggle switch 100 */
+  width: 40px;
+  height: 20px;
   cursor: pointer;
-  text-indent: -9999px; /* Hide text for accessibility */
-  background: #202020; /* Background color when not toggled */
+  text-indent: -9999px;
+  background: #202020;
   display: block;
-  border-radius: 100px; /* Fully rounded corners */
-  position: relative; /* Positioning for the pseudo-element */
-  transition: background 0.3s; /* Smooth transition for background */
+  border-radius: 100px;
+  position: relative;
+  transition: background 0.3s;
   margin-bottom: 6px;
   border: 1px solid white;
 }
 
 .toggleLabel:after {
-  width: 18px; /* Width of the slider 90 */
-  height: 18px; /* Height of the slider 90 */
+  width: 18px;
+  height: 18px;
   content: '';
   position: absolute;
-  top: 1px; /* Align the slider vertically within the label */
-  left: 2px; /* Initial position of the slider */
-  background: #fff; /* Background color of the slider */
-  border-radius: 90px; /* Fully rounded slider */
-  transition: left 0.3s ease; /* Smooth transition for the slider */
+  top: 1px;
+  left: 2px;
+  background: #fff;
+  border-radius: 90px;
+  transition: left 0.3s ease;
 }
 
-.toggleInput:checked + label {
-  background: white; /* Change background color when checked */
+.toggleInput:checked + .toggleLabel {
+  background: white;
 }
 
-.toggleInput:checked + label:after {
+.toggleInput:checked + .toggleLabel:after {
   background: #202020;
-  left: calc(
-    100% - 20px
-  ); /* Move slider to the right while keeping it inside 100% - 95px */
-  /* 95px = total width of the slider (90px) + 5px for padding */
+  left: calc(100% - 20px);
 }

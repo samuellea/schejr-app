@@ -158,6 +158,7 @@ function EventDiscrepancies({
               <div className={styles.checkAllContainer}>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(event, 'bothButDiff', 'schejr')
@@ -168,6 +169,7 @@ function EventDiscrepancies({
                 <span>Event on both, but details are different:</span>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(event, 'bothButDiff', 'gcal')
@@ -202,6 +204,7 @@ function EventDiscrepancies({
                     <div className={styles.side} id={styles.left}>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox('bothButDiff', 'schejr', obj.eventID)
@@ -222,6 +225,7 @@ function EventDiscrepancies({
                       </div>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox('bothButDiff', 'gcal', obj.eventID)
@@ -240,6 +244,7 @@ function EventDiscrepancies({
               <div className={styles.checkAllContainer}>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(event, 'schejrNotGCal', 'true')
@@ -250,6 +255,7 @@ function EventDiscrepancies({
                 <span>Event on Schejr, but not Google Calendar:</span>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(
@@ -298,6 +304,7 @@ function EventDiscrepancies({
                     <div className={styles.side} id={styles.left}>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox('schejrNotGCal', 'true', obj.eventID)
@@ -323,6 +330,7 @@ function EventDiscrepancies({
                       </div>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox(
@@ -345,6 +353,7 @@ function EventDiscrepancies({
               <div className={styles.checkAllContainer}>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(
@@ -359,6 +368,7 @@ function EventDiscrepancies({
                 <span>Event on Google Calendar, but not Schejr:</span>
                 <div className={styles.checkboxContainer}>
                   <input
+                    className={styles.checkboxInput}
                     type="checkbox"
                     onChange={(event) =>
                       handleAllSectionCheckboxes(event, 'gcalNotSchejr', 'true')
@@ -403,6 +413,7 @@ function EventDiscrepancies({
                     <div className={styles.side} id={styles.left}>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox(
@@ -432,6 +443,7 @@ function EventDiscrepancies({
                       </div>
                       <div className={styles.checkboxContainer}>
                         <input
+                          className={styles.checkboxInput}
                           type="checkbox"
                           onChange={() =>
                             handleCheckbox('gcalNotSchejr', 'true', obj.eventID)

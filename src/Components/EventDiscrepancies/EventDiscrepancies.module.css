@@ -132,7 +132,7 @@
   justify-content: center; /* Center vertically */
 }
 
-.checkboxContainer input {
+.checkboxInput {
   /* border: 3px solid red; */
   width: 20px;
   height: 20px;
