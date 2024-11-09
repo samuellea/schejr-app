@@ -1,41 +1,96 @@
 .container {
+  /* border: 5px solid hotpink; */
   height: 100%;
   width: 100%;
-  border: 5px solid purple;
+  /* max-width: 800px; */
   box-sizing: border-box;
   color: white;
-  overflow-y: scroll;
+  overflow-y: auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mainHeader {
+  padding: 16px 4px 16px 4px;
+  width: 100%;
+  font-weight: 100;
+  /* border: 1px solid red; */
+  background-color: rgb(80, 0, 0);
+  box-sizing: border-box;
 }
 
 .section {
-  border: 3px solid blue;
+  /* border: 3px solid blue; */
   box-sizing: border-box;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 800px;
 }
 
 .header {
-  border: 2px solid red;
-  background-color: lightgray;
+  /* border: 2px solid red; */
+  background-color: gray;
   box-sizing: border-box;
   color: black;
+}
+
+.halfLabels {
+  /* border: 2px solid blue; */
+  padding: 4px 0px 0px 0px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+}
+
+.halfLabel {
+  /* border: 1px solid red; */
+  width: 50%;
+  font-weight: 100;
+}
+
+.halfLabel:first-child {
+  /* border-right: 1px solid gray; */
 }
 
 .checkAllContainer {
-  border: 4px solid purple;
-  background-color: lightgray;
+  /* border: 4px solid purple; */
+  background-color: #3d3d3d;
   box-sizing: border-box;
-  color: black;
+  color: white;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 8px 4px;
+  font-weight: 300;
+  font-size: 14px;
 }
 
 .comparer {
-  border: 4px solid rgb(151, 151, 151);
+  border: 2px dotted rgb(96, 96, 96);
   height: 100px;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  background: rgb(22, 44, 22);
+}
+
+@media (max-width: 768px) {
+  /* Mobile styles via media queries */
+  .checkAllContainer {
+    padding: 8px 10px;
+  }
+
+  .comparer {
+    margin: 5px 8px;
+  }
 }
 
 .comparerDirectionOverlay {
@@ -56,9 +111,9 @@
 }
 
 .side {
+  /* border: 2px solid yellow; */
   width: 50%;
   height: 100%;
-  /* border: 2px solid yellow; */
   box-sizing: border-box;
   position: relative;
   display: flex; /* Use flexbox for layout */
@@ -67,6 +122,7 @@
 }
 
 .checkboxContainer {
+  /* border: 2px solid green; */
   width: auto; /* Let width be determined by content */
   height: 100%; /* Full height of parent */
   background-color: rgba(169, 169, 169, 0.176); /* Background color */
@@ -74,17 +130,17 @@
   flex-direction: column; /* Stack children vertically */
   align-items: center; /* Center align items */
   justify-content: center; /* Center vertically */
-  border: 2px solid yellow;
 }
 
 .checkboxContainer input {
+  /* border: 3px solid red; */
   width: 20px;
   height: 20px;
   margin: 0;
 }
 
 .cardContainer {
-  border: 2px dotted gray;
+  /* border: 2px dotted gray; */
   height: 100%; /* Full height of parent */
   flex-grow: 1; /* Take up remaining space */
   box-sizing: border-box;
@@ -94,10 +150,39 @@
   justify-content: center;
 }
 
+.actionButtons {
+  /* border: 1px solid red; */
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 10px 0px;
+}
+
 .actionButton {
-  height: 30px;
-  min-width: 100px;
-  margin-top: 20px;
+  height: 40px;
+  width: 180px;
+  border-radius: 6px;
+  border: 1px solid #4c4c4c;
+  background-color: #4c4c4c;
+  color: white;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.actionButton:hover,
+.actionButton:active {
+  border: 1px solid #787878;
+  background-color: #787878;
+}
+
+.actionButton:disabled {
+  background-color: #191919;
+  color: #787878;
+  border: 2px solid #333333;
+  cursor: default;
 }
 
 .fixingSpinner {

@@ -4,9 +4,16 @@ import * as h from '../../helpers';
 
 function EventCard({ event, changedFields = [], missingLabel = null }) {
   if (missingLabel) {
+    const missingLabelSpans = missingLabel.split(' ').map((e) => {
+      if (e === 'added')
+        return <span style={{ color: 'rgb(0, 194, 0)' }}>{e} </span>;
+      if (e === 'removed')
+        return <span style={{ color: 'rgb(258, 0, 0)' }}>{e} </span>;
+      return <span>{e} </span>;
+    });
     return (
       <div className={styles.eventCard}>
-        <span>{missingLabel}</span>
+        <span className={styles.missingLabel}>{missingLabelSpans}</span>
       </div>
     );
   } else {

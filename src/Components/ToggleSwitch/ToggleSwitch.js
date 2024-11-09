@@ -7,12 +7,13 @@ function ToggleSwitch({ toggleValue, setToggleValue }) {
   return (
     <div className={styles.container}>
       <input
+        classname={styles.toggleInput}
         type="checkbox"
         checked={toggleValue}
         onChange={setToggleValue}
         id="switch"
       />
-      <label htmlFor="switch"></label>
+      <label classname={styles.toggleLabel} htmlFor="switch"></label>
     </div>
   );
 }

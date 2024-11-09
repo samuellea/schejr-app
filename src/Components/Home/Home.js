@@ -1121,7 +1121,7 @@ function Home() {
           listItemEditID={listItemEditID}
         />
         <div className={styles.container}>
-          {showSidebar ? (
+          {showSidebar && discrepanciesChecked && !eventDiscrepancies ? (
             <Sidebar
               userUID={userUID}
               displayName={displayName}

@@ -137,12 +137,24 @@ function EventDiscrepancies({
         </div>
       ) : (
         <>
-          <span>Pick which side to keep</span>
+          <div className={styles.mainHeader}>
+            <span>
+              <span
+                style={{
+                  fontFamily:
+                    "'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif",
+                  fontSize: '14px',
+                  marginRight: '6px',
+                }}
+              >
+                ⚠️
+              </span>
+              Some of the events synced with your Google Calendar don't match.
+              Which details are correct?
+            </span>
+          </div>
           {bothButDiff.length ? (
             <div className={styles.section}>
-              <div className={styles.header}>
-                Event on both, but different details:
-              </div>
               <div className={styles.checkAllContainer}>
                 <div className={styles.checkboxContainer}>
                   <input
@@ -153,6 +165,7 @@ function EventDiscrepancies({
                     checked={bothButDiff.every((obj) => obj.keep === 'schejr')}
                   />
                 </div>
+                <span>Event on both, but details are different:</span>
                 <div className={styles.checkboxContainer}>
                   <input
                     type="checkbox"
@@ -163,6 +176,10 @@ function EventDiscrepancies({
                   />
                 </div>
               </div>
+              <div className={styles.halfLabels}>
+                <div className={styles.halfLabel}>Schejr</div>
+                <div className={styles.halfLabel}>Google Calendar</div>
+              </div>
               {bothButDiff.map((obj) => {
                 const objInState = bothButDiff.find(
                   (e) => e.eventID === obj.eventID
@@ -172,7 +189,10 @@ function EventDiscrepancies({
                   <div
                     className={styles.comparer}
                     key={obj.eventID}
-                    style={{ borderColor: keep !== null ? 'lime' : 'gray' }}
+                    style={{
+                      borderColor: keep !== null ? 'lime' : 'gray',
+                      background: keep !== null ? 'rgb(22, 44, 22)' : '#191919',
+                    }}
                   >
                     <div className={styles.comparerDirectionOverlay}>
                       <span>
@@ -217,9 +237,6 @@ function EventDiscrepancies({
           ) : null}
           {schejrNotGCal.length ? (
             <div className={styles.section}>
-              <div className={styles.header}>
-                Event on Schejr, but not Google Calendar:
-              </div>
               <div className={styles.checkAllContainer}>
                 <div className={styles.checkboxContainer}>
                   <input
@@ -230,6 +247,7 @@ function EventDiscrepancies({
                     checked={schejrNotGCal.every((obj) => obj.keep === 'true')}
                   />
                 </div>
+                <span>Event on Schejr, but not Google Calendar:</span>
                 <div className={styles.checkboxContainer}>
                   <input
                     type="checkbox"
@@ -243,6 +261,10 @@ function EventDiscrepancies({
                     checked={schejrNotGCal.every((obj) => obj.keep === 'false')}
                   />
                 </div>
+              </div>
+              <div className={styles.halfLabels}>
+                <div className={styles.halfLabel}>Schejr</div>
+                <div className={styles.halfLabel}>Google Calendar</div>
               </div>
               {schejrNotGCal.map((obj) => {
                 const objInState = schejrNotGCal.find(
@@ -260,6 +282,12 @@ function EventDiscrepancies({
                           : keep === 'false'
                           ? 'red'
                           : 'gray',
+                      background:
+                        keep === 'true'
+                          ? 'rgb(22, 44, 22)'
+                          : keep === 'false'
+                          ? 'rgb(66, 33, 33)'
+                          : '#191919',
                     }}
                   >
                     <div className={styles.comparerDirectionOverlay}>
@@ -314,19 +342,7 @@ function EventDiscrepancies({
           ) : null}
           {gcalNotSchejr.length ? (
             <div className={styles.section}>
-              <div className={styles.header}>
-                Event on Google Calendar, but not Schejr:
-              </div>
               <div className={styles.checkAllContainer}>
-                <div className={styles.checkboxContainer}>
-                  <input
-                    type="checkbox"
-                    onChange={(event) =>
-                      handleAllSectionCheckboxes(event, 'gcalNotSchejr', 'true')
-                    }
-                    checked={gcalNotSchejr.every((obj) => obj.keep === 'true')}
-                  />
-                </div>
                 <div className={styles.checkboxContainer}>
                   <input
                     type="checkbox"
@@ -340,6 +356,20 @@ function EventDiscrepancies({
                     checked={gcalNotSchejr.every((obj) => obj.keep === 'false')}
                   />
                 </div>
+                <span>Event on Google Calendar, but not Schejr:</span>
+                <div className={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleAllSectionCheckboxes(event, 'gcalNotSchejr', 'true')
+                    }
+                    checked={gcalNotSchejr.every((obj) => obj.keep === 'true')}
+                  />
+                </div>
+              </div>
+              <div className={styles.halfLabels}>
+                <div className={styles.halfLabel}>Schejr</div>
+                <div className={styles.halfLabel}>Google Calendar</div>
               </div>
               {gcalNotSchejr.map((obj) => {
                 const objInState = gcalNotSchejr.find(
@@ -357,6 +387,12 @@ function EventDiscrepancies({
                           : keep === 'false'
                           ? 'red'
                           : 'gray',
+                      background:
+                        keep === 'true'
+                          ? 'rgb(22, 44, 22)'
+                          : keep === 'false'
+                          ? 'rgb(66, 33, 33)'
+                          : '#191919',
                     }}
                   >
                     <div className={styles.comparerDirectionOverlay}>
@@ -409,23 +445,25 @@ function EventDiscrepancies({
               })}
             </div>
           ) : null}
-          <button
-            className={styles.actionButton}
-            id={styles.submit}
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-          >
-            Submit
-          </button>
-          <button
-            className={styles.actionButton}
-            id={styles.unsync}
-            type="button"
-            onClick={handleUnsync}
-          >
-            Unsync & Continue
-          </button>
+          <div className={styles.actionButtons}>
+            <button
+              className={styles.actionButton}
+              id={styles.submit}
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+            >
+              Submit
+            </button>
+            <button
+              className={styles.actionButton}
+              id={styles.unsync}
+              type="button"
+              onClick={handleUnsync}
+            >
+              Unsync All & Continue
+            </button>
+          </div>
         </>
       )}
     </div>

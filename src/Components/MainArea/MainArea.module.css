@@ -15,6 +15,7 @@
   display: flex; /* Enable flexbox layout */
   flex-direction: column; /* Arrange children in a row */
   justify-content: flex-end; /* Center align children */
+  /* align-items: center; */
 }
 
 .listSection {
