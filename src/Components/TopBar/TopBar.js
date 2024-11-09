@@ -16,54 +16,55 @@ function TopBar({
 }) {
   return (
     <div className={styles.container}>
-      {!listItemEditID ? (
+      {/* {listItemEditID !== null ? ( */}
+      <div
+        className={styles.listsHeader}
+        style={{
+          borderRight: showSidebar
+            ? '1px solid rgba(155, 155, 155, 0.151)'
+            : 'none',
+          minWidth: '20%',
+        }}
+      >
         <div
-          className={styles.listsHeader}
-          style={{
-            borderRight: showSidebar
-              ? '1px solid rgba(155, 155, 155, 0.151)'
-              : 'none',
-          }}
+          role="button"
+          className={styles.topbarButton}
+          onClick={toggleSidebar}
+          id={styles.toggleSidebar}
         >
-          <div
-            role="button"
-            className={styles.topbarButton}
-            onClick={toggleSidebar}
-            id={styles.toggleSidebar}
-          >
-            <ChevronIcon
-              fill="white"
-              width="16px"
-              flip={showSidebar ? '0' : '180'}
-            />
-          </div>
-          {showSidebar ? (
-            <>
-              <p className={styles.topbarText} id={styles.sidebarHeader}>
-                {displayName.match(/^[^ ]+/)[0]}'s lists
-              </p>
-
-              <div
-                role="button"
-                className={styles.topbarButton}
-                onClick={createList}
-                id={styles.createList}
-                style={{ pointerEvents: discrDisable ? 'none' : null }}
-              >
-                <EditIcon fill="white" width="16px" />
-              </div>
-            </>
-          ) : null}
-          {!showSidebar ? (
-            <>
-              <TagsIcon fill="white" width="16px" />
-              <p className={styles.topbarText} id={styles.showListsLabel}>
-                Show lists
-              </p>
-            </>
-          ) : null}
+          <ChevronIcon
+            fill="white"
+            width="16px"
+            flip={showSidebar ? '0' : '180'}
+          />
         </div>
-      ) : null}
+        {showSidebar ? (
+          <>
+            <p className={styles.topbarText} id={styles.sidebarHeader}>
+              {displayName.match(/^[^ ]+/)[0]}'s lists
+            </p>
+
+            <div
+              role="button"
+              className={styles.topbarButton}
+              onClick={createList}
+              id={styles.createList}
+              style={{ pointerEvents: discrDisable ? 'none' : null }}
+            >
+              <EditIcon fill="white" width="16px" />
+            </div>
+          </>
+        ) : null}
+        {!showSidebar ? (
+          <>
+            <TagsIcon fill="white" width="16px" />
+            <p className={styles.topbarText} id={styles.showListsLabel}>
+              Show lists
+            </p>
+          </>
+        ) : null}
+      </div>
+      {/* ) : null} */}
       <div className={styles.logoutContainer}>
         <div
           className={styles.logoutButton}
