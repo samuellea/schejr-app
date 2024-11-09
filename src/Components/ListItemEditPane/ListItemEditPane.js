@@ -82,6 +82,8 @@ function ListItemEditPane({
 
   return (
     <div className={styles.container}>
+    <div className={styles.contentWrapper}>
+
       <div className={styles.titleAndCloseWrapper}>
         <div className={styles.closeWrapper}>
           <div
@@ -225,6 +227,8 @@ function ListItemEditPane({
         </div>
       </div>
     </div>
+    </div>
+
   );
 }
 
