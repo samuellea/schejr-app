@@ -23,7 +23,7 @@ function TopBar({
           borderRight: showSidebar
             ? '1px solid rgba(155, 155, 155, 0.151)'
             : 'none',
-          minWidth: '20%',
+          // minWidth: '20%',
         }}
       >
         <div
