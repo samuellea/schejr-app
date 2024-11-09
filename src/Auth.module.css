@@ -1,18 +1,32 @@
 .container {
-  /* border: 2px solid red; */
+  /* border: 6px solid red; */
   height: 100vh;
   width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   background-color: #191919;
+}
+
+.wrapper {
+  /* border: 2px solid yellow; */
+}
+
+.descriptionLoginButtonWrapper {
+  /* border: 2px solid hotpink; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .logoContainer {
   /* border: 2px solid red; */
-  height: 200px;
+  height: 100px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -25,6 +39,11 @@
   /* border: 2px solid blue; */
   width: 230px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 85px;
 }
 
 .title {
@@ -47,11 +66,13 @@
 }
 
 .description {
+  /* border: 2px solid green; */
   color: rgba(255, 255, 255, 0.574);
   /* margin-bottom: 15%; */
   font-size: 18px;
   font-weight: 200;
   letter-spacing: 2px;
+  padding-top: 20px;
 }
 
 .logonButton {
