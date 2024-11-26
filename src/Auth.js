@@ -41,9 +41,36 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
       });
   };
 
+  // (window.innerWidth < 768)
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
+        <div className={styles.videoWrapper}>
+          <div
+            style={{
+              width: window.innerWidth < 768 ? '90vw' : '50vw',
+              aspectRatio: '16/9',
+              position: 'relative',
+            }}
+            className={styles.videoContainer}
+          >
+            <iframe
+              style={{
+                width: '100%',
+                height: '100%',
+                border: '0',
+              }}
+              src="https://www.youtube.com/embed/NjkhdHgicOc?si=H4gaEL6GrKZnPWk8"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
         <div className={styles.logoContainer}>
           <div className={styles.logo}>
             <h1 className={styles.title}>Schejr.</h1>
