@@ -71,7 +71,7 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
                 height: '100%',
                 border: '0',
               }}
-              src="https://www.youtube.com/embed/NjkhdHgicOc?si=H4gaEL6GrKZnPWk8"
+              src="https://www.youtube.com/embed/NjkhdHgicOc?si=H4gaEL6GrKZnPWk8?vq=hd1080p"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
