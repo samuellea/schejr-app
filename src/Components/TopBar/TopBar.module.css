@@ -117,6 +117,26 @@
   color: #9b9b9b;
 }
 
+.fa-cog {
+  color: white;
+}
+
+.settingsButton {
+  border: 1px solid #9b9b9b76;
+  border-radius: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 42px;
+  font-size: 12px;
+  /* width: 120px; */
+  /* padding-left: 10px; */
+  margin-right: 10px;
+  box-sizing: border-box;
+}
+
 .logoutButton {
   border: 1px solid #9b9b9b76;
   border-radius: 20px;
@@ -124,7 +144,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 70%;
+  height: 32px;
+
   font-size: 12px;
   width: 120px;
   /* padding-left: 10px; */

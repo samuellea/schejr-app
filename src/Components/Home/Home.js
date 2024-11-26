@@ -36,6 +36,7 @@ function Home() {
   const [showFixModal, setShowFixModal] = useState(false);
   const [fixingDiscrepancies, setFixingDiscrepancies] = useState(false);
   const [showPlanner, setShowPlanner] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     console.log(`discrepanciesChecked: ${discrepanciesChecked}`);
@@ -1108,6 +1109,8 @@ function Home() {
     setShowPlanner((prev) => !prev);
   };
 
+  const handleDeleteAccount = () => {};
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.wrapper}>
@@ -1119,6 +1122,7 @@ function Home() {
           createList={createList}
           discrDisable={discrDisable}
           listItemEditID={listItemEditID}
+          setShowSettings={setShowSettings}
         />
         <div className={styles.container}>
           {showSidebar && discrepanciesChecked && !eventDiscrepancies ? (
@@ -1179,6 +1183,14 @@ function Home() {
           handleConfirm={() => handleLogout()}
           handleCancel={() => setShowLogoutModal(false)}
           confirmLabel="Log out"
+        />
+      ) : null}
+      {showSettings ? (
+        <ConfirmDeleteModal
+          message={`Delete your Schejr account? This will permanently erase all personal data from the app. This action cannot be undone.`}
+          handleConfirm={() => handleDeleteAccount()}
+          handleCancel={() => setShowSettings(false)}
+          confirmLabel="Delete My Account"
         />
       ) : null}
       {showGCalAddModal ? (

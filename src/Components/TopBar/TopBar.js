@@ -4,6 +4,8 @@ import ChevronIcon from '../Icons/ChevronIcon';
 import LogoutIcon from '../Icons/LogoutIcon';
 import TagsIcon from '../Icons/TagsIcon';
 import EditIcon from '../Icons/EditIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 function TopBar({
   toggleSidebar,
@@ -13,6 +15,7 @@ function TopBar({
   createList,
   discrDisable,
   listItemEditID,
+  setShowSettings,
 }) {
   return (
     <div className={styles.container}>
@@ -66,6 +69,16 @@ function TopBar({
       </div>
       {/* ) : null} */}
       <div className={styles.logoutContainer}>
+        <div
+          className={styles.settingsButton}
+          onClick={() => setShowSettings(true)}
+        >
+          <FontAwesomeIcon
+            icon={faCog}
+            pointerEvents="none"
+            style={{ margin: '0px 0px', color: 'white', fontSize: '16px' }}
+          />
+        </div>
         <div
           className={styles.logoutButton}
           onClick={() => setShowLogoutModal(true)}

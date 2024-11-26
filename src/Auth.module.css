@@ -1,5 +1,5 @@
 .container {
-  /* border: 6px solid red; */
+  /* border: 6px dashed red; */
   height: 100vh;
   width: 100vw;
   max-height: 100vh;
@@ -7,15 +7,18 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   background-color: #191919;
+  position: relative;
 }
 
 .wrapper {
-  /* border: 2px solid yellow; */
+  /* border: 9px solid yellow; */
   width: 100vw;
   box-sizing: border-box;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .descriptionLoginButtonWrapper {
@@ -92,6 +95,17 @@
   animation-delay: 0.25s;
 }
 
+.privacyDisclaimer {
+  color: rgba(255, 255, 255, 0.574);
+  /* margin-bottom: 15%; */
+  font-size: 12px;
+  font-weight: 200;
+  letter-spacing: 1px;
+  padding-top: 10px;
+  opacity: 0;
+  animation: riseUp 1s ease-out forwards;
+  animation-delay: 0.25s;
+}
 .logonButton {
   /* margin-top: auto; */
   /* min-width: 80px; */
@@ -131,13 +145,20 @@
 
 .copyright {
   color: white;
+  /* border: 3px solid purple; */
   font-size: 12px;
   font-weight: 100;
-  margin-bottom: 30px;
-  animation: riseUp 1s ease-out forwards;
-  opacity: 0;
+  /* margin-bottom: 30px; */
+  /* animation: riseUp 1s ease-out forwards; */
+  /* opacity: 0; */
   animation-delay: 0.75s;
-  /* border: 3px solid red; */
+  /* margin-top: auto; */
+  position: absolute; /* Position relative to the parent */
+  bottom: 0; /* Always at the bottom of the parent */
+  left: 0;
+  width: 100vw;
+  padding-bottom: 20px;
+  /* height: 20px; */
 }
 
 .copyright a {
@@ -171,4 +192,24 @@
 
 .videoContainer {
   /* border: 3px solid green; */
+}
+
+.privacyPolicyLink {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.privacyPolicy {
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  /* border: 9px dashed yellow; */
+  background-color: #191919;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }

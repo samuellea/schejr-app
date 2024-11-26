@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import styles from './Auth.module.css';
 import TagsIcon from './Components/Icons/TagsIcon';
+import Privacy from './Privacy';
 
 function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const navigate = useNavigate();
   provider.addScope('https://www.googleapis.com/auth/calendar');
   // provider.addScope('https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest');
@@ -42,6 +44,14 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
   };
 
   // (window.innerWidth < 768)
+
+  const togglePrivacyPolicy = () => {
+    setShowPrivacy((prev) => !prev);
+  };
+
+  const closePrivacy = () => {
+    setShowPrivacy(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -85,23 +95,48 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
           <span className={styles.description}>
             A Notion-like web app for making lists and scheduling.
           </span>
+          <span className={styles.privacyDisclaimer}>
+            To see how Schejr uses the data you provide and works with
+            third-party services, <br />
+            please see our{' '}
+            <span
+              onClick={togglePrivacyPolicy}
+              className={styles.privacyPolicyLink}
+            >
+              Privacy Policy
+            </span>{' '}
+            before using.
+          </span>
           <button className={styles.logonButton} onClick={handleLogin}>
             Login with Google
           </button>
         </div>
 
-        <div className={styles.bottomGap} />
-        <div className={styles.copyright}>
-          2024 Sam Lea |{' '}
-          <a
-            href="https://www.github.com/samuellea"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Github
-          </a>
-        </div>
+        {/* <div className={styles.bottomGap} /> */}
       </div>
+      <div className={styles.copyright}>
+        2024 Sam Lea |{' '}
+        <a
+          href="https://www.github.com/samuellea"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Github
+        </a>{' '}
+        |{' '}
+        <span
+          onClick={togglePrivacyPolicy}
+          className={styles.privacyPolicyLink}
+        >
+          Privacy Policy
+        </span>
+      </div>
+
+      {showPrivacy ? (
+        <div className={styles.privacyPolicy}>
+          <Privacy closePrivacy={closePrivacy} />
+        </div>
+      ) : null}
     </div>
   );
 }
