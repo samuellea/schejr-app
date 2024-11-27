@@ -124,12 +124,19 @@ function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
           Github
         </a>{' '}
         |{' '}
-        <span
+        <a
+          href="https://schejr.netlify.app/privacy"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Privacy Policy
+        </a>{' '}
+        {/* <span
           onClick={togglePrivacyPolicy}
           className={styles.privacyPolicyLink}
         >
           Privacy Policy
-        </span>
+        </span> */}
       </div>
 
       {showPrivacy ? (
