@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Privacy.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 function Privacy({ closePrivacy }) {
+  const navigate = useNavigate();
+  const closePrivacyFunc = !closePrivacy ? () => navigate('/') : closePrivacy;
   return (
     <div
       className={styles.PrivacyPolicyContainer}
@@ -96,7 +99,7 @@ function Privacy({ closePrivacy }) {
         <button
           type="button"
           className={styles.logonButton}
-          onClick={() => closePrivacy()}
+          onClick={() => closePrivacyFunc()}
         >
           Close
         </button>

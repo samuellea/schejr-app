@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './Components/Home/Home';
 import Auth from './Auth';
+import Privacy from './Privacy';
 import PrivateRoute from './PrivateRoute';
 // import firebase from 'firebase/compat/app';
 import './App.css';
@@ -47,6 +48,7 @@ function App({ auth, database }) {
         <Route exact path="/" element={<PrivateRoute />}>
           <Route exact path="/" element={<Home />} />
         </Route>
+        <Route exact path="/privacy" element={<Privacy />} />
         <Route
           exact
           path="/login"
