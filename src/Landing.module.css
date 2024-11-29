@@ -108,6 +108,10 @@
   margin-bottom: 40px;
 }
 
+.privacyDisclaimer a {
+  color: rgba(255, 255, 255, 0.574);
+}
+
 .startButton {
   height: 50px;
   width: 200px;

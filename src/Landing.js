@@ -76,12 +76,13 @@ function Landing({ auth, provider, handleSignInSuccess, setLoading }) {
               To see how Schejr uses the data you provide and works with
               third-party services,
               <br /> please see our{' '}
-              <span
-                onClick={togglePrivacyPolicy}
-                className={styles.privacyPolicyLink}
+              <a
+                href="https://schejr.netlify.app/privacy"
+                target="_blank"
+                rel="noreferrer"
               >
                 Privacy Policy
-              </span>{' '}
+              </a>{' '}
               before using.
             </span>
           ) : (
@@ -89,12 +90,13 @@ function Landing({ auth, provider, handleSignInSuccess, setLoading }) {
               To see how Schejr uses the data you <br />
               provide and works with third-party services, <br />
               please see our{' '}
-              <span
-                onClick={togglePrivacyPolicy}
-                className={styles.privacyPolicyLink}
+              <a
+                href="https://schejr.netlify.app/privacy"
+                target="_blank"
+                rel="noreferrer"
               >
                 Privacy Policy
-              </span>{' '}
+              </a>{' '}
               before using.
             </span>
           )}
