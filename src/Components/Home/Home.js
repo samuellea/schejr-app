@@ -857,7 +857,7 @@ function Home() {
     localStorage.removeItem('email');
     localStorage.removeItem('firebaseID');
     localStorage.removeItem('expires');
-    navigate('/login');
+    navigate('/');
   };
 
   const toggleSidebar = (set) => {

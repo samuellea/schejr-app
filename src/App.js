@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './Components/Home/Home';
+import Landing from './Landing';
 import Auth from './Auth';
 import Privacy from './Privacy';
 import PrivateRoute from './PrivateRoute';
@@ -45,8 +46,21 @@ function App({ auth, database }) {
   return (
     <div id="app" className="App">
       <Routes>
-        <Route exact path="/" element={<PrivateRoute />}>
-          <Route exact path="/" element={<Home />} />
+        <Route
+          exact
+          path="/"
+          element={
+            <Landing
+              auth={auth}
+              provider={provider}
+              handleSignInSuccess={handleSignInSuccess}
+              setLoading={setLoading}
+              GoogleAuthProvider={GoogleAuthProvider}
+            />
+          }
+        />
+        <Route exact path="/home" element={<PrivateRoute />}>
+          <Route exact path="/home" element={<Home />} />
         </Route>
         <Route exact path="/privacy" element={<Privacy />} />
         <Route

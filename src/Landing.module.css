@@ -22,52 +22,33 @@
 }
 
 .descriptionLoginButtonWrapper {
+  /* border: 2px solid hotpink; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* border: 3px solid red; */
-}
-
-.signInButtonWraper {
-  /* border: 3px solid red; */
-  width: 300px;
-  padding: 30px 0px;
-  /* height: 150px; */
-  background-color: black;
-  border-radius: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  /* padding: 10px; */
-  box-sizing: border-box;
-  /* position: relative; */
-}
-
-.signInDisclaimer {
-  max-width: 75%;
-  color: rgba(255, 255, 255, 0.574);
-  /* margin-bottom: 15%; */
-  font-size: 10px;
-  font-weight: 200;
-  letter-spacing: 1px;
-  margin-top: 18px;
-  /* padding-top: 10px; */
-  /* margin-bottom: 40px; */
 }
 
 .logoContainer {
   /* border: 2px solid red; */
-  /* position: absolute; */
-  top: 20%;
   height: 100px;
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  animation: riseUp 1s ease-out forwards;
+}
+
+@keyframes riseUp {
+  0% {
+    transform: translateY(100%); /* Start from below the screen */
+    opacity: 0; /* Start fully transparent */
+  }
+  100% {
+    transform: translateY(0); /* End at original position */
+    opacity: 1; /* End fully opaque */
+  }
 }
 
 .logo {
@@ -109,6 +90,9 @@
   font-weight: 200;
   letter-spacing: 2px;
   padding-top: 20px;
+  opacity: 0;
+  animation: riseUp 1s ease-out forwards;
+  animation-delay: 0.25s;
 }
 
 .privacyDisclaimer {
@@ -118,6 +102,9 @@
   font-weight: 200;
   letter-spacing: 1px;
   padding-top: 10px;
+  opacity: 0;
+  animation: riseUp 1s ease-out forwards;
+  animation-delay: 0.25s;
   margin-bottom: 40px;
 }
 
@@ -134,6 +121,9 @@
     'Segoe UI Variable Display', 'Segoe UI', Helvetica, 'Apple Color Emoji',
     Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 200;
+  opacity: 0;
+  animation: riseUp 1s ease-out forwards;
+  animation-delay: 0.5s;
 }
 
 .startButton:hover,
@@ -225,7 +215,6 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  z-index: 3;
 }
 
 .gsiMaterialButton {
@@ -251,11 +240,17 @@
   padding: 0 12px;
   position: relative;
   text-align: center;
+  -webkit-transition: background-color 0.218s, border-color 0.218s,
+    box-shadow 0.218s;
+  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
   vertical-align: middle;
   white-space: nowrap;
   width: auto;
   max-width: 400px;
   min-width: min-content;
+  animation: riseUp 1s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.5s;
 }
 
 .gsiMaterialButton .gsiMaterialButtonIcon {
@@ -290,6 +285,8 @@
 }
 
 .gsiMaterialButton .gsiMaterialButtonState {
+  -webkit-transition: opacity 0.218s;
+  transition: opacity 0.218s;
   bottom: 0;
   left: 0;
   opacity: 0;
