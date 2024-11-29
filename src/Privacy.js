@@ -69,6 +69,26 @@ function Privacy({ closePrivacy }) {
           , including the Limited Use requirements.
         </p>
 
+        <h3>Third-Party Data Sharing and Security Measures</h3>
+        <p>
+          We do not transfer or disclose your information to third parties for
+          purposes other than the ones provided. Schejr does not retain any of
+          the personal data associated with your Google account.
+          <br />
+          <br />
+          Security procedures are in place to protect the confidentiality of
+          your data. All user data is encrypted before it is stored in our
+          database. Your data is siloed and stored separately, ensuring that it
+          is accessible only to you. This prevents unauthorized access to your
+          personal information by others.
+          <br />
+          <br />
+          Access to your data is protected by secure sign-in processes and
+          authorization protocols. You must sign in to your account and provide
+          proper authorization to access your personal data, ensuring that only
+          you (or those you authorize) can view or modify your information.
+        </p>
+
         <h3>Closing your app account</h3>
         <p>
           Should you wish to close your Schejr account and remove any stored
