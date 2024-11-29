@@ -857,6 +857,8 @@ function Home() {
     localStorage.removeItem('email');
     localStorage.removeItem('firebaseID');
     localStorage.removeItem('expires');
+    localStorage.removeItem('displayName');
+    localStorage.removeItem('googleAccessToken');
     navigate('/');
   };
 
