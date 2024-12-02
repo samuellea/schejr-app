@@ -10,6 +10,7 @@ import logo from './Components/Icons/g-logo.png';
 function Auth({ auth, provider, handleSignInSuccess, setLoading }) {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const navigate = useNavigate();
+  // provider.addScope('https://www.googleapis.com/auth/calendar');
   provider.addScope('https://www.googleapis.com/auth/calendar.events.owned');
 
   // provider.addScope('https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest');
