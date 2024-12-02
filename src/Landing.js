@@ -49,7 +49,7 @@ function Landing({ auth, provider, handleSignInSuccess, setLoading }) {
                 height: '100%',
                 border: '0',
               }}
-              src="https://www.youtube.com/embed/NjkhdHgicOc?autoplay=1&mute=1&vq=hd720"
+              src="https://www.youtube.com/embed/riMnC1hAknw?autoplay=1&mute=1&vq=hd720"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
