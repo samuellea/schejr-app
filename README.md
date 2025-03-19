@@ -8,11 +8,11 @@
 
 ## Features  
 
-- **Google Authentication** – Secure login via Google Auth.  
-- **Task Scheduling** – Convert list items into tasks and sync them with **Google Calendar**.  
-- **List Organization** – Create and manage collections of lists.  
-- **Tagging System** – Categorize items across multiple lists, offering flexibility beyond Notion.  
-- **Cloud Sync** – Data is stored and updated in **Google Firebase** for seamless access.  
+- 🔐 **Google Authentication** – Secure login via Google Auth.  
+- 📅 **Task Scheduling** – Convert list items into tasks and sync them with **Google Calendar**.  
+- 🗂 **List Organization** – Create and manage collections of lists.  
+- 🏷 **Tagging System** – Categorize items across multiple lists, offering flexibility beyond Notion.  
+- ☁️ **Cloud Sync** – Data is stored and updated in **Google Firebase** for seamless access.  
 
 ## Tech Stack  
 
